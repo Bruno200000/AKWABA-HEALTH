@@ -1,0 +1,38 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Environment files - NEVER commit secrets
+.env
+.env.*
+!.env.example
+
+# Next.js
+frontend/.next/
+frontend/out/
+frontend/build/
+
+# NestJS / Backend build
+backend/dist/
+backend/build/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# TypeScript
+*.tsbuildinfo
+
+# Vercel
+.vercel
+
+# Misc
+*.pem
+/coverage

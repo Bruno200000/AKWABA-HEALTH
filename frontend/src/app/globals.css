@@ -79,7 +79,7 @@ body {
 }
 
 .dash-table-header {
-  @apply bg-blue-50/50 border-b border-blue-100/50;
+  @apply bg-blue-50/50 border-b border-blue-100/50 text-slate-700 font-black;
 }
 
 @keyframes float {

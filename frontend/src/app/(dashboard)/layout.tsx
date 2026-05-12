@@ -143,7 +143,7 @@ function NavItem({ item, isSidebarOpen, pathname }: { item: any, isSidebarOpen: 
             "flex items-center gap-3 px-4 py-3 rounded-2xl transition-all relative z-10",
             isActive && !hasSubItems
               ? "bg-white text-blue-900 shadow-xl" 
-              : "text-blue-100/70 hover:bg-white/10 hover:text-white"
+              : "text-blue-100/80 hover:bg-white/10 hover:text-white"
           )}
         >
           <item.icon className={cn("w-5 h-5 shrink-0 text-current", !isActive && "group-hover:scale-110 transition-transform")} />
@@ -185,7 +185,7 @@ function NavItem({ item, isSidebarOpen, pathname }: { item: any, isSidebarOpen: 
                     "block px-4 py-2 text-sm transition-all rounded-lg",
                     isSubActive
                       ? "text-white font-black"
-                      : "text-blue-100/50 hover:text-white hover:bg-white/5"
+                      : "text-blue-100/70 hover:text-white hover:bg-white/5"
                   )}
                 >
                   {sub.label}
@@ -252,7 +252,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     return (
       <div className="min-h-screen flex flex-col items-center justify-center gap-4 bg-[#f0f7ff] text-blue-900">
         <Loader2 className="w-12 h-12 text-blue-600 animate-spin" />
-        <p className="text-sm font-medium text-blue-900/70">Chargement de votre espace…</p>
+        <p className="text-sm font-bold text-blue-900/80">Chargement de votre espace…</p>
       </div>
     );
   }
@@ -289,7 +289,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           {menuGroups.map((group) => (
             <div key={group.title} className="space-y-2">
               {isSidebarOpen && (
-                <div className="px-4 text-[10px] font-black text-white/30 uppercase tracking-[0.2em] mb-4">
+                <div className="px-4 text-[10px] font-black text-white/50 uppercase tracking-[0.2em] mb-4">
                   {group.title}
                 </div>
               )}
@@ -306,7 +306,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         <div className="p-4 mt-auto border-t border-white/5 bg-slate-900/30">
           <button 
             onClick={handleLogout}
-            className="flex items-center gap-3 w-full px-4 py-3 rounded-2xl text-blue-100/60 hover:bg-white/5 hover:text-white transition-all group"
+            className="flex items-center gap-3 w-full px-4 py-3 rounded-2xl text-blue-100/80 hover:bg-white/5 hover:text-white transition-all group"
           >
             <LogOut className="w-5 h-5 shrink-0 group-hover:-translate-x-1 transition-transform" />
             {isSidebarOpen && <span className="font-bold text-sm">Déconnexion</span>}
@@ -381,11 +381,11 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                   <p className="text-sm font-bold text-slate-900 leading-none mb-1">
                     {profile ? `${profile.first_name ? (profile.role === "DOCTOR" ? "Dr. " : "") + profile.first_name + " " + profile.last_name : profile.email}` : "Utilisateur"}
                   </p>
-                  <p className="text-[10px] text-blue-600 uppercase font-black tracking-wider">
+                  <p className="text-[10px] text-blue-700 uppercase font-black tracking-wider">
                     {profile?.role || "Collaborateur"}
                   </p>
                 </div>
-                <ChevronDown className={cn("w-4 h-4 text-slate-400 transition-transform", isProfileOpen && "rotate-180")} />
+                <ChevronDown className={cn("w-4 h-4 text-slate-500 transition-transform", isProfileOpen && "rotate-180")} />
               </button>
 
               <AnimatePresence>

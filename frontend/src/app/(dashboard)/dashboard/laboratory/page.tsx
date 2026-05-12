@@ -23,7 +23,7 @@ import ResultEntry from "./ResultEntry";
 import { supabase } from "@/lib/supabase";
 
 const statusStyles = {
- ORDERED: "bg-slate-50 text-slate-400 border-slate-100",
+ ORDERED: "bg-white border-blue-100 shadow-sm text-slate-600 border-slate-100",
  IN_PROGRESS: "bg-blue-50 text-blue-600 border-blue-100",
  COMPLETED: "bg-emerald-50 text-emerald-600 border-emerald-100",
 };
@@ -82,7 +82,7 @@ export default function LaboratoryPage() {
  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
  <div>
  <h1 className="text-3xl font-black text-slate-900 tracking-tight">Laboratoire</h1>
- <p className="text-slate-500 font-medium">Suivez les prélèvements et gérez les résultats d&apos;analyses.</p>
+ <p className="text-slate-600 font-medium">Suivez les prélèvements et gérez les résultats d&apos;analyses.</p>
  </div>
  <button 
  onClick={() => setIsModalOpen(true)}
@@ -96,10 +96,10 @@ export default function LaboratoryPage() {
  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
  <div className="dash-card !p-6">
  <div className="absolute top-0 right-0 p-6 opacity-5 group-hover:scale-110 transition-transform"><Clock className="w-12 h-12" /></div>
- <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">En Attente</p>
+ <p className="text-[10px] font-black text-slate-600 uppercase tracking-widest mb-3">En Attente</p>
  <div className="flex items-end gap-2">
  <h3 className="text-2xl font-black">{stats.pending}</h3>
- <span className="text-[10px] font-bold text-slate-400 mb-1">Prélèvements</span>
+ <span className="text-[10px] font-bold text-slate-600 mb-1">Prélèvements</span>
  </div>
  </div>
  <div className="dash-card !p-6">
@@ -107,7 +107,7 @@ export default function LaboratoryPage() {
  <p className="text-[10px] font-black text-blue-500 uppercase tracking-widest mb-3">En Cours</p>
  <div className="flex items-end gap-2">
  <h3 className="text-2xl font-black">{stats.processing}</h3>
- <span className="text-[10px] font-bold text-slate-400 mb-1">Analyses</span>
+ <span className="text-[10px] font-bold text-slate-600 mb-1">Analyses</span>
  </div>
  </div>
  <div className="dash-card !p-6 !bg-emerald-50/50 !border-emerald-100">
@@ -124,7 +124,7 @@ export default function LaboratoryPage() {
  <div className="space-y-6">
  <div className="flex gap-4">
  <div className="relative flex-1">
- <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+ <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-600" />
  <input 
  type="text" 
  placeholder="Rechercher par patient ou test..."
@@ -133,7 +133,7 @@ export default function LaboratoryPage() {
  className="w-full pl-10 pr-4 py-3 bg-white border border-slate-200 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/10 transition-all"
  />
  </div>
- <button className="flex items-center gap-2 px-4 py-3 bg-white border border-slate-200 rounded-2xl text-sm font-bold hover:bg-slate-50 transition-all">
+ <button className="flex items-center gap-2 px-4 py-3 bg-white border border-slate-200 rounded-2xl text-sm font-bold hover:bg-white border-blue-100 shadow-sm transition-all">
  <Filter className="w-4 h-4" />
  </button>
  </div>
@@ -142,18 +142,18 @@ export default function LaboratoryPage() {
  <table className="w-full text-left border-collapse">
  <thead>
  <tr className="dash-table-header">
- <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Patient</th>
- <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Type d&apos;examen</th>
- <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Prescrit</th>
- <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Statut</th>
- <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Actions</th>
+ <th className="px-8 py-5 text-[10px] font-black text-slate-600 uppercase tracking-widest">Patient</th>
+ <th className="px-8 py-5 text-[10px] font-black text-slate-600 uppercase tracking-widest">Type d&apos;examen</th>
+ <th className="px-8 py-5 text-[10px] font-black text-slate-600 uppercase tracking-widest">Prescrit</th>
+ <th className="px-8 py-5 text-[10px] font-black text-slate-600 uppercase tracking-widest">Statut</th>
+ <th className="px-8 py-5 text-[10px] font-black text-slate-600 uppercase tracking-widest">Actions</th>
  </tr>
  </thead>
  <tbody className="divide-y divide-slate-100 ">
  {isLoading ? (
- <tr><td colSpan={5} className="text-center py-20 text-slate-400 font-bold uppercase text-[10px] tracking-widest">Initialisation du labo...</td></tr>
+ <tr><td colSpan={5} className="text-center py-20 text-slate-600 font-bold uppercase text-[10px] tracking-widest">Initialisation du labo...</td></tr>
  ) : filteredTests.length > 0 ? filteredTests.map((test, index) => (
- <tr key={test.id} className="hover:bg-slate-50/50 transition-colors cursor-pointer group">
+ <tr key={test.id} className="hover:bg-white border-blue-100 shadow-sm/50 transition-colors cursor-pointer group">
  <td className="px-8 py-6">
  <div className="flex items-center gap-4">
  <div className="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center font-black">
@@ -161,7 +161,7 @@ export default function LaboratoryPage() {
  </div>
  <div>
  <p className="font-black text-sm">{test.patients?.first_name} {test.patients?.last_name}</p>
- <p className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">ID: {test.id.slice(0, 6)}</p>
+ <p className="text-[10px] font-bold text-slate-600 uppercase tracking-tighter">ID: {test.id.slice(0, 6)}</p>
  </div>
  </div>
  </td>
@@ -171,7 +171,7 @@ export default function LaboratoryPage() {
  <span className="font-black text-xs text-slate-700 ">{test.test_type}</span>
  </div>
  </td>
- <td className="px-8 py-6 text-xs font-bold text-slate-500">
+ <td className="px-8 py-6 text-xs font-bold text-slate-600">
  {new Date(test.created_at).toLocaleDateString()}
  </td>
  <td className="px-8 py-6">
@@ -190,7 +190,7 @@ export default function LaboratoryPage() {
  </td>
  </tr>
  )) : (
- <tr><td colSpan={5} className="text-center py-20 text-slate-500 font-bold uppercase text-[10px] tracking-widest">Aucun test à traiter</td></tr>
+ <tr><td colSpan={5} className="text-center py-20 text-slate-600 font-bold uppercase text-[10px] tracking-widest">Aucun test à traiter</td></tr>
  )}
  </tbody>
  </table>

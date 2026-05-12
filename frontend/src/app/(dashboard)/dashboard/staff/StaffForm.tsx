@@ -67,7 +67,7 @@ export default function StaffForm({ onSuccess, onCancel }: StaffFormProps) {
 
  return (
  <form onSubmit={handleSubmit} className="space-y-6">
- <p className="text-xs text-slate-500 leading-relaxed bg-blue-50 border border-blue-100 rounded-2xl px-4 py-3">
+ <p className="text-xs text-slate-600 leading-relaxed bg-blue-50 border border-blue-100 rounded-2xl px-4 py-3">
  Crée un <strong>vrai compte de connexion</strong> Supabase pour ce membre. Nécessite la variable serveur{" "}
  <code className="text-[11px] bg-white px-1 rounded">SUPABASE_SERVICE_ROLE_KEY</code> dans{" "}
  <code className="text-[11px] bg-white px-1 rounded">frontend/.env.local</code>.
@@ -76,34 +76,34 @@ export default function StaffForm({ onSuccess, onCancel }: StaffFormProps) {
  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
  <div className="space-y-4">
  <div className="space-y-2">
- <label className="text-xs font-bold text-slate-500 ml-1">Prénom</label>
+ <label className="text-xs font-bold text-slate-600 ml-1">Prénom</label>
  <input
  required
  name="first_name"
  value={formData.first_name}
  onChange={handleChange}
- className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500/20 outline-none"
+ className="w-full px-4 py-3 bg-white border-blue-100 shadow-sm border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500/20 outline-none"
  placeholder="Dr. Marc"
  />
  </div>
  <div className="space-y-2">
- <label className="text-xs font-bold text-slate-500 ml-1">Nom</label>
+ <label className="text-xs font-bold text-slate-600 ml-1">Nom</label>
  <input
  required
  name="last_name"
  value={formData.last_name}
  onChange={handleChange}
- className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500/20 outline-none"
+ className="w-full px-4 py-3 bg-white border-blue-100 shadow-sm border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500/20 outline-none"
  placeholder="Dibi"
  />
  </div>
  <div className="space-y-2">
- <label className="text-xs font-bold text-slate-500 ml-1">Rôle</label>
+ <label className="text-xs font-bold text-slate-600 ml-1">Rôle</label>
  <select
  name="role"
  value={formData.role}
  onChange={handleChange}
- className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500/20 outline-none"
+ className="w-full px-4 py-3 bg-white border-blue-100 shadow-sm border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500/20 outline-none"
  >
  <option value="DOCTOR">Médecin / Praticien</option>
  <option value="NURSE">Infirmier(e)</option>
@@ -118,31 +118,31 @@ export default function StaffForm({ onSuccess, onCancel }: StaffFormProps) {
 
  <div className="space-y-4">
  <div className="space-y-2">
- <label className="text-xs font-bold text-slate-500 ml-1 flex items-center gap-2">
+ <label className="text-xs font-bold text-slate-600 ml-1 flex items-center gap-2">
  <Stethoscope className="w-3.5 h-3.5" /> Spécialité
  </label>
  <input
  name="specialization"
  value={formData.specialization}
  onChange={handleChange}
- className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500/20 outline-none"
+ className="w-full px-4 py-3 bg-white border-blue-100 shadow-sm border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500/20 outline-none"
  placeholder="Ex: Cardiologie, pédiatrie…"
  />
  </div>
  <div className="space-y-2">
- <label className="text-xs font-bold text-slate-500 ml-1 flex items-center gap-2">
+ <label className="text-xs font-bold text-slate-600 ml-1 flex items-center gap-2">
  <Phone className="w-3.5 h-3.5" /> Téléphone
  </label>
  <input
  name="phone"
  value={formData.phone}
  onChange={handleChange}
- className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500/20 outline-none"
+ className="w-full px-4 py-3 bg-white border-blue-100 shadow-sm border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500/20 outline-none"
  placeholder="+225 0102030405"
  />
  </div>
  <div className="space-y-2">
- <label className="text-xs font-bold text-slate-500 ml-1 flex items-center gap-2">
+ <label className="text-xs font-bold text-slate-600 ml-1 flex items-center gap-2">
  <Mail className="w-3.5 h-3.5" /> Email de connexion
  </label>
  <input
@@ -151,12 +151,12 @@ export default function StaffForm({ onSuccess, onCancel }: StaffFormProps) {
  name="email"
  value={formData.email}
  onChange={handleChange}
- className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500/20 outline-none"
+ className="w-full px-4 py-3 bg-white border-blue-100 shadow-sm border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500/20 outline-none"
  placeholder="m.dibi@hopital.ci"
  />
  </div>
  <div className="space-y-2">
- <label className="text-xs font-bold text-slate-500 ml-1 flex items-center gap-2">
+ <label className="text-xs font-bold text-slate-600 ml-1 flex items-center gap-2">
  <Lock className="w-3.5 h-3.5" /> Mot de passe temporaire
  </label>
  <input
@@ -167,7 +167,7 @@ export default function StaffForm({ onSuccess, onCancel }: StaffFormProps) {
  onChange={handleChange}
  minLength={8}
  autoComplete="new-password"
- className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500/20 outline-none"
+ className="w-full px-4 py-3 bg-white border-blue-100 shadow-sm border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500/20 outline-none"
  placeholder="Minimum 8 caractères"
  />
  </div>
@@ -178,7 +178,7 @@ export default function StaffForm({ onSuccess, onCancel }: StaffFormProps) {
  <button
  type="button"
  onClick={onCancel}
- className="flex-1 py-4 border border-slate-200 rounded-2xl font-bold text-slate-600 hover:bg-slate-50 transition-all"
+ className="flex-1 py-4 border border-slate-200 rounded-2xl font-bold text-slate-600 hover:bg-white border-blue-100 shadow-sm transition-all"
  >
  Annuler
  </button>

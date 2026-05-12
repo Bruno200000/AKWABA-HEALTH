@@ -216,7 +216,7 @@ export default function DashboardHome() {
  </div>
  </div>
  <div>
- <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">{stat.label}</p>
+ <p className="text-[10px] font-black text-slate-600 uppercase tracking-widest">{stat.label}</p>
  <h3 className="text-3xl font-black mt-1 tracking-tight">{stat.value}</h3>
  </div>
  </motion.div>
@@ -230,7 +230,7 @@ export default function DashboardHome() {
  <div className="flex justify-between items-center mb-10">
  <div>
  <h3 className="font-black text-xl tracking-tight">Activité Médicale</h3>
- <p className="text-xs text-slate-500 font-bold mt-1">Nombre de consultations par mois</p>
+ <p className="text-xs text-slate-600 font-bold mt-1">Nombre de consultations par mois</p>
  </div>
  </div>
  <div className="h-64 flex items-end justify-between gap-4 pt-10">
@@ -250,7 +250,7 @@ export default function DashboardHome() {
  {val}
  </div>
  </div>
- <span className="text-[9px] font-black text-slate-400 uppercase">{i + 1}</span>
+ <span className="text-[9px] font-black text-slate-600 uppercase">{i + 1}</span>
  </div>
  ))}
  </div>
@@ -260,7 +260,7 @@ export default function DashboardHome() {
  {/* Performance Card */}
  <div className="bg-white p-6 rounded-3xl border border-blue-100/90 shadow-sm">
  <div className="flex justify-between items-center mb-6">
- <h3 className="font-black text-sm uppercase tracking-widest text-slate-500 flex items-center gap-2">
+ <h3 className="font-black text-sm uppercase tracking-widest text-slate-600 flex items-center gap-2">
  <Target className="w-4 h-4 text-blue-600" /> Top Praticiens
  </h3>
  <MoreVertical className="w-4 h-4 text-slate-300" />
@@ -282,7 +282,7 @@ export default function DashboardHome() {
  </div>
  ))}
  {staffPerformance.length === 0 && (
- <p className="text-xs text-slate-400 text-center py-4">Aucune donnée de performance</p>
+ <p className="text-xs text-slate-600 text-center py-4">Aucune donnée de performance</p>
  )}
  </div>
  </div>
@@ -347,7 +347,7 @@ export default function DashboardHome() {
  {/* Recent Appointments */}
  <div className="bg-white p-8 rounded-3xl border border-blue-100/90 shadow-sm">
  <div className="flex justify-between items-center mb-8">
- <h3 className="font-black text-sm uppercase tracking-widest text-slate-500">Rendez-vous</h3>
+ <h3 className="font-black text-sm uppercase tracking-widest text-slate-600">Rendez-vous</h3>
  <Link href="/dashboard/appointments" className="p-2 bg-blue-50 rounded-xl hover:bg-blue-100 text-blue-700 transition-all">
  <ChevronRight className="w-4 h-4" />
  </Link>
@@ -360,7 +360,7 @@ export default function DashboardHome() {
  </div>
  <div className="flex-1 min-w-0">
  <p className="text-sm font-black text-slate-900 truncate">{app.patients?.first_name} {app.patients?.last_name}</p>
- <p className="text-[10px] font-black text-slate-500 uppercase tracking-tight mt-0.5">{app.reason || "Consultation Générale"}</p>
+ <p className="text-[10px] font-black text-slate-600 uppercase tracking-tight mt-0.5">{app.reason || "Consultation Générale"}</p>
  </div>
  <div className="text-right shrink-0">
  <div className="flex items-center gap-1 text-[10px] font-black text-blue-700 bg-blue-50 px-2 py-1 rounded-lg border border-blue-100">
@@ -369,7 +369,7 @@ export default function DashboardHome() {
  </div>
  </div>
  )) : (
- <p className="text-xs text-slate-400 font-bold text-center py-10">Aucun rendez-vous récent</p>
+ <p className="text-xs text-slate-600 font-bold text-center py-10">Aucun rendez-vous récent</p>
  )}
  </div>
  </div>

@@ -77,31 +77,31 @@ export default function RemotePage() {
  };
 
  return (
- <div className="min-h-screen bg-[#020617] text-white p-6 pb-32 space-y-12 overflow-hidden relative">
+ <div className="min-h-screen bg-[#f0f7ff] text-slate-900 p-6 pb-32 space-y-12 overflow-hidden relative">
  {/* Background Glows */}
  <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-blue-600/10 blur-[120px] rounded-full -mr-64 -mt-64" />
  <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-indigo-600/10 blur-[120px] rounded-full -ml-64 -mb-64" />
 
  {/* Header Panel */}
- <div className="flex justify-between items-center bg-white/5 border border-white/10 p-6 rounded-[32px] backdrop-blur-2xl">
+ <div className="flex justify-between items-center bg-white/80 border border-blue-100 p-6 rounded-[32px] backdrop-blur-2xl shadow-xl shadow-blue-500/5">
  <div className="flex items-center gap-6">
  <div className="relative">
  <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-700 flex items-center justify-center shadow-2xl shadow-blue-500/20">
  <Cpu className="w-7 h-7 text-white" />
+ <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-emerald-500 rounded-full border-4 border-[#f0f7ff] animate-pulse" />
  </div>
- <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-emerald-500 rounded-full border-4 border-[#020617] animate-pulse" />
  </div>
  <div>
  <h2 className="text-xl font-black tracking-tighter">AKWABA OS <span className="text-blue-500">v4.0</span></h2>
  <div className="flex items-center gap-2 mt-1">
  <div className="w-2 h-2 bg-emerald-500 rounded-full" />
- <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Core Engine : Active</p>
+ <p className="text-[10px] font-black text-slate-600 uppercase tracking-[0.2em]">Core Engine : Active</p>
  </div>
  </div>
  </div>
  <div className="flex gap-3">
- <button className="w-12 h-12 bg-white/5 rounded-2xl border border-white/10 flex items-center justify-center hover:bg-white/10 transition-all group">
- <Radio className="w-5 h-5 text-slate-400 group-hover:text-blue-400" />
+ <button className="w-12 h-12 bg-white rounded-2xl border border-blue-100 flex items-center justify-center hover:bg-blue-50 transition-all group">
+ <Radio className="w-5 h-5 text-slate-600 group-hover:text-blue-400" />
  </button>
  <button className="w-12 h-12 bg-red-600/10 rounded-2xl border border-red-600/20 flex items-center justify-center hover:bg-red-600/20 transition-all group">
  <Power className="w-5 h-5 text-red-500" />
@@ -113,31 +113,31 @@ export default function RemotePage() {
  <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
  <div className="lg:col-span-3 grid grid-cols-1 md:grid-cols-3 gap-6">
  {[
- { label: "Flux Patients", value: stats.activePatients, icon: Users, color: "text-blue-400", trend: "+12%" },
- { label: "Charge Système", value: `${stats.systemLoad}%`, icon: Activity, color: "text-emerald-400", trend: "Stable" },
- { label: "Revenu Live", value: stats.dailyRevenue.toLocaleString(), icon: TrendingUp, color: "text-amber-400", trend: "+5k" },
+ { label: "Flux Patients", value: stats.activePatients, icon: Users, color: "text-blue-600", trend: "+12%" },
+ { label: "Charge Système", value: `${stats.systemLoad}%`, icon: Activity, color: "text-emerald-600", trend: "Stable" },
+ { label: "Revenu Live", value: stats.dailyRevenue.toLocaleString(), icon: TrendingUp, color: "text-amber-600", trend: "+5k" },
  ].map((stat, i) => (
  <motion.div
  key={stat.label}
  initial={{ opacity: 0, y: 20 }}
  animate={{ opacity: 1, y: 0 }}
  transition={{ delay: i * 0.1 }}
- className="p-8 bg-white/5 border border-white/5 rounded-[40px] relative overflow-hidden group"
+ className="p-8 bg-white border border-blue-100 rounded-[40px] relative overflow-hidden group shadow-sm"
  >
  <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity">
  <stat.icon className="w-16 h-16" />
  </div>
- <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-4">{stat.label}</p>
+ <p className="text-[10px] font-black text-slate-600 uppercase tracking-widest mb-4">{stat.label}</p>
  <div className="flex items-end gap-3">
  <h3 className={cn("text-4xl font-black tracking-tight", stat.color)}>{stat.value}</h3>
- <span className="text-[10px] font-bold text-slate-500 mb-2">{stat.trend}</span>
+ <span className="text-[10px] font-bold text-slate-600 mb-2">{stat.trend}</span>
  </div>
  </motion.div>
  ))}
  </div>
 
  {/* Emergency Panel */}
- <div className="bg-red-600 rounded-[40px] p-8 shadow-2xl shadow-red-600/20 flex flex-col justify-between">
+ <div className="bg-red-600 rounded-[40px] p-8 shadow-2xl shadow-red-600/20 flex flex-col justify-between text-white">
  <div>
  <AlertCircle className="w-10 h-10 text-white/50 mb-6" />
  <h3 className="text-2xl font-black tracking-tight leading-tight">Urgences<br />Critiques</h3>
@@ -154,7 +154,7 @@ export default function RemotePage() {
  {/* Operations Matrix */}
  <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
  <div className="space-y-6">
- <h3 className="text-xs font-black uppercase tracking-[0.3em] text-slate-500 ml-2">Console d'Opérations</h3>
+ <h3 className="text-xs font-black uppercase tracking-[0.3em] text-slate-600 ml-2">Console d'Opérations</h3>
  <div className="grid grid-cols-1 gap-4">
  {[
  { label: "Diffusion Alerte", sub: "Notification push à tout le staff", icon: Bell, color: "bg-blue-600" },
@@ -164,15 +164,15 @@ export default function RemotePage() {
  <motion.button
  key={action.label}
  whileHover={{ x: 10 }}
- className="w-full flex items-center justify-between p-6 bg-white/5 border border-white/5 rounded-[32px] hover:bg-white/10 transition-all text-left"
+ className="w-full flex items-center justify-between p-6 bg-white border border-blue-100 rounded-[32px] hover:shadow-lg transition-all text-left"
  >
  <div className="flex items-center gap-6">
  <div className={cn("w-14 h-14 rounded-2xl flex items-center justify-center shadow-lg", action.color)}>
- <action.icon className="w-7 h-7" />
+ <action.icon className="w-7 h-7 text-white" />
  </div>
  <div>
  <p className="font-black text-sm">{action.label}</p>
- <p className="text-[10px] font-medium text-slate-500 mt-1">{action.sub}</p>
+ <p className="text-[10px] font-medium text-slate-600 mt-1">{action.sub}</p>
  </div>
  </div>
  <ChevronRight className="w-5 h-5 text-slate-600" />
@@ -183,22 +183,22 @@ export default function RemotePage() {
 
  {/* Active Matrix Log */}
  <div className="space-y-6">
- <h3 className="text-xs font-black uppercase tracking-[0.3em] text-slate-500 ml-2">Log Système Live</h3>
- <div className="bg-white/5 border border-white/5 rounded-[40px] p-8 h-[340px] overflow-hidden relative">
+ <h3 className="text-xs font-black uppercase tracking-[0.3em] text-slate-600 ml-2">Log Système Live</h3>
+ <div className="bg-white border border-blue-100 rounded-[40px] p-8 h-[340px] overflow-hidden relative shadow-sm">
  <div className="space-y-6">
  {notifications.map((n) => (
  <div key={n.id} className="flex gap-4">
  <div className={cn("w-2 h-2 rounded-full mt-1.5 shrink-0", n.type === 'urgent' ? 'bg-red-500' : 'bg-amber-500')} />
  <div>
  <p className="text-sm font-bold leading-tight">{n.text}</p>
- <p className="text-[10px] font-medium text-slate-500 mt-1">Maintenant • Terminal 04</p>
+ <p className="text-[10px] font-medium text-slate-600 mt-1">Maintenant • Terminal 04</p>
  </div>
  </div>
  ))}
  </div>
  {/* Terminal Overlay */}
- <div className="absolute bottom-0 left-0 right-0 p-8 bg-gradient-to-t from-[#020617] to-transparent pt-20">
- <div className="flex items-center gap-4 text-[10px] font-mono text-emerald-500/50">
+ <div className="absolute bottom-0 left-0 right-0 p-8 bg-gradient-to-t from-white to-transparent pt-20">
+ <div className="flex items-center gap-4 text-[10px] font-mono text-emerald-600/50">
  <span>&gt; SYSLOG_READY</span>
  <span className="animate-pulse">_</span>
  </div>
@@ -208,10 +208,10 @@ export default function RemotePage() {
  </div>
 
  {/* Bottom Dock */}
- <div className="fixed bottom-10 left-1/2 -translate-x-1/2 flex items-center gap-4 bg-white/10 backdrop-blur-3xl p-3 rounded-[32px] border border-white/10 shadow-2xl">
+ <div className="fixed bottom-10 left-1/2 -translate-x-1/2 flex items-center gap-4 bg-white/80 backdrop-blur-3xl p-3 rounded-[32px] border border-blue-100 shadow-2xl">
  {[MessageSquare, ShieldCheck, Zap, Globe].map((Icon, i) => (
- <button key={i} className="w-14 h-14 bg-white/5 hover:bg-blue-600 rounded-2xl flex items-center justify-center transition-all group">
- <Icon className="w-6 h-6 text-slate-400 group-hover:text-white" />
+ <button key={i} className="w-14 h-14 bg-white hover:bg-blue-600 rounded-2xl flex items-center justify-center transition-all group border border-blue-50">
+ <Icon className="w-6 h-6 text-slate-600 group-hover:text-white" />
  </button>
  ))}
  </div>

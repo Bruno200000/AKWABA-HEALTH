@@ -63,15 +63,15 @@ export default function PaymentModal({ isOpen, onClose, onSuccess, invoice }: Pa
  exit={{ opacity: 0, x: -20 }}
  className="space-y-6"
  >
- <div className="bg-slate-50 /50 p-6 rounded-2xl text-center border border-slate-100 ">
- <p className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-1">Montant à régler</p>
+ <div className="bg-white border-blue-100 shadow-sm /50 p-6 rounded-2xl text-center border border-slate-100 ">
+ <p className="text-xs font-bold text-slate-600 uppercase tracking-widest mb-1">Montant à régler</p>
  <h2 className="text-3xl font-black text-slate-900 ">
  {Number(invoice?.total_amount - (invoice?.paid_amount || 0)).toLocaleString()} <span className="text-sm">FCFA</span>
  </h2>
  </div>
 
  <div className="space-y-3">
- <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Choisir le mode de paiement</p>
+ <p className="text-[10px] font-black text-slate-600 uppercase tracking-widest px-1">Choisir le mode de paiement</p>
  <div className="grid grid-cols-2 gap-3">
  {methods.map((m) => (
  <button
@@ -95,15 +95,15 @@ export default function PaymentModal({ isOpen, onClose, onSuccess, invoice }: Pa
 
  {method !== "CASH" && (
  <div className="space-y-2">
- <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Numéro de téléphone</label>
+ <label className="text-[10px] font-black text-slate-600 uppercase tracking-widest px-1">Numéro de téléphone</label>
  <div className="relative">
- <Smartphone className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+ <Smartphone className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-600" />
  <input 
  type="tel" 
  value={phoneNumber}
  onChange={(e) => setPhoneNumber(e.target.value)}
  placeholder="07 00 00 00 00"
- className="w-full pl-12 pr-4 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500/20 outline-none font-bold"
+ className="w-full pl-12 pr-4 py-4 bg-white border-blue-100 shadow-sm border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500/20 outline-none font-bold"
  />
  </div>
  </div>
@@ -133,7 +133,7 @@ export default function PaymentModal({ isOpen, onClose, onSuccess, invoice }: Pa
  </div>
  <div>
  <h3 className="text-xl font-black mb-2">Demande envoyée</h3>
- <p className="text-slate-500 text-sm">Veuillez valider la transaction sur votre téléphone en saisissant votre code secret.</p>
+ <p className="text-slate-600 text-sm">Veuillez valider la transaction sur votre téléphone en saisissant votre code secret.</p>
  </div>
  </motion.div>
  )}
@@ -150,7 +150,7 @@ export default function PaymentModal({ isOpen, onClose, onSuccess, invoice }: Pa
  </div>
  <div>
  <h3 className="text-2xl font-black text-slate-900 ">Paiement Réussi !</h3>
- <p className="text-slate-500 text-sm mt-2">La facture #{invoice.id.slice(0,8)} a été mise à jour. Un reçu a été généré.</p>
+ <p className="text-slate-600 text-sm mt-2">La facture #{invoice.id.slice(0,8)} a été mise à jour. Un reçu a été généré.</p>
  </div>
  <div className="pt-4 flex gap-3">
  <button onClick={onSuccess} className="flex-1 py-4 bg-slate-900 text-white rounded-2xl font-bold">Fermer</button>

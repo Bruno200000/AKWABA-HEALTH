@@ -198,11 +198,11 @@ export default function ConsultationForm({ patientId: initialPatientId, onSucces
  <div key={s.step} className="flex flex-col items-center gap-2">
  <div className={cn(
  "w-10 h-10 rounded-full flex items-center justify-center transition-all",
- activeStep >= s.step ? "bg-blue-600 text-white shadow-lg shadow-blue-200" : "bg-slate-100 text-slate-400"
+ activeStep >= s.step ? "bg-blue-600 text-white shadow-lg shadow-blue-200" : "bg-slate-100 text-slate-600"
  )}>
  <s.icon className="w-5 h-5" />
  </div>
- <span className={cn("text-[10px] font-black uppercase tracking-widest", activeStep >= s.step ? "text-blue-600" : "text-slate-400")}>
+ <span className={cn("text-[10px] font-black uppercase tracking-widest", activeStep >= s.step ? "text-blue-600" : "text-slate-600")}>
  {s.label}
  </span>
  </div>
@@ -213,15 +213,15 @@ export default function ConsultationForm({ patientId: initialPatientId, onSucces
  {activeStep === 0 && (
  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6">
  <div className="space-y-2">
- <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Sélectionner un Patient</label>
+ <label className="text-[10px] font-black text-slate-600 uppercase tracking-widest ml-1">Sélectionner un Patient</label>
  <div className="relative">
- <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+ <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-600" />
  <input 
  type="text" 
  value={patientSearch}
  onChange={(e) => setPatientSearch(e.target.value)}
  placeholder="Rechercher par nom..."
- className="w-full pl-12 pr-4 py-4 bg-slate-50 border border-slate-200 rounded-3xl focus:ring-2 focus:ring-blue-500/20 outline-none font-bold"
+ className="w-full pl-12 pr-4 py-4 bg-white border-blue-100 shadow-sm border border-slate-200 rounded-3xl focus:ring-2 focus:ring-blue-500/20 outline-none font-bold"
  />
  </div>
  
@@ -232,14 +232,14 @@ export default function ConsultationForm({ patientId: initialPatientId, onSucces
  key={p.id}
  type="button"
  onClick={() => { setPatientId(p.id); setActiveStep(1); }}
- className="w-full flex items-center gap-4 px-6 py-4 hover:bg-slate-50 text-left transition-colors"
+ className="w-full flex items-center gap-4 px-6 py-4 hover:bg-white border-blue-100 shadow-sm text-left transition-colors"
  >
  <div className="w-10 h-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center font-black">
  {p.first_name[0]}{p.last_name[0]}
  </div>
  <div>
  <p className="font-bold text-sm">{p.first_name} {p.last_name}</p>
- <p className="text-[10px] text-slate-400 font-bold uppercase">ID: {p.id.slice(0, 8)}</p>
+ <p className="text-[10px] text-slate-600 font-bold uppercase">ID: {p.id.slice(0, 8)}</p>
  </div>
  </button>
  ))}
@@ -253,74 +253,74 @@ export default function ConsultationForm({ patientId: initialPatientId, onSucces
  <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="space-y-6">
  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
  <div className="space-y-2">
- <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest flex items-center gap-1">
+ <label className="text-[10px] font-black text-slate-600 uppercase tracking-widest flex items-center gap-1">
  <Thermometer className="w-3 h-3" /> Température (°C)
  </label>
  <input 
  type="number" step="0.1" 
  value={formData.vital_signs.temp} 
  onChange={(e) => setFormData({...formData, vital_signs: {...formData.vital_signs, temp: e.target.value}})}
- className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500/20 outline-none font-bold" 
+ className="w-full px-4 py-3 bg-white border-blue-100 shadow-sm border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500/20 outline-none font-bold" 
  placeholder="37.0"
  />
  </div>
  <div className="space-y-2">
- <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest flex items-center gap-1">
+ <label className="text-[10px] font-black text-slate-600 uppercase tracking-widest flex items-center gap-1">
  <Scale className="w-3 h-3" /> Poids (kg)
  </label>
  <input 
  type="number" step="0.1" 
  value={formData.vital_signs.weight} 
  onChange={(e) => setFormData({...formData, vital_signs: {...formData.vital_signs, weight: e.target.value}})}
- className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500/20 outline-none font-bold" 
+ className="w-full px-4 py-3 bg-white border-blue-100 shadow-sm border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500/20 outline-none font-bold" 
  placeholder="70.0"
  />
  </div>
  <div className="space-y-2">
- <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest flex items-center gap-1">
+ <label className="text-[10px] font-black text-slate-600 uppercase tracking-widest flex items-center gap-1">
  <Ruler className="w-3 h-3" /> Taille (cm)
  </label>
  <input 
  type="number" 
  value={formData.vital_signs.height} 
  onChange={(e) => setFormData({...formData, vital_signs: {...formData.vital_signs, height: e.target.value}})}
- className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500/20 outline-none font-bold" 
+ className="w-full px-4 py-3 bg-white border-blue-100 shadow-sm border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500/20 outline-none font-bold" 
  placeholder="175"
  />
  </div>
  <div className="space-y-2">
- <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest flex items-center gap-1">
+ <label className="text-[10px] font-black text-slate-600 uppercase tracking-widest flex items-center gap-1">
  <Droplet className="w-3 h-3" /> TA Systolique
  </label>
  <input 
  type="number" 
  value={formData.vital_signs.bp_systolic} 
  onChange={(e) => setFormData({...formData, vital_signs: {...formData.vital_signs, bp_systolic: e.target.value}})}
- className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500/20 outline-none font-bold" 
+ className="w-full px-4 py-3 bg-white border-blue-100 shadow-sm border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500/20 outline-none font-bold" 
  placeholder="120"
  />
  </div>
  <div className="space-y-2">
- <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest flex items-center gap-1">
+ <label className="text-[10px] font-black text-slate-600 uppercase tracking-widest flex items-center gap-1">
  TA Diastolique
  </label>
  <input 
  type="number" 
  value={formData.vital_signs.bp_diastolic} 
  onChange={(e) => setFormData({...formData, vital_signs: {...formData.vital_signs, bp_diastolic: e.target.value}})}
- className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500/20 outline-none font-bold" 
+ className="w-full px-4 py-3 bg-white border-blue-100 shadow-sm border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500/20 outline-none font-bold" 
  placeholder="80"
  />
  </div>
  <div className="space-y-2">
- <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest flex items-center gap-1">
+ <label className="text-[10px] font-black text-slate-600 uppercase tracking-widest flex items-center gap-1">
  Fréq. Cardiaque
  </label>
  <input 
  type="number" 
  value={formData.vital_signs.heart_rate} 
  onChange={(e) => setFormData({...formData, vital_signs: {...formData.vital_signs, heart_rate: e.target.value}})}
- className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500/20 outline-none font-bold" 
+ className="w-full px-4 py-3 bg-white border-blue-100 shadow-sm border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500/20 outline-none font-bold" 
  placeholder="72"
  />
  </div>
@@ -336,36 +336,36 @@ export default function ConsultationForm({ patientId: initialPatientId, onSucces
  {activeStep === 2 && (
  <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="space-y-6">
  <div className="space-y-2">
- <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Symptômes & Motifs</label>
+ <label className="text-[10px] font-black text-slate-600 uppercase tracking-widest ml-1">Symptômes & Motifs</label>
  <textarea 
  required
  value={formData.symptoms}
  onChange={(e) => setFormData({...formData, symptoms: e.target.value})}
- className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500/20 outline-none min-h-[100px] text-sm" 
+ className="w-full px-4 py-3 bg-white border-blue-100 shadow-sm border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500/20 outline-none min-h-[100px] text-sm" 
  placeholder="Décrivez les symptômes rapportés par le patient..."
  />
  </div>
  <div className="space-y-2">
- <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Diagnostic Médical</label>
+ <label className="text-[10px] font-black text-slate-600 uppercase tracking-widest ml-1">Diagnostic Médical</label>
  <textarea 
  required
  value={formData.diagnosis}
  onChange={(e) => setFormData({...formData, diagnosis: e.target.value})}
- className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500/20 outline-none min-h-[100px] text-sm font-bold" 
+ className="w-full px-4 py-3 bg-white border-blue-100 shadow-sm border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500/20 outline-none min-h-[100px] text-sm font-bold" 
  placeholder="Saisissez le diagnostic final..."
  />
  </div>
  <div className="space-y-2">
- <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Notes Privées</label>
+ <label className="text-[10px] font-black text-slate-600 uppercase tracking-widest ml-1">Notes Privées</label>
  <textarea 
  value={formData.notes_private}
  onChange={(e) => setFormData({...formData, notes_private: e.target.value})}
- className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500/20 outline-none min-h-[80px] text-sm italic" 
+ className="w-full px-4 py-3 bg-white border-blue-100 shadow-sm border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500/20 outline-none min-h-[80px] text-sm italic" 
  placeholder="Notes pour votre suivi personnel..."
  />
  </div>
  <div className="flex gap-4">
- <button type="button" onClick={() => setActiveStep(1)} className="flex-1 py-4 border border-slate-200 rounded-2xl font-bold text-slate-600 hover:bg-slate-50 transition-all">
+ <button type="button" onClick={() => setActiveStep(1)} className="flex-1 py-4 border border-slate-200 rounded-2xl font-bold text-slate-600 hover:bg-white border-blue-100 shadow-sm transition-all">
  Précédent
  </button>
  <button type="button" onClick={() => setActiveStep(3)} className="flex-[2] py-4 bg-blue-600 text-white rounded-2xl font-bold shadow-lg shadow-blue-200 hover:bg-blue-700 transition-all">
@@ -379,7 +379,7 @@ export default function ConsultationForm({ patientId: initialPatientId, onSucces
  <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="space-y-6">
  <div className="relative">
  <div className="flex items-center gap-3 px-4 py-3 bg-slate-100 rounded-2xl focus-within:ring-2 focus-within:ring-blue-500/20 transition-all">
- <Search className="w-5 h-5 text-slate-400" />
+ <Search className="w-5 h-5 text-slate-600" />
  <input 
  type="text" 
  value={searchQuery}
@@ -396,11 +396,11 @@ export default function ConsultationForm({ patientId: initialPatientId, onSucces
  key={m.id}
  type="button"
  onClick={() => addMedicineToPrescription(m)}
- className="w-full flex items-center justify-between px-4 py-3 hover:bg-slate-50 text-left transition-colors"
+ className="w-full flex items-center justify-between px-4 py-3 hover:bg-white border-blue-100 shadow-sm text-left transition-colors"
  >
  <div>
  <p className="text-sm font-bold">{m.name}</p>
- <p className="text-[10px] text-slate-500 uppercase">{m.brand} • {m.category}</p>
+ <p className="text-[10px] text-slate-600 uppercase">{m.brand} • {m.category}</p>
  </div>
  <Plus className="w-4 h-4 text-blue-500" />
  </button>
@@ -415,7 +415,7 @@ export default function ConsultationForm({ patientId: initialPatientId, onSucces
  <div className="flex justify-between items-start">
  <div>
  <h5 className="text-sm font-black text-blue-600">{item.name}</h5>
- <p className="text-[10px] text-slate-400 font-bold uppercase">{item.brand}</p>
+ <p className="text-[10px] text-slate-600 font-bold uppercase">{item.brand}</p>
  </div>
  <button type="button" onClick={() => removeMedicine(item.id)} className="p-2 text-slate-300 hover:text-red-500 transition-colors">
  <Trash2 className="w-4 h-4" />
@@ -423,47 +423,47 @@ export default function ConsultationForm({ patientId: initialPatientId, onSucces
  </div>
  <div className="grid grid-cols-2 gap-3">
  <div className="space-y-1">
- <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Posologie</label>
+ <label className="text-[9px] font-black text-slate-600 uppercase tracking-widest">Posologie</label>
  <input 
  required
  value={item.dosage}
  onChange={(e) => updateMedicine(item.id, "dosage", e.target.value)}
- className="w-full px-3 py-2 bg-slate-50 border border-slate-100 rounded-xl text-xs outline-none focus:ring-2 focus:ring-blue-500/10" 
+ className="w-full px-3 py-2 bg-white border-blue-100 shadow-sm border border-slate-100 rounded-xl text-xs outline-none focus:ring-2 focus:ring-blue-500/10" 
  placeholder="Ex: 1 matin, 1 soir"
  />
  </div>
  <div className="space-y-1">
- <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Durée</label>
+ <label className="text-[9px] font-black text-slate-600 uppercase tracking-widest">Durée</label>
  <input 
  required
  value={item.duration}
  onChange={(e) => updateMedicine(item.id, "duration", e.target.value)}
- className="w-full px-3 py-2 bg-slate-50 border border-slate-100 rounded-xl text-xs outline-none focus:ring-2 focus:ring-blue-500/10" 
+ className="w-full px-3 py-2 bg-white border-blue-100 shadow-sm border border-slate-100 rounded-xl text-xs outline-none focus:ring-2 focus:ring-blue-500/10" 
  placeholder="Ex: 5 jours"
  />
  </div>
  </div>
  <div className="space-y-1">
- <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Instructions spéciales</label>
+ <label className="text-[9px] font-black text-slate-600 uppercase tracking-widest">Instructions spéciales</label>
  <input 
  value={item.instructions}
  onChange={(e) => updateMedicine(item.id, "instructions", e.target.value)}
- className="w-full px-3 py-2 bg-slate-50 border border-slate-100 rounded-xl text-xs outline-none focus:ring-2 focus:ring-blue-500/10" 
+ className="w-full px-3 py-2 bg-white border-blue-100 shadow-sm border border-slate-100 rounded-xl text-xs outline-none focus:ring-2 focus:ring-blue-500/10" 
  placeholder="Ex: Après le repas"
  />
  </div>
  </div>
  ))}
  {formData.prescription.length === 0 && (
- <div className="text-center py-8 bg-slate-50 /50 rounded-2xl border-2 border-dashed border-slate-200 ">
+ <div className="text-center py-8 bg-white border-blue-100 shadow-sm /50 rounded-2xl border-2 border-dashed border-slate-200 ">
  <Pill className="w-8 h-8 text-slate-300 mx-auto mb-2" />
- <p className="text-xs text-slate-400 font-bold">Aucun médicament ajouté</p>
+ <p className="text-xs text-slate-600 font-bold">Aucun médicament ajouté</p>
  </div>
  )}
  </div>
 
  <div className="flex gap-4 pt-4">
- <button type="button" onClick={() => setActiveStep(2)} className="flex-1 py-4 border border-slate-200 rounded-2xl font-bold text-slate-600 hover:bg-slate-50 transition-all">
+ <button type="button" onClick={() => setActiveStep(2)} className="flex-1 py-4 border border-slate-200 rounded-2xl font-bold text-slate-600 hover:bg-white border-blue-100 shadow-sm transition-all">
  Précédent
  </button>
  <button type="button" onClick={() => setActiveStep(4)} className="flex-[2] py-4 bg-blue-600 text-white rounded-2xl font-bold shadow-lg shadow-blue-200 hover:bg-blue-700 transition-all">
@@ -475,11 +475,11 @@ export default function ConsultationForm({ patientId: initialPatientId, onSucces
 
  {activeStep === 4 && (
  <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="space-y-8">
- <div className="bg-slate-50 /50 p-8 rounded-[40px] border border-slate-100 space-y-6">
+ <div className="bg-white border-blue-100 shadow-sm /50 p-8 rounded-[40px] border border-slate-100 space-y-6">
  <div className="flex justify-between items-start">
  <div>
  <h4 className="text-lg font-black tracking-tight">Récapitulatif & Signature</h4>
- <p className="text-xs text-slate-500 font-medium mt-1">Veuillez signer pour valider la consultation.</p>
+ <p className="text-xs text-slate-600 font-medium mt-1">Veuillez signer pour valider la consultation.</p>
  </div>
  <div className="w-16 h-16 bg-white rounded-2xl border border-slate-100 p-2 flex items-center justify-center">
  <QrCode className="w-full h-full text-slate-200" />
@@ -488,31 +488,31 @@ export default function ConsultationForm({ patientId: initialPatientId, onSucces
 
  <div className="space-y-4">
  <div className="flex justify-between text-xs">
- <span className="font-bold text-slate-400 uppercase">Diagnostic</span>
+ <span className="font-bold text-slate-600 uppercase">Diagnostic</span>
  <span className="font-black text-slate-900 truncate max-w-[200px]">{formData.diagnosis}</span>
  </div>
  <div className="flex justify-between text-xs">
- <span className="font-bold text-slate-400 uppercase">Ordonnance</span>
+ <span className="font-bold text-slate-600 uppercase">Ordonnance</span>
  <span className="font-black text-slate-900 ">{formData.prescription.length} Médicament(s)</span>
  </div>
  </div>
 
  <div className="pt-6 border-t border-slate-200 ">
- <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest block mb-4 text-center">Signature du Praticien</label>
+ <label className="text-[10px] font-black text-slate-600 uppercase tracking-widest block mb-4 text-center">Signature du Praticien</label>
  <div className="h-40 bg-white rounded-3xl border-2 border-dashed border-slate-200 relative group cursor-crosshair">
  <div className="absolute inset-0 flex items-center justify-center opacity-20 group-hover:opacity-10 transition-opacity">
  <FileText className="w-12 h-12" />
  </div>
  {/* Simuler une signature avec un texte manuscrit si "signé" */}
  <div className="absolute bottom-4 left-0 right-0 text-center">
- <p className="text-[10px] text-slate-400 font-medium italic">Signez électroniquement ici</p>
+ <p className="text-[10px] text-slate-600 font-medium italic">Signez électroniquement ici</p>
  </div>
  </div>
  </div>
  </div>
 
  <div className="flex gap-4">
- <button type="button" onClick={() => setActiveStep(3)} className="flex-1 py-4 border border-slate-200 rounded-2xl font-bold text-slate-600 hover:bg-slate-50 transition-all">
+ <button type="button" onClick={() => setActiveStep(3)} className="flex-1 py-4 border border-slate-200 rounded-2xl font-bold text-slate-600 hover:bg-white border-blue-100 shadow-sm transition-all">
  Précédent
  </button>
  <button disabled={isLoading} type="submit" className="flex-[2] py-4 bg-blue-600 text-white rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl shadow-blue-200 hover:bg-blue-700 transition-all flex items-center justify-center gap-2">

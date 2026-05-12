@@ -102,7 +102,7 @@ export default function AppointmentsPage() {
  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
  <div>
  <h1 className="text-3xl font-black text-slate-900 tracking-tight">Rendez-vous</h1>
- <p className="text-slate-500 font-medium">Planifiez et gérez le flux de patients de votre établissement.</p>
+ <p className="text-slate-600 font-medium">Planifiez et gérez le flux de patients de votre établissement.</p>
  </div>
  <button 
  onClick={() => setIsModalOpen(true)}
@@ -122,7 +122,7 @@ export default function AppointmentsPage() {
  onClick={() => setActiveTab(tab)}
  className={cn(
  "pb-4 px-2 text-[10px] font-black uppercase tracking-widest transition-all relative",
- activeTab === tab ? "text-blue-600" : "text-slate-400 hover:text-slate-600"
+ activeTab === tab ? "text-blue-600" : "text-slate-600 hover:text-slate-600"
  )}
  >
  {tab === 'today' ? 'Aujourd\'hui' : tab === 'upcoming' ? 'À venir' : 'Historique'}
@@ -134,7 +134,7 @@ export default function AppointmentsPage() {
  {/* Appointment List */}
  <div className="space-y-4">
  {isLoading ? (
- <div className="text-center py-20 text-slate-400 font-black uppercase text-[10px] tracking-widest">Sychronisation du calendrier...</div>
+ <div className="text-center py-20 text-slate-600 font-black uppercase text-[10px] tracking-widest">Sychronisation du calendrier...</div>
  ) : tabAppointments.map((apt, index) => (
  <motion.div 
  key={apt.id}
@@ -144,14 +144,14 @@ export default function AppointmentsPage() {
  className="bg-white p-6 rounded-[32px] border border-slate-100 shadow-sm flex items-center justify-between group hover:shadow-xl hover:-translate-y-1 transition-all"
  >
  <div className="flex items-center gap-6">
- <div className="flex flex-col items-center justify-center w-16 h-16 bg-slate-50 rounded-3xl border border-slate-100 ">
- <p className="text-[10px] font-black text-slate-400 uppercase">{new Date(getAppointmentStart(apt)).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
+ <div className="flex flex-col items-center justify-center w-16 h-16 bg-white border-blue-100 shadow-sm rounded-3xl border border-slate-100 ">
+ <p className="text-[10px] font-black text-slate-600 uppercase">{new Date(getAppointmentStart(apt)).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
  </div>
  <div>
  <h4 className="font-black text-slate-900 tracking-tight">{apt.patients?.first_name} {apt.patients?.last_name}</h4>
  <div className="flex items-center gap-2 mt-1">
  <Stethoscope className="w-3 h-3 text-blue-500" />
- <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+ <p className="text-[10px] font-bold text-slate-600 uppercase tracking-widest">
  Dr. {apt.doctor?.last_name} • {apt.doctor?.specialization || "—"}
  </p>
  </div>
@@ -181,9 +181,9 @@ export default function AppointmentsPage() {
  </motion.div>
  ))}
  {(!isLoading && tabAppointments.length === 0) && (
- <div className="text-center py-20 bg-slate-50 /50 rounded-[40px] border-2 border-dashed border-slate-100 ">
+ <div className="text-center py-20 bg-white border-blue-100 shadow-sm /50 rounded-[40px] border-2 border-dashed border-slate-100 ">
  <CalendarIcon className="w-12 h-12 text-slate-200 mx-auto mb-4" />
- <p className="text-xs font-black text-slate-400 uppercase tracking-widest">Aucun rendez-vous</p>
+ <p className="text-xs font-black text-slate-600 uppercase tracking-widest">Aucun rendez-vous</p>
  </div>
  )}
  </div>
@@ -197,23 +197,23 @@ export default function AppointmentsPage() {
  <div className="space-y-8">
  <div>
  <p className="text-4xl font-black">{todayApts.length}</p>
- <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mt-1">Patients Attendus (J)</p>
+ <p className="text-[10px] font-black text-slate-600 uppercase tracking-widest mt-1">Patients Attendus (J)</p>
  </div>
  <div className="grid grid-cols-2 gap-4">
  <div className="p-4 bg-white/5 rounded-3xl border border-white/5">
  <p className="text-xl font-black text-emerald-400">{todayApts.filter(a => a.status === 'COMPLETED').length}</p>
- <p className="text-[9px] font-black text-slate-500 uppercase mt-1">Traités</p>
+ <p className="text-[9px] font-black text-slate-600 uppercase mt-1">Traités</p>
  </div>
  <div className="p-4 bg-white/5 rounded-3xl border border-white/5">
  <p className="text-xl font-black text-blue-400">{todayApts.filter(a => a.status === 'CONFIRMED' || a.status === 'PENDING').length}</p>
- <p className="text-[9px] font-black text-slate-500 uppercase mt-1">En File</p>
+ <p className="text-[9px] font-black text-slate-600 uppercase mt-1">En File</p>
  </div>
  </div>
  </div>
  </div>
 
  <div className="dash-card !p-8">
- <h3 className="font-black text-xs uppercase tracking-widest text-slate-400 mb-6">Akwaba AI Insight</h3>
+ <h3 className="font-black text-xs uppercase tracking-widest text-slate-600 mb-6">Akwaba AI Insight</h3>
  <div className="flex gap-4 items-start">
  <div className="w-10 h-10 rounded-2xl bg-blue-600 flex items-center justify-center shrink-0">
  <Activity className="w-5 h-5 text-white" />

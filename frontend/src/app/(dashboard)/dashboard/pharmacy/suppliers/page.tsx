@@ -106,7 +106,7 @@ export default function SuppliersPage() {
  <div className="flex justify-between items-center flex-wrap gap-4">
  <div>
  <h1 className="text-3xl font-black text-slate-900 tracking-tight">Fournisseurs Pharmaceutiques</h1>
- <p className="text-slate-500 font-medium">
+ <p className="text-slate-600 font-medium">
  Laboratoires et grossistes liés à votre établissement (Supabase table{" "}
  <code className="text-xs bg-blue-50 px-1 rounded">suppliers</code>).
  </p>
@@ -125,7 +125,7 @@ export default function SuppliersPage() {
 
  <div className="flex gap-4">
  <div className="relative flex-1">
- <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+ <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-600" />
  <input
  type="text"
  value={searchQuery}
@@ -137,7 +137,7 @@ export default function SuppliersPage() {
  </div>
 
  {isLoading ? (
- <div className="flex justify-center py-24 text-slate-400 gap-2 items-center font-bold text-sm">
+ <div className="flex justify-center py-24 text-slate-600 gap-2 items-center font-bold text-sm">
  <Loader2 className="w-5 h-5 animate-spin" /> Chargement…
  </div>
  ) : (
@@ -168,13 +168,13 @@ export default function SuppliersPage() {
  </p>
 
  <div className="space-y-4 mb-8">
- <div className="flex items-center gap-3 text-sm text-slate-500 font-medium">
+ <div className="flex items-center gap-3 text-sm text-slate-600 font-medium">
  <Package className="w-4 h-4 opacity-40" /> {sup.contact_name || "—"}
  </div>
- <div className="flex items-center gap-3 text-sm text-slate-500 font-medium">
+ <div className="flex items-center gap-3 text-sm text-slate-600 font-medium">
  <Phone className="w-4 h-4 opacity-40" /> {sup.phone || "—"}
  </div>
- <div className="flex items-center gap-3 text-sm text-slate-500 font-medium">
+ <div className="flex items-center gap-3 text-sm text-slate-600 font-medium">
  <Mail className="w-4 h-4 opacity-40" /> {sup.email || "—"}
  </div>
  </div>
@@ -194,7 +194,7 @@ export default function SuppliersPage() {
  )}
 
  {!isLoading && filtered.length === 0 && (
- <div className="text-center py-16 border border-dashed border-blue-100 rounded-[32px] text-slate-400 text-sm font-medium">
+ <div className="text-center py-16 border border-dashed border-blue-100 rounded-[32px] text-slate-600 text-sm font-medium">
  Aucun fournisseur. Ajoutez votre premier grossiste ou représentant pharmaceutique.
  </div>
  )}
@@ -207,7 +207,7 @@ export default function SuppliersPage() {
  required
  value={form.name}
  onChange={(e) => setForm({ ...form, name: e.target.value })}
- className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm"
+ className="w-full px-4 py-3 bg-white border-blue-100 shadow-sm border border-slate-200 rounded-2xl text-sm"
  placeholder="Laborex, DPCI…"
  />
  </div>
@@ -217,7 +217,7 @@ export default function SuppliersPage() {
  <input
  value={form.contact_name}
  onChange={(e) => setForm({ ...form, contact_name: e.target.value })}
- className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm"
+ className="w-full px-4 py-3 bg-white border-blue-100 shadow-sm border border-slate-200 rounded-2xl text-sm"
  />
  </div>
  <div className="space-y-1">
@@ -225,7 +225,7 @@ export default function SuppliersPage() {
  <input
  value={form.category}
  onChange={(e) => setForm({ ...form, category: e.target.value })}
- className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm"
+ className="w-full px-4 py-3 bg-white border-blue-100 shadow-sm border border-slate-200 rounded-2xl text-sm"
  placeholder="Générique, matériel…"
  />
  </div>
@@ -236,7 +236,7 @@ export default function SuppliersPage() {
  <input
  value={form.phone}
  onChange={(e) => setForm({ ...form, phone: e.target.value })}
- className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm"
+ className="w-full px-4 py-3 bg-white border-blue-100 shadow-sm border border-slate-200 rounded-2xl text-sm"
  />
  </div>
  <div className="space-y-1">
@@ -245,7 +245,7 @@ export default function SuppliersPage() {
  type="email"
  value={form.email}
  onChange={(e) => setForm({ ...form, email: e.target.value })}
- className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm"
+ className="w-full px-4 py-3 bg-white border-blue-100 shadow-sm border border-slate-200 rounded-2xl text-sm"
  />
  </div>
  </div>
@@ -254,7 +254,7 @@ export default function SuppliersPage() {
  <textarea
  value={form.notes}
  onChange={(e) => setForm({ ...form, notes: e.target.value })}
- className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm min-h-[80px]"
+ className="w-full px-4 py-3 bg-white border-blue-100 shadow-sm border border-slate-200 rounded-2xl text-sm min-h-[80px]"
  />
  </div>
  <div className="flex gap-3 pt-4">

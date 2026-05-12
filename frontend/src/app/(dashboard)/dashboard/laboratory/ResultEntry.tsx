@@ -47,7 +47,7 @@ export default function ResultEntry({ test, onCancel, onSuccess }: { test: any, 
  </button>
  <div>
  <h3 className="text-xl font-black tracking-tight">Saisie des Résultats</h3>
- <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1">
+ <p className="text-[10px] font-black text-slate-600 uppercase tracking-widest mt-1">
  {test.patients?.first_name} {test.patients?.last_name} • {test.test_type}
  </p>
  </div>
@@ -63,23 +63,23 @@ export default function ResultEntry({ test, onCancel, onSuccess }: { test: any, 
 
  <form onSubmit={handleSubmit} className="space-y-6">
  <div className="space-y-2">
- <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-2">Résultats Quantitatifs / Qualitatifs</label>
+ <label className="text-[10px] font-black text-slate-600 uppercase tracking-[0.2em] ml-2">Résultats Quantitatifs / Qualitatifs</label>
  <textarea 
  required
  value={results}
  onChange={(e) => setResults(e.target.value)}
  placeholder="Ex: Glycémie: 1.2g/L, NFS: Normal..."
- className="w-full h-40 p-6 bg-slate-50 border-none rounded-[32px] text-sm font-medium focus:ring-4 focus:ring-blue-500/10 transition-all resize-none shadow-inner"
+ className="w-full h-40 p-6 bg-white border-blue-100 shadow-sm border-none rounded-[32px] text-sm font-medium focus:ring-4 focus:ring-blue-500/10 transition-all resize-none shadow-inner"
  />
  </div>
 
  <div className="space-y-2">
- <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-2">Observations & Conclusions</label>
+ <label className="text-[10px] font-black text-slate-600 uppercase tracking-[0.2em] ml-2">Observations & Conclusions</label>
  <textarea 
  value={observations}
  onChange={(e) => setObservations(e.target.value)}
  placeholder="Observations cliniques importantes..."
- className="w-full h-32 p-6 bg-slate-50 border-none rounded-[32px] text-sm font-medium focus:ring-4 focus:ring-blue-500/10 transition-all resize-none shadow-inner"
+ className="w-full h-32 p-6 bg-white border-blue-100 shadow-sm border-none rounded-[32px] text-sm font-medium focus:ring-4 focus:ring-blue-500/10 transition-all resize-none shadow-inner"
  />
  </div>
 
@@ -94,7 +94,7 @@ export default function ResultEntry({ test, onCancel, onSuccess }: { test: any, 
  <button 
  type="button" 
  onClick={onCancel}
- className="flex-1 py-4 bg-slate-100 text-slate-500 rounded-[20px] font-black text-xs uppercase tracking-widest hover:bg-slate-200 transition-all"
+ className="flex-1 py-4 bg-slate-100 text-slate-600 rounded-[20px] font-black text-xs uppercase tracking-widest hover:bg-slate-200 transition-all"
  >
  Annuler
  </button>

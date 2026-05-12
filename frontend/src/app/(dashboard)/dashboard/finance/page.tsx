@@ -90,10 +90,10 @@ export default function FinancePage() {
  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
  <div>
  <h1 className="text-3xl font-black text-slate-900 tracking-tight">Gestion Financière</h1>
- <p className="text-slate-500 font-medium">Suivez les encaissements et revenus en temps réel.</p>
+ <p className="text-slate-600 font-medium">Suivez les encaissements et revenus en temps réel.</p>
  </div>
  <div className="flex gap-3">
- <button className="px-4 py-2 bg-white border border-slate-200 rounded-xl text-xs font-bold shadow-sm hover:bg-slate-50 transition-all flex items-center gap-2">
+ <button className="px-4 py-2 bg-white border border-slate-200 rounded-xl text-xs font-bold shadow-sm hover:bg-white border-blue-100 shadow-sm transition-all flex items-center gap-2">
  <Download className="w-4 h-4" /> Rapport
  </button>
  <button 
@@ -108,10 +108,10 @@ export default function FinancePage() {
  {/* Stats Grid */}
  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
  <div className="dash-card !p-6">
- <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Chiffre d&apos;Affaires</p>
+ <p className="text-[10px] font-black text-slate-600 uppercase tracking-widest mb-3">Chiffre d&apos;Affaires</p>
  <div className="flex items-end gap-2">
  <h3 className="text-2xl font-black">{stats.totalRevenue.toLocaleString()}</h3>
- <span className="text-[10px] font-bold text-slate-400 mb-1">CFA</span>
+ <span className="text-[10px] font-bold text-slate-600 mb-1">CFA</span>
  </div>
  </div>
 
@@ -120,7 +120,7 @@ export default function FinancePage() {
  <p className="text-[10px] font-black text-blue-500 uppercase tracking-widest mb-3">Mobile Money</p>
  <div className="flex items-end gap-2">
  <h3 className="text-2xl font-black">{(stats.waveRevenue + stats.orangeRevenue).toLocaleString()}</h3>
- <span className="text-[10px] font-bold text-slate-400 mb-1">CFA</span>
+ <span className="text-[10px] font-bold text-slate-600 mb-1">CFA</span>
  </div>
  </div>
 
@@ -128,7 +128,7 @@ export default function FinancePage() {
  <p className="text-[10px] font-black text-emerald-500 uppercase tracking-widest mb-3">Caisse (Espèces)</p>
  <div className="flex items-end gap-2">
  <h3 className="text-2xl font-black">{stats.cashRevenue.toLocaleString()}</h3>
- <span className="text-[10px] font-bold text-slate-400 mb-1">CFA</span>
+ <span className="text-[10px] font-bold text-slate-600 mb-1">CFA</span>
  </div>
  </div>
 
@@ -150,7 +150,7 @@ export default function FinancePage() {
  onClick={() => setActiveView(tab)}
  className={cn(
  "pb-4 px-2 text-[10px] font-black uppercase tracking-widest transition-all relative",
- activeView === tab ? "text-blue-600" : "text-slate-400 hover:text-slate-600"
+ activeView === tab ? "text-blue-600" : "text-slate-600 hover:text-slate-600"
  )}
  >
  {tab === 'invoices' ? 'Factures' : tab === 'quotes' ? 'Devis' : 'Caisse'}
@@ -163,18 +163,18 @@ export default function FinancePage() {
  <table className="w-full text-left border-collapse">
  <thead>
  <tr className="dash-table-header">
- <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">N°</th>
- <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Patient</th>
- <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Montant</th>
- <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Statut</th>
- <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Actions</th>
+ <th className="px-8 py-5 text-[10px] font-black text-slate-600 uppercase tracking-widest">N°</th>
+ <th className="px-8 py-5 text-[10px] font-black text-slate-600 uppercase tracking-widest">Patient</th>
+ <th className="px-8 py-5 text-[10px] font-black text-slate-600 uppercase tracking-widest">Montant</th>
+ <th className="px-8 py-5 text-[10px] font-black text-slate-600 uppercase tracking-widest">Statut</th>
+ <th className="px-8 py-5 text-[10px] font-black text-slate-600 uppercase tracking-widest">Actions</th>
  </tr>
  </thead>
  <tbody className="divide-y divide-slate-100 ">
  {isLoading ? (
- <tr><td colSpan={5} className="text-center py-20 text-slate-400 text-xs font-bold uppercase">Chargement...</td></tr>
+ <tr><td colSpan={5} className="text-center py-20 text-slate-600 text-xs font-bold uppercase">Chargement...</td></tr>
  ) : invoices.map((inv, index) => (
- <tr key={inv.id} className="hover:bg-slate-50/50 transition-colors cursor-pointer">
+ <tr key={inv.id} className="hover:bg-white border-blue-100 shadow-sm/50 transition-colors cursor-pointer">
  <td className="px-8 py-5 font-black text-xs text-blue-600">#{inv.id.slice(0, 8).toUpperCase()}</td>
  <td className="px-8 py-5 text-sm font-bold">{inv.patients?.first_name} {inv.patients?.last_name}</td>
  <td className="px-8 py-5 font-black text-sm">{Number(inv.total_amount).toLocaleString()} CFA</td>

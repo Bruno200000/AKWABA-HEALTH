@@ -109,12 +109,12 @@ export default function PatientDetailPage() {
  <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
  <button 
  onClick={() => router.back()}
- className="flex items-center gap-2 text-slate-500 hover:text-blue-600 transition-colors font-bold text-sm"
+ className="flex items-center gap-2 text-slate-600 hover:text-blue-600 transition-colors font-bold text-sm"
  >
  <ChevronLeft className="w-4 h-4" /> Retour à la liste
  </button>
  <div className="flex gap-2">
- <button className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-xl text-xs font-bold hover:bg-slate-50 transition-all">
+ <button className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-xl text-xs font-bold hover:bg-white border-blue-100 shadow-sm transition-all">
  <Printer className="w-4 h-4" /> Imprimer Dossier
  </button>
  <button 
@@ -131,7 +131,7 @@ export default function PatientDetailPage() {
  <div className="h-32 bg-gradient-to-r from-blue-600 to-indigo-600 relative">
  <div className="absolute -bottom-12 left-8 p-1 bg-white rounded-3xl">
  <div className="w-24 h-24 bg-slate-100 rounded-2xl flex items-center justify-center">
- <User className="w-12 h-12 text-slate-400" />
+ <User className="w-12 h-12 text-slate-600" />
  </div>
  </div>
  </div>
@@ -141,25 +141,25 @@ export default function PatientDetailPage() {
  <h1 className="text-3xl font-black tracking-tight">{patient.first_name} {patient.last_name}</h1>
  <span className="px-3 py-1 bg-blue-50 text-blue-600 rounded-full text-[10px] font-black uppercase tracking-widest">{patient.file_number}</span>
  </div>
- <div className="flex flex-wrap items-center gap-4 text-sm text-slate-500 font-medium">
+ <div className="flex flex-wrap items-center gap-4 text-sm text-slate-600 font-medium">
  <span className="flex items-center gap-1.5"><Calendar className="w-4 h-4" /> {patient.birth_date ? format(new Date(patient.birth_date), 'dd MMMM yyyy', { locale: fr }) : "N/A"}</span>
  <span className="flex items-center gap-1.5"><Heart className="w-4 h-4 text-red-500" /> Groupe: {patient.blood_group || "N/A"}</span>
  <span className="flex items-center gap-1.5"><Clock className="w-4 h-4" /> Inscrit le {format(new Date(patient.created_at), 'dd/MM/yyyy')}</span>
  </div>
  </div>
 
- <div className="flex gap-6 items-center p-4 bg-slate-50 /50 rounded-2xl border border-slate-100 ">
+ <div className="flex gap-6 items-center p-4 bg-white border-blue-100 shadow-sm /50 rounded-2xl border border-slate-100 ">
  <div className="text-center">
- <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">QR Accès Rapide</p>
+ <p className="text-[10px] font-black text-slate-600 uppercase tracking-widest mb-1">QR Accès Rapide</p>
  <div className="p-1.5 bg-white rounded-lg shadow-sm">
  <QRCodeSVG value={`akwaba:patient:${patient.id}`} size={64} />
  </div>
  </div>
  <div className="h-10 w-[1px] bg-slate-200 " />
  <div className="space-y-1">
- <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Contact</p>
+ <p className="text-[10px] font-black text-slate-600 uppercase tracking-widest">Contact</p>
  <p className="text-sm font-bold">{patient.phone || "Non renseigné"}</p>
- <p className="text-xs text-slate-500">{patient.email || "Pas d'email"}</p>
+ <p className="text-xs text-slate-600">{patient.email || "Pas d'email"}</p>
  </div>
  </div>
  </div>
@@ -175,7 +175,7 @@ export default function PatientDetailPage() {
  "flex items-center gap-2 px-6 py-3 rounded-2xl text-sm font-bold transition-all whitespace-nowrap",
  activeTab === tab.id 
  ? "bg-slate-900 text-white shadow-lg" 
- : "bg-white text-slate-500 border border-slate-200 hover:bg-slate-50"
+ : "bg-white text-slate-600 border border-slate-200 hover:bg-white border-blue-100 shadow-sm"
  )}
  >
  <tab.icon className="w-4 h-4" />
@@ -230,10 +230,10 @@ export default function PatientDetailPage() {
 
  {/* Medical History */}
  <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm">
- <h3 className="font-black uppercase text-xs tracking-widest text-slate-400 mb-6 flex items-center gap-2">
+ <h3 className="font-black uppercase text-xs tracking-widest text-slate-600 mb-6 flex items-center gap-2">
  <HeartPulse className="w-4 h-4 text-red-500" /> Antécédents Médicaux
  </h3>
- <div className="p-4 bg-slate-50 /50 rounded-2xl border border-slate-100 ">
+ <div className="p-4 bg-white border-blue-100 shadow-sm /50 rounded-2xl border border-slate-100 ">
  <p className="text-sm text-slate-600 leading-relaxed whitespace-pre-wrap">
  {patient.medical_history?.notes || "Aucun antécédent particulier renseigné."}
  </p>
@@ -241,7 +241,7 @@ export default function PatientDetailPage() {
  </div>
 
  <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm">
- <h3 className="font-black uppercase text-xs tracking-widest text-slate-400 mb-6 flex items-center gap-2">
+ <h3 className="font-black uppercase text-xs tracking-widest text-slate-600 mb-6 flex items-center gap-2">
  <Clock className="w-4 h-4" /> Activité Récente
  </h3>
  <div className="space-y-6">
@@ -250,15 +250,15 @@ export default function PatientDetailPage() {
  <div className="absolute left-[-4px] top-1.5 w-2.5 h-2.5 rounded-full bg-blue-500 border-2 border-white " />
  <div className="flex justify-between items-start">
  <div>
- <p className="text-xs text-slate-400 font-bold mb-1">{format(new Date(c.created_at), 'dd MMMM yyyy', { locale: fr })}</p>
+ <p className="text-xs text-slate-600 font-bold mb-1">{format(new Date(c.created_at), 'dd MMMM yyyy', { locale: fr })}</p>
  <h4 className="font-bold text-sm">Consultation - {c.diagnosis || "Contrôle routine"}</h4>
- <p className="text-xs text-slate-500 mt-1">Par Dr. {c.profiles?.last_name}</p>
+ <p className="text-xs text-slate-600 mt-1">Par Dr. {c.profiles?.last_name}</p>
  </div>
  <button className="text-[10px] font-black text-blue-600 uppercase hover:underline">Détails</button>
  </div>
  </div>
  ))}
- {history.consultations.length === 0 && <p className="text-sm text-slate-400 text-center py-4">Aucune activité enregistrée</p>}
+ {history.consultations.length === 0 && <p className="text-sm text-slate-600 text-center py-4">Aucune activité enregistrée</p>}
  </div>
  </div>
  </div>
@@ -287,22 +287,22 @@ export default function PatientDetailPage() {
  </div>
 
  <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm">
- <h3 className="font-black uppercase text-xs tracking-widest text-slate-400 mb-6 flex items-center gap-2">
+ <h3 className="font-black uppercase text-xs tracking-widest text-slate-600 mb-6 flex items-center gap-2">
  <Activity className="w-4 h-4" /> Dernières Constantes
  </h3>
  <div className="grid grid-cols-2 gap-4">
- <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100 ">
- <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Tension</p>
+ <div className="p-4 bg-white border-blue-100 shadow-sm rounded-2xl border border-slate-100 ">
+ <p className="text-[10px] font-black text-slate-600 uppercase tracking-widest mb-1">Tension</p>
  <p className="text-lg font-black text-slate-900 ">
  {history.consultations[0]?.vital_signs?.bp_systolic || "12"}/{history.consultations[0]?.vital_signs?.bp_diastolic || "8"} 
- <span className="text-[10px] font-bold text-slate-400 ml-1">mmHg</span>
+ <span className="text-[10px] font-bold text-slate-600 ml-1">mmHg</span>
  </p>
  </div>
- <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100 ">
- <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Temp.</p>
+ <div className="p-4 bg-white border-blue-100 shadow-sm rounded-2xl border border-slate-100 ">
+ <p className="text-[10px] font-black text-slate-600 uppercase tracking-widest mb-1">Temp.</p>
  <p className="text-lg font-black text-slate-900 ">
  {history.consultations[0]?.vital_signs?.temp || "37.2"} 
- <span className="text-[10px] font-bold text-slate-400 ml-1">°C</span>
+ <span className="text-[10px] font-bold text-slate-600 ml-1">°C</span>
  </p>
  </div>
  </div>
@@ -310,7 +310,7 @@ export default function PatientDetailPage() {
 
  <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm">
  <div className="flex justify-between items-center mb-6">
- <h3 className="font-black uppercase text-xs tracking-widest text-slate-400 flex items-center gap-2">
+ <h3 className="font-black uppercase text-xs tracking-widest text-slate-600 flex items-center gap-2">
  <FileText className="w-4 h-4" /> Documents Médicaux
  </h3>
  </div>
@@ -318,15 +318,15 @@ export default function PatientDetailPage() {
  {/* Dropzone Integration */}
  <div className="mb-6 p-4 border-2 border-dashed border-slate-200 rounded-2xl text-center hover:border-blue-500 transition-all cursor-pointer group">
  <Upload className="w-6 h-6 text-slate-300 mx-auto mb-2 group-hover:text-blue-500" />
- <p className="text-[10px] font-bold text-slate-500">Glissez ou cliquez pour uploader (PDF, JPG)</p>
+ <p className="text-[10px] font-bold text-slate-600">Glissez ou cliquez pour uploader (PDF, JPG)</p>
  </div>
 
  <div className="space-y-3">
- <div className="p-3 border border-slate-100 rounded-xl flex items-center gap-3 hover:bg-slate-50 transition-all cursor-pointer group">
+ <div className="p-3 border border-slate-100 rounded-xl flex items-center gap-3 hover:bg-white border-blue-100 shadow-sm transition-all cursor-pointer group">
  <div className="w-10 h-10 bg-blue-50 text-blue-500 rounded-lg flex items-center justify-center font-bold text-[10px]">IMG</div>
  <div className="flex-1 min-w-0">
  <p className="text-xs font-bold truncate">Radio_Thorax_01.jpg</p>
- <p className="text-[10px] text-slate-400">Il y a 2 jours • 1.2 MB</p>
+ <p className="text-[10px] text-slate-600">Il y a 2 jours • 1.2 MB</p>
  </div>
  <Download className="w-4 h-4 text-slate-300 group-hover:text-blue-500 transition-colors" />
  </div>
@@ -340,21 +340,21 @@ export default function PatientDetailPage() {
  <div className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
  <table className="w-full text-left border-collapse">
  <thead>
- <tr className="bg-slate-50 /50 border-b border-slate-100 ">
- <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Date</th>
- <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Médecin</th>
- <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Diagnostic</th>
- <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Actions</th>
+ <tr className="bg-white border-blue-100 shadow-sm /50 border-b border-slate-100 ">
+ <th className="px-6 py-4 text-[10px] font-black text-slate-600 uppercase tracking-widest">Date</th>
+ <th className="px-6 py-4 text-[10px] font-black text-slate-600 uppercase tracking-widest">Médecin</th>
+ <th className="px-6 py-4 text-[10px] font-black text-slate-600 uppercase tracking-widest">Diagnostic</th>
+ <th className="px-6 py-4 text-[10px] font-black text-slate-600 uppercase tracking-widest">Actions</th>
  </tr>
  </thead>
  <tbody className="divide-y divide-slate-100 ">
  {history.consultations.map((c: any) => (
- <tr key={c.id} className="hover:bg-slate-50/50 transition-colors">
+ <tr key={c.id} className="hover:bg-white border-blue-100 shadow-sm/50 transition-colors">
  <td className="px-6 py-4 text-sm font-medium">{format(new Date(c.created_at), 'dd/MM/yyyy')}</td>
  <td className="px-6 py-4 text-sm font-bold">Dr. {c.profiles?.first_name} {c.profiles?.last_name}</td>
- <td className="px-6 py-4 text-sm text-slate-500">{c.diagnosis || "Non spécifié"}</td>
+ <td className="px-6 py-4 text-sm text-slate-600">{c.diagnosis || "Non spécifié"}</td>
  <td className="px-6 py-4 flex items-center gap-2">
- <button className="px-3 py-1 bg-slate-50 text-slate-600 text-[10px] font-black uppercase tracking-widest rounded-lg">Voir</button>
+ <button className="px-3 py-1 bg-white border-blue-100 shadow-sm text-slate-600 text-[10px] font-black uppercase tracking-widest rounded-lg">Voir</button>
  <button 
  onClick={() => window.open(`/dashboard/print/prescription/${c.id}`, '_blank')}
  className="p-1.5 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors"
@@ -365,7 +365,7 @@ export default function PatientDetailPage() {
  </td>
  </tr>
  ))}
- {history.consultations.length === 0 && <tr><td colSpan={4} className="text-center py-10 text-slate-400">Aucune consultation</td></tr>}
+ {history.consultations.length === 0 && <tr><td colSpan={4} className="text-center py-10 text-slate-600">Aucune consultation</td></tr>}
  </tbody>
  </table>
  </div>

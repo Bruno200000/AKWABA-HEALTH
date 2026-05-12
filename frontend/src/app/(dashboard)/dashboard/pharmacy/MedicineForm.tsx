@@ -62,12 +62,12 @@ export default function MedicineForm({ onSuccess, onCancel }: MedicineFormProps)
  <label className="text-sm font-bold text-slate-700 flex items-center gap-2">
  <Pill className="w-4 h-4 text-blue-500" /> Nom du Médicament
  </label>
- <input required name="name" value={formData.name} onChange={handleChange} className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500/20 outline-none" placeholder="Ex: Paracétamol 500mg" />
+ <input required name="name" value={formData.name} onChange={handleChange} className="w-full px-4 py-3 bg-white border-blue-100 shadow-sm border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500/20 outline-none" placeholder="Ex: Paracétamol 500mg" />
  </div>
 
  <div className="space-y-2">
  <label className="text-sm font-bold text-slate-700">Description / Dosage</label>
- <textarea name="description" value={formData.description} onChange={handleChange} className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500/20 outline-none min-h-[80px]" placeholder="Précisions sur le produit..." />
+ <textarea name="description" value={formData.description} onChange={handleChange} className="w-full px-4 py-3 bg-white border-blue-100 shadow-sm border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500/20 outline-none min-h-[80px]" placeholder="Précisions sur le produit..." />
  </div>
 
  <div className="grid grid-cols-2 gap-4">
@@ -75,13 +75,13 @@ export default function MedicineForm({ onSuccess, onCancel }: MedicineFormProps)
  <label className="text-sm font-bold text-slate-700 flex items-center gap-2">
  <Box className="w-4 h-4 text-amber-500" /> Quantité Initiale
  </label>
- <input required type="number" name="stock_quantity" value={formData.stock_quantity} onChange={handleChange} className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500/20 outline-none" />
+ <input required type="number" name="stock_quantity" value={formData.stock_quantity} onChange={handleChange} className="w-full px-4 py-3 bg-white border-blue-100 shadow-sm border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500/20 outline-none" />
  </div>
  <div className="space-y-2">
  <label className="text-sm font-bold text-slate-700 flex items-center gap-2">
  <AlertTriangle className="w-4 h-4 text-red-500" /> Seuil d&apos;alerte
  </label>
- <input required type="number" name="min_stock_alert" value={formData.min_stock_alert} onChange={handleChange} className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500/20 outline-none" />
+ <input required type="number" name="min_stock_alert" value={formData.min_stock_alert} onChange={handleChange} className="w-full px-4 py-3 bg-white border-blue-100 shadow-sm border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500/20 outline-none" />
  </div>
  </div>
 
@@ -90,11 +90,11 @@ export default function MedicineForm({ onSuccess, onCancel }: MedicineFormProps)
  <label className="text-sm font-bold text-slate-700 flex items-center gap-2">
  <CreditCard className="w-4 h-4 text-emerald-500" /> Prix Unitaire (CFA)
  </label>
- <input required type="number" name="unit_price" value={formData.unit_price} onChange={handleChange} className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500/20 outline-none" placeholder="1500" />
+ <input required type="number" name="unit_price" value={formData.unit_price} onChange={handleChange} className="w-full px-4 py-3 bg-white border-blue-100 shadow-sm border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500/20 outline-none" placeholder="1500" />
  </div>
  <div className="space-y-2">
  <label className="text-sm font-bold text-slate-700">Unité</label>
- <select name="unit" value={formData.unit} onChange={handleChange} className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500/20 outline-none">
+ <select name="unit" value={formData.unit} onChange={handleChange} className="w-full px-4 py-3 bg-white border-blue-100 shadow-sm border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500/20 outline-none">
  <option value="Boîte">Boîte</option>
  <option value="Flacon">Flacon</option>
  <option value="Plaquette">Plaquette</option>
@@ -105,7 +105,7 @@ export default function MedicineForm({ onSuccess, onCancel }: MedicineFormProps)
  </div>
 
  <div className="pt-6 flex gap-3">
- <button type="button" onClick={onCancel} className="flex-1 py-4 border border-slate-200 rounded-2xl font-bold text-slate-600 hover:bg-slate-50 transition-all">
+ <button type="button" onClick={onCancel} className="flex-1 py-4 border border-slate-200 rounded-2xl font-bold text-slate-600 hover:bg-white border-blue-100 shadow-sm transition-all">
  Annuler
  </button>
  <button disabled={isLoading} type="submit" className="flex-[2] py-4 bg-blue-600 text-white rounded-2xl font-bold shadow-lg shadow-blue-200 hover:bg-blue-700 transition-all flex items-center justify-center gap-2">

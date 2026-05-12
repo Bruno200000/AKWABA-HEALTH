@@ -78,10 +78,10 @@ export default function PharmacyPage() {
  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
  <div>
  <h1 className="text-3xl font-black text-slate-900 tracking-tight">Pharmacie & Stocks</h1>
- <p className="text-slate-500 font-medium">Gérez vos stocks et réalisez des ventes en temps réel.</p>
+ <p className="text-slate-600 font-medium">Gérez vos stocks et réalisez des ventes en temps réel.</p>
  </div>
  <div className="flex gap-3">
- <button className="px-4 py-2 bg-white border border-slate-200 rounded-xl text-xs font-bold shadow-sm hover:bg-slate-50 transition-all flex items-center gap-2">
+ <button className="px-4 py-2 bg-white border border-slate-200 rounded-xl text-xs font-bold shadow-sm hover:bg-white border-blue-100 shadow-sm transition-all flex items-center gap-2">
  <Download className="w-4 h-4" /> Rapport
  </button>
  <button 
@@ -96,10 +96,10 @@ export default function PharmacyPage() {
  {/* Stats Grid */}
  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
  <div className="dash-card !p-6">
- <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Total Produits</p>
+ <p className="text-[10px] font-black text-slate-600 uppercase tracking-widest mb-3">Total Produits</p>
  <div className="flex items-end gap-2">
  <h3 className="text-2xl font-black">{stats.totalProducts}</h3>
- <span className="text-[10px] font-bold text-slate-400 mb-1">Articles</span>
+ <span className="text-[10px] font-bold text-slate-600 mb-1">Articles</span>
  </div>
  </div>
  <div className="dash-card !p-6 !bg-red-50/50 !border-red-100">
@@ -124,7 +124,7 @@ export default function PharmacyPage() {
  onClick={() => setActiveTab("inventory")}
  className={cn(
  "pb-4 px-2 text-[10px] font-black uppercase tracking-widest transition-all relative",
- activeTab === "inventory" ? "text-blue-600" : "text-slate-400 hover:text-slate-600"
+ activeTab === "inventory" ? "text-blue-600" : "text-slate-600 hover:text-slate-600"
  )}
  >
  Gestion de Stock
@@ -134,7 +134,7 @@ export default function PharmacyPage() {
  onClick={() => setActiveTab("pos")}
  className={cn(
  "pb-4 px-2 text-[10px] font-black uppercase tracking-widest transition-all relative",
- activeTab === "pos" ? "text-blue-600" : "text-slate-400 hover:text-slate-600"
+ activeTab === "pos" ? "text-blue-600" : "text-slate-600 hover:text-slate-600"
  )}
  >
  Point de Vente (POS)
@@ -154,7 +154,7 @@ export default function PharmacyPage() {
  {/* Search & Filters */}
  <div className="flex gap-4">
  <div className="relative flex-1">
- <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+ <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-600" />
  <input 
  type="text" 
  placeholder="Rechercher un médicament..."
@@ -163,7 +163,7 @@ export default function PharmacyPage() {
  className="w-full pl-10 pr-4 py-3 bg-white border border-slate-200 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/10 transition-all"
  />
  </div>
- <button className="flex items-center gap-2 px-4 py-3 bg-white border border-slate-200 rounded-2xl text-sm font-bold hover:bg-slate-50 transition-all">
+ <button className="flex items-center gap-2 px-4 py-3 bg-white border border-slate-200 rounded-2xl text-sm font-bold hover:bg-white border-blue-100 shadow-sm transition-all">
  <Filter className="w-4 h-4" />
  </button>
  </div>
@@ -173,21 +173,21 @@ export default function PharmacyPage() {
  <div className="overflow-x-auto">
  <table className="w-full text-left border-collapse">
  <thead>
- <tr className="bg-slate-50 /50 border-b border-slate-200 ">
- <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Produit</th>
- <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Catégorie</th>
- <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Stock</th>
- <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Prix</th>
- <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Actions</th>
+ <tr className="bg-white border-blue-100 shadow-sm /50 border-b border-slate-200 ">
+ <th className="px-8 py-5 text-[10px] font-black text-slate-600 uppercase tracking-widest">Produit</th>
+ <th className="px-8 py-5 text-[10px] font-black text-slate-600 uppercase tracking-widest">Catégorie</th>
+ <th className="px-8 py-5 text-[10px] font-black text-slate-600 uppercase tracking-widest">Stock</th>
+ <th className="px-8 py-5 text-[10px] font-black text-slate-600 uppercase tracking-widest">Prix</th>
+ <th className="px-8 py-5 text-[10px] font-black text-slate-600 uppercase tracking-widest">Actions</th>
  </tr>
  </thead>
  <tbody className="divide-y divide-slate-100 ">
  {isLoading ? (
- <tr><td colSpan={5} className="text-center py-20 text-slate-400 font-bold uppercase text-[10px] tracking-widest">Chargement...</td></tr>
+ <tr><td colSpan={5} className="text-center py-20 text-slate-600 font-bold uppercase text-[10px] tracking-widest">Chargement...</td></tr>
  ) : filteredInventory.length > 0 ? filteredInventory.map((item, index) => {
  const isLow = item.stock_quantity <= (item.min_stock_alert || 10);
  return (
- <tr key={item.id} className="hover:bg-slate-50/50 transition-colors cursor-pointer group">
+ <tr key={item.id} className="hover:bg-white border-blue-100 shadow-sm/50 transition-colors cursor-pointer group">
  <td className="px-8 py-6">
  <div className="flex items-center gap-4">
  <div className="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center font-black">
@@ -195,24 +195,24 @@ export default function PharmacyPage() {
  </div>
  <div>
  <p className="font-black text-sm">{item.name}</p>
- <p className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">{item.id.slice(0, 8).toUpperCase()}</p>
+ <p className="text-[10px] font-bold text-slate-600 uppercase tracking-tighter">{item.id.slice(0, 8).toUpperCase()}</p>
  </div>
  </div>
  </td>
  <td className="px-8 py-6">
- <span className="px-3 py-1 bg-slate-100 rounded-lg text-[9px] font-black uppercase tracking-widest text-slate-500">{item.category}</span>
+ <span className="px-3 py-1 bg-slate-100 rounded-lg text-[9px] font-black uppercase tracking-widest text-slate-600">{item.category}</span>
  </td>
  <td className="px-8 py-6">
  <div className="flex items-center gap-2">
  <span className={cn("font-black text-sm", isLow ? "text-red-600" : "text-slate-900")}>{item.stock_quantity}</span>
- <span className="text-[10px] font-bold text-slate-400 uppercase">Unités</span>
+ <span className="text-[10px] font-bold text-slate-600 uppercase">Unités</span>
  {isLow && <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />}
  </div>
  </td>
  <td className="px-8 py-6">
  <div className="flex items-center gap-1.5 font-black text-sm text-blue-600">
  {Number(item.unit_price).toLocaleString()}
- <span className="text-[9px] font-bold text-slate-400 uppercase">CFA</span>
+ <span className="text-[9px] font-bold text-slate-600 uppercase">CFA</span>
  </div>
  </td>
  <td className="px-8 py-6">
@@ -224,7 +224,7 @@ export default function PharmacyPage() {
  </tr>
  );
  }) : (
- <tr><td colSpan={5} className="text-center py-20 text-slate-400 font-bold uppercase text-[10px] tracking-widest">Aucun produit trouvé</td></tr>
+ <tr><td colSpan={5} className="text-center py-20 text-slate-600 font-bold uppercase text-[10px] tracking-widest">Aucun produit trouvé</td></tr>
  )}
  </tbody>
  </table>

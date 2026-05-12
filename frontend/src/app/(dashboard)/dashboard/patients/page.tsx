@@ -121,7 +121,7 @@ export default function PatientsPage() {
  <Users className="w-6 h-6" />
  </div>
  <div>
- <p className="text-xs text-slate-500 font-bold uppercase tracking-wider">Total Patients</p>
+ <p className="text-xs text-slate-600 font-bold uppercase tracking-wider">Total Patients</p>
  <h3 className="text-xl font-bold">{stats.total.toLocaleString()}</h3>
  </div>
  </div>
@@ -130,7 +130,7 @@ export default function PatientsPage() {
  <Activity className="text-emerald-600 w-6 h-6" />
  </div>
  <div>
- <p className="text-xs text-slate-500 font-bold uppercase tracking-wider">Nouveaux (Mois)</p>
+ <p className="text-xs text-slate-600 font-bold uppercase tracking-wider">Nouveaux (Mois)</p>
  <h3 className="text-xl font-bold">+{stats.newThisMonth}</h3>
  </div>
  </div>
@@ -139,7 +139,7 @@ export default function PatientsPage() {
  <Droplets className="w-6 h-6" />
  </div>
  <div>
- <p className="text-xs text-slate-500 font-bold uppercase tracking-wider">Critiques</p>
+ <p className="text-xs text-slate-600 font-bold uppercase tracking-wider">Critiques</p>
  <h3 className="text-xl font-bold text-red-600">{stats.critical}</h3>
  </div>
  </div>
@@ -148,17 +148,17 @@ export default function PatientsPage() {
  {/* Filters & Search */}
  <div className="dash-card !p-4 flex flex-col md:flex-row gap-4 items-center">
  <div className="relative flex-1 w-full">
- <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+ <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-600" />
  <input 
  type="text" 
  placeholder="Rechercher par nom, ID ou téléphone..."
  value={searchQuery}
  onChange={(e) => setSearchQuery(e.target.value)}
- className="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all"
+ className="w-full pl-10 pr-4 py-2 bg-white border-blue-100 shadow-sm border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all"
  />
  </div>
  <div className="flex gap-2 w-full md:w-auto">
- <button className="flex-1 md:flex-none flex items-center justify-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-xl text-sm font-medium hover:bg-slate-50 transition-all">
+ <button className="flex-1 md:flex-none flex items-center justify-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-xl text-sm font-medium hover:bg-white border-blue-100 shadow-sm transition-all">
  <Filter className="w-4 h-4" /> Filtres
  </button>
  </div>
@@ -180,7 +180,7 @@ export default function PatientsPage() {
  </thead>
  <tbody className="divide-y divide-slate-100 ">
  {isLoading ? (
- <tr><td colSpan={6} className="text-center py-10 text-slate-500">Chargement des patients...</td></tr>
+ <tr><td colSpan={6} className="text-center py-10 text-slate-600">Chargement des patients...</td></tr>
  ) : filteredPatients.length > 0 ? filteredPatients.map((patient, index) => (
  <motion.tr 
  key={patient.id}
@@ -188,16 +188,16 @@ export default function PatientsPage() {
  animate={{ opacity: 1, y: 0 }}
  transition={{ delay: index * 0.05 }}
  onClick={() => router.push(`/dashboard/patients/${patient.id}`)}
- className="hover:bg-slate-50/50 transition-colors cursor-pointer"
+ className="hover:bg-white border-blue-100 shadow-sm/50 transition-colors cursor-pointer"
  >
  <td className="px-6 py-4">
  <div className="flex items-center gap-3">
  <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center">
- <User className="w-5 h-5 text-slate-500" />
+ <User className="w-5 h-5 text-slate-600" />
  </div>
  <div>
  <p className="font-bold text-sm">{patient.first_name} {patient.last_name}</p>
- <p className="text-xs text-slate-500">ID: {patient.file_number}</p>
+ <p className="text-xs text-slate-600">ID: {patient.file_number}</p>
  </div>
  </div>
  </td>
@@ -230,14 +230,14 @@ export default function PatientsPage() {
  <button className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors" title="Voir Dossier">
  <FileText className="w-4 h-4" />
  </button>
- <button className="p-2 text-slate-400 hover:text-slate-600 transition-colors">
+ <button className="p-2 text-slate-600 hover:text-slate-600 transition-colors">
  <MoreHorizontal className="w-5 h-5" />
  </button>
  </div>
  </td>
  </motion.tr>
  )) : (
- <tr><td colSpan={6} className="text-center py-10 text-slate-500">Aucun patient trouvé</td></tr>
+ <tr><td colSpan={6} className="text-center py-10 text-slate-600">Aucun patient trouvé</td></tr>
  )}
  </tbody>
  </table>

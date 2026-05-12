@@ -120,7 +120,7 @@ export default function PharmacyPOS({ onComplete }: { onComplete: () => void }) 
  {/* Product Selection */}
  <div className="lg:col-span-2 flex flex-col h-full">
  <div className="relative mb-6">
- <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+ <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-600" />
  <input 
  type="text" 
  placeholder="Rechercher un médicament ou scanner..."
@@ -143,10 +143,10 @@ export default function PharmacyPOS({ onComplete }: { onComplete: () => void }) 
  <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
  <Pill className="w-5 h-5" />
  </div>
- <span className="text-[10px] font-black text-slate-400 uppercase">{item.stock_quantity} dispo</span>
+ <span className="text-[10px] font-black text-slate-600 uppercase">{item.stock_quantity} dispo</span>
  </div>
  <h4 className="font-black text-sm tracking-tight truncate">{item.name}</h4>
- <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1 mb-3">{item.category}</p>
+ <p className="text-[10px] font-bold text-slate-600 uppercase tracking-widest mt-1 mb-3">{item.category}</p>
  <p className="font-black text-blue-600">{Number(item.unit_price).toLocaleString()} CFA</p>
  </motion.button>
  ))}
@@ -167,19 +167,19 @@ export default function PharmacyPOS({ onComplete }: { onComplete: () => void }) 
  <div key={item.id} className="flex items-center gap-4 group">
  <div className="flex-1 min-w-0">
  <p className="font-black text-sm truncate">{item.name}</p>
- <p className="text-[10px] font-bold text-slate-400 uppercase">{item.unit_price.toLocaleString()} CFA / unité</p>
+ <p className="text-[10px] font-bold text-slate-600 uppercase">{item.unit_price.toLocaleString()} CFA / unité</p>
  </div>
  <div className="flex items-center gap-2">
  <button 
  onClick={() => updateQuantity(item.id, -1)}
- className="w-6 h-6 rounded-lg bg-slate-100 flex items-center justify-center text-slate-500"
+ className="w-6 h-6 rounded-lg bg-slate-100 flex items-center justify-center text-slate-600"
  >
  <Minus className="w-3 h-3" />
  </button>
  <span className="text-sm font-black w-4 text-center">{item.quantity}</span>
  <button 
  onClick={() => updateQuantity(item.id, 1)}
- className="w-6 h-6 rounded-lg bg-slate-100 flex items-center justify-center text-slate-500"
+ className="w-6 h-6 rounded-lg bg-slate-100 flex items-center justify-center text-slate-600"
  >
  <Plus className="w-3 h-3" />
  </button>
@@ -193,19 +193,19 @@ export default function PharmacyPOS({ onComplete }: { onComplete: () => void }) 
  </div>
  ))}
  {cart.length === 0 && (
- <div className="h-full flex flex-col items-center justify-center text-slate-400 py-20">
+ <div className="h-full flex flex-col items-center justify-center text-slate-600 py-20">
  <ShoppingCart className="w-12 h-12 opacity-20 mb-4" />
  <p className="text-xs font-bold uppercase tracking-widest">Panier Vide</p>
  </div>
  )}
  </div>
 
- <div className="p-8 bg-slate-50 /50 space-y-6">
+ <div className="p-8 bg-white border-blue-100 shadow-sm /50 space-y-6">
  <div className="flex justify-between items-end">
- <span className="text-xs font-bold text-slate-500 uppercase tracking-widest">Total à payer</span>
+ <span className="text-xs font-bold text-slate-600 uppercase tracking-widest">Total à payer</span>
  <div className="text-right">
  <p className="text-3xl font-black text-slate-900 leading-none">{total.toLocaleString()}</p>
- <p className="text-[10px] font-black text-slate-400 uppercase mt-1">CFA Francs</p>
+ <p className="text-[10px] font-black text-slate-600 uppercase mt-1">CFA Francs</p>
  </div>
  </div>
 

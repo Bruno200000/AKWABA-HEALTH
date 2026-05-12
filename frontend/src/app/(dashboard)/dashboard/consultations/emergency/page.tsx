@@ -53,7 +53,7 @@ export default function EmergencyPage() {
 
  <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
  <div className="space-y-6">
- <h3 className="text-xs font-black uppercase tracking-widest text-slate-500 ml-2">File d'Attente Critique</h3>
+ <h3 className="text-xs font-black uppercase tracking-widest text-slate-600 ml-2">File d'Attente Critique</h3>
  <div className="space-y-4">
  <AnimatePresence>
  {emergencies.map((case_item, i) => (
@@ -80,18 +80,18 @@ export default function EmergencyPage() {
  <h4 className="font-black text-lg">{case_item.patient}</h4>
  <p className={cn(
  "text-[10px] font-bold uppercase tracking-widest",
- case_item.priority === 'CRITICAL' ? "text-red-600" : "text-slate-400"
+ case_item.priority === 'CRITICAL' ? "text-red-600" : "text-slate-600"
  )}>{case_item.symptom}</p>
  </div>
  </div>
  <div className="text-right flex items-center gap-6">
  <div>
- <p className="text-[10px] font-black text-slate-400 uppercase mb-1">Arrivée</p>
+ <p className="text-[10px] font-black text-slate-600 uppercase mb-1">Arrivée</p>
  <p className="font-black text-sm">{case_item.arrival}</p>
  </div>
  <button className={cn(
  "w-12 h-12 rounded-2xl flex items-center justify-center transition-all",
- case_item.priority === 'CRITICAL' ? "bg-red-600 text-white" : "bg-slate-100 text-slate-400 group-hover:bg-blue-600 group-hover:text-white"
+ case_item.priority === 'CRITICAL' ? "bg-red-600 text-white" : "bg-slate-100 text-slate-600 group-hover:bg-blue-600 group-hover:text-white"
  )}>
  <ArrowRight className="w-5 h-5" />
  </button>
@@ -109,11 +109,11 @@ export default function EmergencyPage() {
  </h4>
  <div className="grid grid-cols-2 gap-6">
  <div className="space-y-1">
- <p className="text-[10px] font-black text-slate-500 uppercase">Temps d'attente moy.</p>
+ <p className="text-[10px] font-black text-slate-600 uppercase">Temps d'attente moy.</p>
  <p className="text-3xl font-black">14 min</p>
  </div>
  <div className="space-y-1">
- <p className="text-[10px] font-black text-slate-500 uppercase">Lits disponibles</p>
+ <p className="text-[10px] font-black text-slate-600 uppercase">Lits disponibles</p>
  <p className="text-3xl font-black text-emerald-500">04</p>
  </div>
  </div>

@@ -38,7 +38,7 @@ export default function LabResultsPage() {
  <div className="flex justify-between items-center">
  <div>
  <h1 className="text-3xl font-black text-slate-900 tracking-tight">Résultats de Laboratoire</h1>
- <p className="text-slate-500 font-medium">Archive sécurisée des analyses validées et publiées.</p>
+ <p className="text-slate-600 font-medium">Archive sécurisée des analyses validées et publiées.</p>
  </div>
  <button className="flex items-center gap-2 px-5 py-2.5 bg-blue-600 text-white rounded-xl font-black text-xs uppercase tracking-widest hover:bg-blue-700 transition-all shadow-xl shadow-blue-200 ">
  <Download className="w-4 h-4" /> Exporter les données
@@ -47,15 +47,15 @@ export default function LabResultsPage() {
 
  <div className="flex gap-4">
  <div className="relative flex-1">
- <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+ <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-600" />
  <input 
  type="text" 
  placeholder="Rechercher par patient ou type d'analyse..."
  className="w-full pl-12 pr-4 py-4 bg-white border border-slate-200 rounded-2xl text-sm focus:ring-2 focus:ring-blue-500/10"
  />
  </div>
- <button className="px-5 bg-white border border-slate-200 rounded-2xl hover:bg-slate-50 transition-all">
- <Filter className="w-5 h-5 text-slate-500" />
+ <button className="px-5 bg-white border border-slate-200 rounded-2xl hover:bg-white border-blue-100 shadow-sm transition-all">
+ <Filter className="w-5 h-5 text-slate-600" />
  </button>
  </div>
 
@@ -70,17 +70,17 @@ export default function LabResultsPage() {
  <div className="w-14 h-14 bg-emerald-50 text-emerald-600 rounded-[20px] flex items-center justify-center">
  <CheckCircle2 className="w-7 h-7" />
  </div>
- <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{res.id}</span>
+ <span className="text-[10px] font-black text-slate-600 uppercase tracking-widest">{res.id}</span>
  </div>
  
  <h3 className="font-black text-xl mb-1">{res.patient}</h3>
  <p className="text-sm font-bold text-blue-600 uppercase tracking-tight mb-8">{res.test}</p>
 
  <div className="space-y-3 mb-8">
- <div className="flex items-center gap-3 text-xs text-slate-500 font-medium">
+ <div className="flex items-center gap-3 text-xs text-slate-600 font-medium">
  <Calendar className="w-4 h-4 opacity-30" /> Effectué le {res.date}
  </div>
- <div className="flex items-center gap-3 text-xs text-slate-500 font-medium">
+ <div className="flex items-center gap-3 text-xs text-slate-600 font-medium">
  <User className="w-4 h-4 opacity-30" /> Biologiste: Dr. Diallo
  </div>
  </div>

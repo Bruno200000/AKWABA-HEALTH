@@ -81,19 +81,19 @@ export default function HospitalizationPage() {
  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
  <div>
  <h1 className="text-3xl font-black text-slate-900 tracking-tight">Hospitalisation</h1>
- <p className="text-slate-500 font-medium">Gérez l&apos;occupation des lits et le suivi patient en temps réel.</p>
+ <p className="text-slate-600 font-medium">Gérez l&apos;occupation des lits et le suivi patient en temps réel.</p>
  </div>
  <div className="flex gap-3">
  <div className="bg-slate-100 p-1 rounded-xl flex gap-1">
  <button 
  onClick={() => setViewMode("grid")}
- className={cn("p-2 rounded-lg transition-all", viewMode === "grid" ? "bg-white shadow-sm text-blue-600" : "text-slate-400")}
+ className={cn("p-2 rounded-lg transition-all", viewMode === "grid" ? "bg-white shadow-sm text-blue-600" : "text-slate-600")}
  >
  <LayoutGrid className="w-4 h-4" />
  </button>
  <button 
  onClick={() => setViewMode("stats")}
- className={cn("p-2 rounded-lg transition-all", viewMode === "stats" ? "bg-white shadow-sm text-blue-600" : "text-slate-400")}
+ className={cn("p-2 rounded-lg transition-all", viewMode === "stats" ? "bg-white shadow-sm text-blue-600" : "text-slate-600")}
  >
  <Activity className="w-4 h-4" />
  </button>
@@ -110,7 +110,7 @@ export default function HospitalizationPage() {
  {/* Stats Quick View */}
  <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
  <div className="dash-card !p-6">
- <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Taux d&apos;occupation</p>
+ <p className="text-[10px] font-black text-slate-600 uppercase tracking-widest mb-3">Taux d&apos;occupation</p>
  <div className="flex items-end gap-2">
  <h3 className="text-2xl font-black">{stats.occupancyRate}%</h3>
  <div className="w-20 h-1.5 bg-slate-100 rounded-full mb-2 overflow-hidden">
@@ -122,14 +122,14 @@ export default function HospitalizationPage() {
  <p className="text-[10px] font-black text-blue-500 uppercase tracking-widest mb-3">Lits Occupés</p>
  <div className="flex items-end gap-2">
  <h3 className="text-2xl font-black text-blue-600">{stats.occupied}</h3>
- <span className="text-[10px] font-bold text-slate-400 mb-1">Actifs</span>
+ <span className="text-[10px] font-bold text-slate-600 mb-1">Actifs</span>
  </div>
  </div>
  <div className="dash-card !p-6">
  <p className="text-[10px] font-black text-emerald-500 uppercase tracking-widest mb-3">Lits Disponibles</p>
  <div className="flex items-end gap-2">
  <h3 className="text-2xl font-black text-emerald-600">{stats.free}</h3>
- <span className="text-[10px] font-bold text-slate-400 mb-1">Libres</span>
+ <span className="text-[10px] font-bold text-slate-600 mb-1">Libres</span>
  </div>
  </div>
  <div className="bg-slate-900 text-white p-6 rounded-[32px] border border-slate-800 shadow-sm relative overflow-hidden">
@@ -137,7 +137,7 @@ export default function HospitalizationPage() {
  <p className="text-[10px] font-black text-blue-400 uppercase tracking-widest mb-3">Capacité Totale</p>
  <div className="flex items-end gap-2">
  <h3 className="text-2xl font-black">{stats.totalBeds}</h3>
- <span className="text-[10px] font-bold text-slate-500 mb-1">Lits</span>
+ <span className="text-[10px] font-bold text-slate-600 mb-1">Lits</span>
  </div>
  </div>
  </div>
@@ -145,7 +145,7 @@ export default function HospitalizationPage() {
  {/* Room Grid */}
  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
  {isLoading ? (
- <div className="col-span-full text-center py-20 text-slate-400 font-bold uppercase text-[10px] tracking-widest">Cartographie des lits...</div>
+ <div className="col-span-full text-center py-20 text-slate-600 font-bold uppercase text-[10px] tracking-widest">Cartographie des lits...</div>
  ) : rooms.length > 0 ? rooms.map((room, index) => (
  <motion.div
  key={room.id}
@@ -156,7 +156,7 @@ export default function HospitalizationPage() {
  "p-8 rounded-[40px] border transition-all cursor-pointer relative overflow-hidden group",
  room.status === 'OCCUPIED' 
  ? "bg-white border-slate-200 shadow-sm" 
- : "bg-slate-50 /40 border-dashed border-slate-200 hover:border-blue-300 transition-all"
+ : "bg-white border-blue-100 shadow-sm /40 border-dashed border-slate-200 hover:border-blue-300 transition-all"
  )}
  >
  <div className="flex justify-between items-start mb-8 relative z-10">
@@ -166,7 +166,7 @@ export default function HospitalizationPage() {
  )}>
  <Bed className="w-6 h-6" />
  </div>
- <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest px-3 py-1 bg-white/50 rounded-full border border-slate-100 ">{room.type}</span>
+ <span className="text-[9px] font-black text-slate-600 uppercase tracking-widest px-3 py-1 bg-white/50 rounded-full border border-slate-100 ">{room.type}</span>
  </div>
 
  <div className="relative z-10">
@@ -181,17 +181,17 @@ export default function HospitalizationPage() {
  <p className="text-sm font-black truncate">{room.patient}</p>
  <div className="flex items-center gap-2 mt-0.5">
  <Activity className="w-3 h-3 text-emerald-500" />
- <span className="text-[10px] font-bold text-slate-400 uppercase">Stable</span>
+ <span className="text-[10px] font-bold text-slate-600 uppercase">Stable</span>
  </div>
  </div>
  </div>
- <button className="w-full mt-6 py-3 bg-slate-50 border border-slate-100 rounded-2xl text-[10px] font-black uppercase tracking-widest text-slate-500 hover:bg-red-50 hover:text-red-600 hover:border-red-100 transition-all flex items-center justify-center gap-2">
+ <button className="w-full mt-6 py-3 bg-white border-blue-100 shadow-sm border border-slate-100 rounded-2xl text-[10px] font-black uppercase tracking-widest text-slate-600 hover:bg-red-50 hover:text-red-600 hover:border-red-100 transition-all flex items-center justify-center gap-2">
  <LogOut className="w-3.5 h-3.5" /> Libérer
  </button>
  </div>
  ) : (
  <div className="mt-6">
- <p className="text-xs text-slate-400 font-bold uppercase tracking-widest">Disponible</p>
+ <p className="text-xs text-slate-600 font-bold uppercase tracking-widest">Disponible</p>
  <div className="h-16 flex items-end justify-center opacity-5 group-hover:opacity-10 transition-opacity">
  <Home className="w-20 h-20" />
  </div>
@@ -204,7 +204,7 @@ export default function HospitalizationPage() {
  )}
  </motion.div>
  )) : (
- <div className="col-span-full text-center py-20 text-slate-400 font-bold uppercase text-[10px] tracking-widest">Aucune chambre configurée</div>
+ <div className="col-span-full text-center py-20 text-slate-600 font-bold uppercase text-[10px] tracking-widest">Aucune chambre configurée</div>
  )}
  </div>
 

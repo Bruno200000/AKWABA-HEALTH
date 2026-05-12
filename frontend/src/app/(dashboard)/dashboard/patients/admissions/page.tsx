@@ -37,7 +37,7 @@ export default function AdmissionsPage() {
  <div className="space-y-8 pb-20">
  <div>
  <h1 className="text-3xl font-black text-slate-900 tracking-tight">Admissions en cours</h1>
- <p className="text-slate-500 font-medium">Suivez les patients en cours d'admission dans l'établissement.</p>
+ <p className="text-slate-600 font-medium">Suivez les patients en cours d'admission dans l'établissement.</p>
  </div>
 
  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -60,11 +60,11 @@ export default function AdmissionsPage() {
  </span>
  </div>
  <h3 className="font-black text-lg mb-1">{adm.patient}</h3>
- <div className="flex items-center gap-2 text-xs text-slate-400 font-bold mb-6">
+ <div className="flex items-center gap-2 text-xs text-slate-600 font-bold mb-6">
  <Clock className="w-3.5 h-3.5" /> Admission à {adm.time}
  </div>
  <div className="flex gap-2">
- <button className="flex-1 py-3 bg-slate-50 rounded-xl text-[10px] font-black uppercase tracking-widest text-slate-600 hover:bg-blue-600 hover:text-white transition-all">
+ <button className="flex-1 py-3 bg-white border-blue-100 shadow-sm rounded-xl text-[10px] font-black uppercase tracking-widest text-slate-600 hover:bg-blue-600 hover:text-white transition-all">
  Détails
  </button>
  <button className="px-4 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-all">

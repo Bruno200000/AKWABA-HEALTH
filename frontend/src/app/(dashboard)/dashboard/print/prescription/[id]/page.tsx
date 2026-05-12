@@ -43,10 +43,10 @@ export default function PrescriptionPrintPage() {
  if (!data) return <div className="p-10 text-center">Ordonnance non trouvée</div>;
 
  return (
- <div className="min-h-screen bg-slate-50 p-4 sm:p-8 print:p-0 print:bg-white">
+ <div className="min-h-screen bg-white border-blue-100 shadow-sm p-4 sm:p-8 print:p-0 print:bg-white">
  {/* Controls - Hidden on print */}
  <div className="max-w-4xl mx-auto mb-8 flex justify-between items-center print:hidden">
- <button onClick={() => window.close()} className="flex items-center gap-2 text-slate-500 hover:text-slate-800 font-bold">
+ <button onClick={() => window.close()} className="flex items-center gap-2 text-slate-600 hover:text-slate-800 font-bold">
  <ChevronLeft className="w-4 h-4" /> Fermer
  </button>
  <div className="flex gap-4">
@@ -70,8 +70,8 @@ export default function PrescriptionPrintPage() {
  )}
  <div>
  <h1 className="text-3xl font-black tracking-tighter uppercase">{data.hospitals?.name || "AKWABA HEALTH"}</h1>
- <p className="text-sm font-bold text-slate-500 max-w-xs">{data.hospitals?.address || "Abidjan, Côte d'Ivoire"}</p>
- <p className="text-sm font-bold text-slate-500">{data.hospitals?.phone || "+225 00 00 00 00"}</p>
+ <p className="text-sm font-bold text-slate-600 max-w-xs">{data.hospitals?.address || "Abidjan, Côte d'Ivoire"}</p>
+ <p className="text-sm font-bold text-slate-600">{data.hospitals?.phone || "+225 00 00 00 00"}</p>
  </div>
  </div>
  <div className="text-right">
@@ -79,23 +79,23 @@ export default function PrescriptionPrintPage() {
  Ordonnance Médicale
  </div>
  <p className="text-sm font-bold">N°: {data.id.slice(0, 8).toUpperCase()}</p>
- <p className="text-sm text-slate-500">Date: {format(new Date(data.created_at), 'dd/MM/yyyy')}</p>
+ <p className="text-sm text-slate-600">Date: {format(new Date(data.created_at), 'dd/MM/yyyy')}</p>
  </div>
  </div>
 
  {/* Patient & Doctor Info */}
  <div className="grid grid-cols-2 gap-12 mb-12">
- <div className="p-6 bg-slate-50 rounded-2xl">
- <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Informations Patient</p>
+ <div className="p-6 bg-white border-blue-100 shadow-sm rounded-2xl">
+ <p className="text-[10px] font-black text-slate-600 uppercase tracking-widest mb-3">Informations Patient</p>
  <h2 className="text-xl font-black mb-1">{data.patients?.first_name} {data.patients?.last_name}</h2>
  <p className="text-sm font-bold text-slate-600">{data.patients?.gender === 'M' ? 'Masculin' : 'Féminin'}, {data.patients?.birth_date ? `${new Date().getFullYear() - new Date(data.patients.birth_date).getFullYear()} ans` : 'Âge inconnu'}</p>
- <p className="text-sm text-slate-500 mt-2">ID: {data.patients?.file_number}</p>
+ <p className="text-sm text-slate-600 mt-2">ID: {data.patients?.file_number}</p>
  </div>
  <div className="p-6 border border-slate-100 rounded-2xl">
- <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Médecin Prescripteur</p>
+ <p className="text-[10px] font-black text-slate-600 uppercase tracking-widest mb-3">Médecin Prescripteur</p>
  <h2 className="text-xl font-black mb-1">Dr. {data.profiles?.first_name} {data.profiles?.last_name}</h2>
  <p className="text-sm font-bold text-blue-600">{data.profiles?.specialization || "Médecine Générale"}</p>
- <p className="text-sm text-slate-500 mt-2">Licence: {data.profiles?.license_number || "CI-12345-MED"}</p>
+ <p className="text-sm text-slate-600 mt-2">Licence: {data.profiles?.license_number || "CI-12345-MED"}</p>
  </div>
  </div>
 
@@ -113,13 +113,13 @@ export default function PrescriptionPrintPage() {
  Posologie: {item.dosage} — Pendant {item.duration}
  </p>
  {item.instructions && (
- <p className="text-sm text-slate-500 mt-2">Note: {item.instructions}</p>
+ <p className="text-sm text-slate-600 mt-2">Note: {item.instructions}</p>
  )}
  </div>
  </div>
  ))}
  {!data.prescription?.prescription_items?.length && (
- <p className="text-slate-400 italic">Aucun médicament prescrit pour cette consultation.</p>
+ <p className="text-slate-600 italic">Aucun médicament prescrit pour cette consultation.</p>
  )}
  </div>
  </div>
@@ -127,12 +127,12 @@ export default function PrescriptionPrintPage() {
 
  {/* Footer / Signature */}
  <div className="mt-20 pt-12 border-t border-slate-100 flex justify-between items-end">
- <div className="text-[10px] text-slate-400 font-bold max-w-xs leading-relaxed">
+ <div className="text-[10px] text-slate-600 font-bold max-w-xs leading-relaxed">
  Note: Cette ordonnance est valable 3 mois à compter de sa date d&apos;émission. 
  Veuillez respecter scrupuleusement les doses prescrites.
  </div>
  <div className="text-center min-w-[200px]">
- <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-12">Signature & Cachet</p>
+ <p className="text-xs font-bold text-slate-600 uppercase tracking-widest mb-12">Signature & Cachet</p>
  <div className="h-20 flex items-center justify-center italic text-blue-600 font-serif opacity-50">
  Dr. {data.profiles?.last_name}
  </div>

@@ -66,7 +66,7 @@ export default function StaffPage() {
  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
  <div>
  <h1 className="text-3xl font-black text-slate-900 tracking-tight">Gestion du Personnel</h1>
- <p className="text-slate-500 font-medium">Gérez votre équipe médicale et suivez leurs performances.</p>
+ <p className="text-slate-600 font-medium">Gérez votre équipe médicale et suivez leurs performances.</p>
  </div>
  <button 
  onClick={() => setIsModalOpen(true)}
@@ -82,7 +82,7 @@ export default function StaffPage() {
  onClick={() => setActiveTab("list")}
  className={cn(
  "pb-4 px-2 text-[10px] font-black uppercase tracking-widest transition-all relative",
- activeTab === "list" ? "text-blue-600" : "text-slate-400 hover:text-slate-600"
+ activeTab === "list" ? "text-blue-600" : "text-slate-600 hover:text-slate-600"
  )}
  >
  Liste du Personnel
@@ -92,7 +92,7 @@ export default function StaffPage() {
  onClick={() => setActiveTab("performance")}
  className={cn(
  "pb-4 px-2 text-[10px] font-black uppercase tracking-widest transition-all relative",
- activeTab === "performance" ? "text-blue-600" : "text-slate-400 hover:text-slate-600"
+ activeTab === "performance" ? "text-blue-600" : "text-slate-600 hover:text-slate-600"
  )}
  >
  Tableau de Performance
@@ -112,7 +112,7 @@ export default function StaffPage() {
  {/* Filters & Search */}
  <div className="flex flex-col md:flex-row gap-4">
  <div className="relative flex-1">
- <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+ <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-600" />
  <input 
  type="text" 
  placeholder="Rechercher par nom, rôle..."
@@ -123,7 +123,7 @@ export default function StaffPage() {
  </div>
  <div className="flex gap-2">
  {["Tous", "Médecins", "Infirmiers"].map((tab) => (
- <button key={tab} className="px-4 py-2 bg-white border border-slate-200 rounded-xl text-xs font-bold hover:bg-slate-50 transition-all first:bg-blue-600 first:text-white first:border-blue-600">
+ <button key={tab} className="px-4 py-2 bg-white border border-slate-200 rounded-xl text-xs font-bold hover:bg-white border-blue-100 shadow-sm transition-all first:bg-blue-600 first:text-white first:border-blue-600">
  {tab}
  </button>
  ))}
@@ -133,7 +133,7 @@ export default function StaffPage() {
  {/* Staff Grid */}
  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
  {isLoading ? (
- <div className="col-span-full text-center py-20 text-slate-400 font-bold uppercase text-[10px] tracking-widest">Initialisation...</div>
+ <div className="col-span-full text-center py-20 text-slate-600 font-bold uppercase text-[10px] tracking-widest">Initialisation...</div>
  ) : filteredStaff.length > 0 ? filteredStaff.map((staff, index) => (
  <motion.div
  key={staff.id}
@@ -167,17 +167,17 @@ export default function StaffPage() {
  </div>
 
  <div className="mt-8 space-y-3">
- <div className="flex items-center gap-3 text-xs text-slate-500 font-medium">
+ <div className="flex items-center gap-3 text-xs text-slate-600 font-medium">
  <Mail className="w-4 h-4 opacity-40" /> {staff.email || "Pas d'email"}
  </div>
- <div className="flex items-center gap-3 text-xs text-slate-500 font-medium">
+ <div className="flex items-center gap-3 text-xs text-slate-600 font-medium">
  <Award className="w-4 h-4 opacity-40" />{" "}
  {staff.specialization || staff.specialty || "Praticien"}
  </div>
  </div>
  </div>
 
- <div className="px-8 py-4 bg-slate-50 /50 border-t border-slate-100 flex justify-between items-center">
+ <div className="px-8 py-4 bg-white border-blue-100 shadow-sm /50 border-t border-slate-100 flex justify-between items-center">
  <button className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-blue-600 hover:underline">
  <Calendar className="w-3.5 h-3.5" /> Planning
  </button>
@@ -187,7 +187,7 @@ export default function StaffPage() {
  </div>
  </motion.div>
  )) : (
- <div className="col-span-full text-center py-20 text-slate-400 font-bold uppercase text-[10px] tracking-widest">Aucun membre trouvé</div>
+ <div className="col-span-full text-center py-20 text-slate-600 font-bold uppercase text-[10px] tracking-widest">Aucun membre trouvé</div>
  )}
  </div>
  </motion.div>

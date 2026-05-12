@@ -53,16 +53,16 @@ export default function PrintPage() {
  <div className="min-h-screen flex items-center justify-center bg-white">
  <div className="text-center space-y-4">
  <Loader2 className="w-10 h-10 animate-spin text-blue-600 mx-auto" />
- <p className="font-bold text-slate-500 uppercase tracking-widest text-xs">Préparation de l&apos;impression...</p>
+ <p className="font-bold text-slate-600 uppercase tracking-widest text-xs">Préparation de l&apos;impression...</p>
  </div>
  </div>
  );
  }
 
  return (
- <div className="bg-slate-50 min-h-screen py-10 print:bg-white print:py-0">
+ <div className="bg-white border-blue-100 shadow-sm min-h-screen py-10 print:bg-white print:py-0">
  <div className="max-w-[800px] mx-auto mb-8 flex justify-between items-center px-4 print:hidden">
- <p className="text-sm text-slate-500 font-medium">Aperçu avant impression — {type?.toString().toUpperCase()}</p>
+ <p className="text-sm text-slate-600 font-medium">Aperçu avant impression — {type?.toString().toUpperCase()}</p>
  <button onClick={() => window.print()} className="px-6 py-2 bg-blue-600 text-white rounded-xl font-bold text-sm shadow-lg hover:bg-blue-700 transition-all">Imprimer maintenant</button>
  </div>
  

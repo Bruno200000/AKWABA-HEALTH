@@ -83,7 +83,7 @@ export default function LabTestForm({ onSuccess, onCancel }: LabTestFormProps) {
  <label className="text-sm font-bold text-slate-700 flex items-center gap-2">
  <User className="w-4 h-4 text-blue-500" /> Patient
  </label>
- <select required name="patient_id" value={formData.patient_id} onChange={handleChange} className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500/20 outline-none">
+ <select required name="patient_id" value={formData.patient_id} onChange={handleChange} className="w-full px-4 py-3 bg-white border-blue-100 shadow-sm border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500/20 outline-none">
  <option value="">Sélectionner un patient</option>
  {patients.map(p => (
  <option key={p.id} value={p.id}>{p.first_name} {p.last_name}</option>
@@ -95,7 +95,7 @@ export default function LabTestForm({ onSuccess, onCancel }: LabTestFormProps) {
  <label className="text-sm font-bold text-slate-700 flex items-center gap-2">
  <Beaker className="w-4 h-4 text-purple-500" /> Type d&apos;analyse
  </label>
- <select required name="test_type" value={formData.test_type} onChange={handleChange} className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500/20 outline-none">
+ <select required name="test_type" value={formData.test_type} onChange={handleChange} className="w-full px-4 py-3 bg-white border-blue-100 shadow-sm border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500/20 outline-none">
  <option value="">Choisir un test</option>
  <option value="SANG_NFS">NFS (Sang)</option>
  <option value="GLYCEMIE">Glycémie</option>
@@ -108,14 +108,14 @@ export default function LabTestForm({ onSuccess, onCancel }: LabTestFormProps) {
 
  <div className="space-y-2">
  <label className="text-sm font-bold text-slate-700 flex items-center gap-2">
- <FileText className="w-4 h-4 text-slate-400" /> Notes / Indications
+ <FileText className="w-4 h-4 text-slate-600" /> Notes / Indications
  </label>
- <textarea name="notes" value={formData.notes} onChange={handleChange} className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500/20 outline-none min-h-[100px]" placeholder="Pourquoi cet examen ? Précisions médicales..." />
+ <textarea name="notes" value={formData.notes} onChange={handleChange} className="w-full px-4 py-3 bg-white border-blue-100 shadow-sm border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500/20 outline-none min-h-[100px]" placeholder="Pourquoi cet examen ? Précisions médicales..." />
  </div>
  </div>
 
  <div className="pt-6 flex gap-3">
- <button type="button" onClick={onCancel} className="flex-1 py-4 border border-slate-200 rounded-2xl font-bold text-slate-600 hover:bg-slate-50 transition-all">
+ <button type="button" onClick={onCancel} className="flex-1 py-4 border border-slate-200 rounded-2xl font-bold text-slate-600 hover:bg-white border-blue-100 shadow-sm transition-all">
  Annuler
  </button>
  <button disabled={isLoading} type="submit" className="flex-[2] py-4 bg-blue-600 text-white rounded-2xl font-bold shadow-lg shadow-blue-200 hover:bg-blue-700 transition-all flex items-center justify-center gap-2">

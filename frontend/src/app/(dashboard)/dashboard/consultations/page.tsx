@@ -58,7 +58,7 @@ export default function ConsultationsPage() {
  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
  <div>
  <h1 className="text-2xl font-bold text-slate-900 ">Consultations Médicales</h1>
- <p className="text-slate-500 ">Enregistrez et consultez les diagnostics et ordonnances.</p>
+ <p className="text-slate-600 ">Enregistrez et consultez les diagnostics et ordonnances.</p>
  </div>
  <button 
  onClick={() => setIsModalOpen(true)}
@@ -71,7 +71,7 @@ export default function ConsultationsPage() {
  {/* Search & Filters */}
  <div className="flex gap-4">
  <div className="relative flex-1">
- <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+ <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-600" />
  <input 
  type="text" 
  placeholder="Rechercher une consultation (Patient, Docteur, Diagnostic)..."
@@ -85,7 +85,7 @@ export default function ConsultationsPage() {
  {/* Consultations List */}
  <div className="grid grid-cols-1 gap-4">
  {isLoading ? (
- <div className="text-center py-10 text-slate-500">Chargement des consultations...</div>
+ <div className="text-center py-10 text-slate-600">Chargement des consultations...</div>
  ) : filteredConsultations.length > 0 ? filteredConsultations.map((cons, index) => (
  <motion.div
  key={cons.id}
@@ -104,12 +104,12 @@ export default function ConsultationsPage() {
  <h3 className="font-bold text-lg">{cons.patients?.first_name} {cons.patients?.last_name}</h3>
  <span className={cn(
  "px-2 py-0.5 rounded-full text-[10px] font-bold uppercase border",
- cons.type === 'Urgence' ? "bg-red-50 text-red-600 border-red-100" : "bg-slate-50 text-slate-600 border-slate-100"
+ cons.type === 'Urgence' ? "bg-red-50 text-red-600 border-red-100" : "bg-white border-blue-100 shadow-sm text-slate-600 border-slate-100"
  )}>
  {cons.type || 'Standard'}
  </span>
  </div>
- <p className="text-sm text-slate-500 mt-1 flex items-center gap-2">
+ <p className="text-sm text-slate-600 mt-1 flex items-center gap-2">
  <User className="w-3.5 h-3.5" /> Par Dr. {cons.profiles?.last_name}
  </p>
  </div>
@@ -122,15 +122,15 @@ export default function ConsultationsPage() {
 
  <div className="flex flex-row md:flex-col items-center md:items-end justify-between md:justify-center gap-4">
  <div className="text-right">
- <div className="flex items-center gap-1.5 text-xs text-slate-500 font-medium">
+ <div className="flex items-center gap-1.5 text-xs text-slate-600 font-medium">
  <Clock className="w-3.5 h-3.5" /> {new Date(cons.created_at).toLocaleDateString()}
  </div>
  </div>
  <div className="flex items-center gap-2">
- <button className="p-2 bg-slate-50 text-slate-600 rounded-lg hover:text-blue-600 transition-colors" title="Ordonnance">
+ <button className="p-2 bg-white border-blue-100 shadow-sm text-slate-600 rounded-lg hover:text-blue-600 transition-colors" title="Ordonnance">
  <Pill className="w-4 h-4" />
  </button>
- <button className="p-2 bg-slate-50 text-slate-600 rounded-lg hover:text-blue-600 transition-colors" title="Rapport PDF">
+ <button className="p-2 bg-white border-blue-100 shadow-sm text-slate-600 rounded-lg hover:text-blue-600 transition-colors" title="Rapport PDF">
  <FileText className="w-4 h-4" />
  </button>
  <ChevronRight className="w-5 h-5 text-slate-300 group-hover:text-blue-500 transition-colors ml-2" />
@@ -139,7 +139,7 @@ export default function ConsultationsPage() {
  </div>
  </motion.div>
  )) : (
- <div className="text-center py-10 text-slate-500">Aucune consultation trouvée</div>
+ <div className="text-center py-10 text-slate-600">Aucune consultation trouvée</div>
  )}
  </div>
 

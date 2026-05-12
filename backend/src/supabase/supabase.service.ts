@@ -15,7 +15,7 @@ export class SupabaseService {
       this.logger.error('Supabase URL or Key is missing in environment variables');
     }
 
-    this.supabase = createClient(supabaseUrl, supabaseKey);
+    this.supabase = createClient(supabaseUrl!, supabaseKey!);
   }
 
   getClient() {

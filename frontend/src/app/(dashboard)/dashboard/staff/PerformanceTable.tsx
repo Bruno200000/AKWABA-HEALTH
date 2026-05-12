@@ -66,7 +66,7 @@ export default function PerformanceTable() {
  };
  return (
  <div className="dash-table-container">
- <div className="p-8 border-b border-slate-100 flex justify-between items-center">
+ <div className="p-8 border-b border-blue-50 flex justify-between items-center">
  <div>
  <h3 className="text-xl font-black tracking-tight">Performance du Personnel</h3>
  <p className="text-xs text-slate-600 font-bold uppercase tracking-widest mt-1">Évaluation mensuelle (Mai 2026)</p>
@@ -131,7 +131,7 @@ export default function PerformanceTable() {
  </div>
  </td>
  <td className="px-8 py-6">
- <div className="w-32 h-2 bg-slate-100 rounded-full overflow-hidden">
+ <div className="w-32 h-2 bg-blue-50/50 rounded-full overflow-hidden">
  <motion.div 
  initial={{ width: 0 }}
  animate={{ width: `${(staff.satisfaction + staff.punctuality) / 2}%` }}
@@ -144,7 +144,7 @@ export default function PerformanceTable() {
  "px-3 py-1 rounded-xl text-[9px] font-black border uppercase tracking-widest",
  staff.status === 'Excellent' ? "bg-emerald-50 text-emerald-600 border-emerald-100" :
  staff.status === 'Top Performer' ? "bg-blue-50 text-blue-600 border-blue-100" :
- "bg-white border-blue-100 shadow-sm text-slate-600 border-slate-100"
+ "bg-white border-blue-100 shadow-sm text-slate-600 border-blue-50"
  )}>
  {staff.status}
  </span>

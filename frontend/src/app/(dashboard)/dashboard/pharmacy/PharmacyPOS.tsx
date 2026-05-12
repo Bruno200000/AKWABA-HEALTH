@@ -126,7 +126,7 @@ export default function PharmacyPOS({ onComplete }: { onComplete: () => void }) 
  placeholder="Rechercher un médicament ou scanner..."
  value={search}
  onChange={(e) => setSearch(e.target.value)}
- className="w-full pl-12 pr-4 py-4 bg-slate-100 border-none rounded-2xl text-sm focus:ring-2 focus:ring-blue-500/20"
+ className="w-full pl-12 pr-4 py-4 bg-blue-50/50 border-none rounded-2xl text-sm focus:ring-2 focus:ring-blue-500/20"
  />
  </div>
 
@@ -137,7 +137,7 @@ export default function PharmacyPOS({ onComplete }: { onComplete: () => void }) 
  whileHover={{ scale: 1.02 }}
  whileTap={{ scale: 0.98 }}
  onClick={() => addToCart(item)}
- className="p-4 bg-white border border-slate-100 rounded-[24px] text-left hover:border-blue-500 transition-all group relative overflow-hidden"
+ className="p-4 bg-white border border-blue-50 rounded-[24px] text-left hover:border-blue-500 transition-all group relative overflow-hidden"
  >
  <div className="flex justify-between items-start mb-4">
  <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
@@ -154,8 +154,8 @@ export default function PharmacyPOS({ onComplete }: { onComplete: () => void }) 
  </div>
 
  {/* Cart & Checkout */}
- <div className="bg-white rounded-[40px] border border-slate-200 shadow-sm flex flex-col overflow-hidden">
- <div className="p-8 border-b border-slate-100 flex justify-between items-center">
+ <div className="bg-white rounded-[40px]  shadow-sm flex flex-col overflow-hidden">
+ <div className="p-8 border-b border-blue-50 flex justify-between items-center">
  <h3 className="font-black text-lg tracking-tight flex items-center gap-2">
  <ShoppingCart className="w-5 h-5 text-blue-600" /> Panier
  </h3>
@@ -172,14 +172,14 @@ export default function PharmacyPOS({ onComplete }: { onComplete: () => void }) 
  <div className="flex items-center gap-2">
  <button 
  onClick={() => updateQuantity(item.id, -1)}
- className="w-6 h-6 rounded-lg bg-slate-100 flex items-center justify-center text-slate-600"
+ className="w-6 h-6 rounded-lg bg-blue-50/50 flex items-center justify-center text-slate-600"
  >
  <Minus className="w-3 h-3" />
  </button>
  <span className="text-sm font-black w-4 text-center">{item.quantity}</span>
  <button 
  onClick={() => updateQuantity(item.id, 1)}
- className="w-6 h-6 rounded-lg bg-slate-100 flex items-center justify-center text-slate-600"
+ className="w-6 h-6 rounded-lg bg-blue-50/50 flex items-center justify-center text-slate-600"
  >
  <Plus className="w-3 h-3" />
  </button>
@@ -213,7 +213,7 @@ export default function PharmacyPOS({ onComplete }: { onComplete: () => void }) 
  {[
  { id: 'cash', icon: DollarSign, color: 'bg-emerald-600' },
  { id: 'wave', icon: Zap, color: 'bg-blue-500' },
- { id: 'card', icon: CreditCard, color: 'bg-slate-900' },
+ { id: 'card', icon: CreditCard, color: 'bg-blue-600' },
  ].map((m) => (
  <button
  key={m.id}

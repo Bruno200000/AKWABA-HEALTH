@@ -82,7 +82,7 @@ export default function StaffForm({ onSuccess, onCancel }: StaffFormProps) {
  name="first_name"
  value={formData.first_name}
  onChange={handleChange}
- className="w-full px-4 py-3 bg-white border-blue-100 shadow-sm border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500/20 outline-none"
+ className="w-full px-4 py-3 bg-white border-blue-100 shadow-sm  rounded-2xl focus:ring-2 focus:ring-blue-500/20 outline-none"
  placeholder="Dr. Marc"
  />
  </div>
@@ -93,7 +93,7 @@ export default function StaffForm({ onSuccess, onCancel }: StaffFormProps) {
  name="last_name"
  value={formData.last_name}
  onChange={handleChange}
- className="w-full px-4 py-3 bg-white border-blue-100 shadow-sm border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500/20 outline-none"
+ className="w-full px-4 py-3 bg-white border-blue-100 shadow-sm  rounded-2xl focus:ring-2 focus:ring-blue-500/20 outline-none"
  placeholder="Dibi"
  />
  </div>
@@ -103,7 +103,7 @@ export default function StaffForm({ onSuccess, onCancel }: StaffFormProps) {
  name="role"
  value={formData.role}
  onChange={handleChange}
- className="w-full px-4 py-3 bg-white border-blue-100 shadow-sm border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500/20 outline-none"
+ className="w-full px-4 py-3 bg-white border-blue-100 shadow-sm  rounded-2xl focus:ring-2 focus:ring-blue-500/20 outline-none"
  >
  <option value="DOCTOR">Médecin / Praticien</option>
  <option value="NURSE">Infirmier(e)</option>
@@ -125,7 +125,7 @@ export default function StaffForm({ onSuccess, onCancel }: StaffFormProps) {
  name="specialization"
  value={formData.specialization}
  onChange={handleChange}
- className="w-full px-4 py-3 bg-white border-blue-100 shadow-sm border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500/20 outline-none"
+ className="w-full px-4 py-3 bg-white border-blue-100 shadow-sm  rounded-2xl focus:ring-2 focus:ring-blue-500/20 outline-none"
  placeholder="Ex: Cardiologie, pédiatrie…"
  />
  </div>
@@ -137,7 +137,7 @@ export default function StaffForm({ onSuccess, onCancel }: StaffFormProps) {
  name="phone"
  value={formData.phone}
  onChange={handleChange}
- className="w-full px-4 py-3 bg-white border-blue-100 shadow-sm border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500/20 outline-none"
+ className="w-full px-4 py-3 bg-white border-blue-100 shadow-sm  rounded-2xl focus:ring-2 focus:ring-blue-500/20 outline-none"
  placeholder="+225 0102030405"
  />
  </div>
@@ -151,7 +151,7 @@ export default function StaffForm({ onSuccess, onCancel }: StaffFormProps) {
  name="email"
  value={formData.email}
  onChange={handleChange}
- className="w-full px-4 py-3 bg-white border-blue-100 shadow-sm border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500/20 outline-none"
+ className="w-full px-4 py-3 bg-white border-blue-100 shadow-sm  rounded-2xl focus:ring-2 focus:ring-blue-500/20 outline-none"
  placeholder="m.dibi@hopital.ci"
  />
  </div>
@@ -167,7 +167,7 @@ export default function StaffForm({ onSuccess, onCancel }: StaffFormProps) {
  onChange={handleChange}
  minLength={8}
  autoComplete="new-password"
- className="w-full px-4 py-3 bg-white border-blue-100 shadow-sm border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500/20 outline-none"
+ className="w-full px-4 py-3 bg-white border-blue-100 shadow-sm  rounded-2xl focus:ring-2 focus:ring-blue-500/20 outline-none"
  placeholder="Minimum 8 caractères"
  />
  </div>
@@ -178,7 +178,7 @@ export default function StaffForm({ onSuccess, onCancel }: StaffFormProps) {
  <button
  type="button"
  onClick={onCancel}
- className="flex-1 py-4 border border-slate-200 rounded-2xl font-bold text-slate-600 hover:bg-white border-blue-100 shadow-sm transition-all"
+ className="flex-1 py-4  rounded-2xl font-bold text-slate-600 hover:bg-white border-blue-100 shadow-sm transition-all"
  >
  Annuler
  </button>

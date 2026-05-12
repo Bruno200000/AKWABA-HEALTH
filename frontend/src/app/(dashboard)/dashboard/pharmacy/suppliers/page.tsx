@@ -207,7 +207,7 @@ export default function SuppliersPage() {
  required
  value={form.name}
  onChange={(e) => setForm({ ...form, name: e.target.value })}
- className="w-full px-4 py-3 bg-white border-blue-100 shadow-sm border border-slate-200 rounded-2xl text-sm"
+ className="w-full px-4 py-3 bg-white border-blue-100 shadow-sm  rounded-2xl text-sm"
  placeholder="Laborex, DPCI…"
  />
  </div>
@@ -217,7 +217,7 @@ export default function SuppliersPage() {
  <input
  value={form.contact_name}
  onChange={(e) => setForm({ ...form, contact_name: e.target.value })}
- className="w-full px-4 py-3 bg-white border-blue-100 shadow-sm border border-slate-200 rounded-2xl text-sm"
+ className="w-full px-4 py-3 bg-white border-blue-100 shadow-sm  rounded-2xl text-sm"
  />
  </div>
  <div className="space-y-1">
@@ -225,7 +225,7 @@ export default function SuppliersPage() {
  <input
  value={form.category}
  onChange={(e) => setForm({ ...form, category: e.target.value })}
- className="w-full px-4 py-3 bg-white border-blue-100 shadow-sm border border-slate-200 rounded-2xl text-sm"
+ className="w-full px-4 py-3 bg-white border-blue-100 shadow-sm  rounded-2xl text-sm"
  placeholder="Générique, matériel…"
  />
  </div>
@@ -236,7 +236,7 @@ export default function SuppliersPage() {
  <input
  value={form.phone}
  onChange={(e) => setForm({ ...form, phone: e.target.value })}
- className="w-full px-4 py-3 bg-white border-blue-100 shadow-sm border border-slate-200 rounded-2xl text-sm"
+ className="w-full px-4 py-3 bg-white border-blue-100 shadow-sm  rounded-2xl text-sm"
  />
  </div>
  <div className="space-y-1">
@@ -245,7 +245,7 @@ export default function SuppliersPage() {
  type="email"
  value={form.email}
  onChange={(e) => setForm({ ...form, email: e.target.value })}
- className="w-full px-4 py-3 bg-white border-blue-100 shadow-sm border border-slate-200 rounded-2xl text-sm"
+ className="w-full px-4 py-3 bg-white border-blue-100 shadow-sm  rounded-2xl text-sm"
  />
  </div>
  </div>
@@ -254,14 +254,14 @@ export default function SuppliersPage() {
  <textarea
  value={form.notes}
  onChange={(e) => setForm({ ...form, notes: e.target.value })}
- className="w-full px-4 py-3 bg-white border-blue-100 shadow-sm border border-slate-200 rounded-2xl text-sm min-h-[80px]"
+ className="w-full px-4 py-3 bg-white border-blue-100 shadow-sm  rounded-2xl text-sm min-h-[80px]"
  />
  </div>
  <div className="flex gap-3 pt-4">
  <button
  type="button"
  onClick={() => setIsModalOpen(false)}
- className="flex-1 py-3 rounded-2xl border border-slate-200 font-bold text-slate-600"
+ className="flex-1 py-3 rounded-2xl  font-bold text-slate-600"
  >
  Annuler
  </button>

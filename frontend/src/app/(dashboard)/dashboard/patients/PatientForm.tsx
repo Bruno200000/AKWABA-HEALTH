@@ -82,20 +82,20 @@ export default function PatientForm({ onSuccess, onCancel }: PatientFormProps) {
  </h4>
  <div className="space-y-2">
  <label className="text-xs font-bold text-slate-600 ml-1">Prénom</label>
- <input required name="first_name" value={formData.first_name} onChange={handleChange} className="w-full px-4 py-3 bg-white border-blue-100 shadow-sm border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500/20 outline-none" placeholder="Jean" />
+ <input required name="first_name" value={formData.first_name} onChange={handleChange} className="w-full px-4 py-3 bg-white border-blue-100 shadow-sm  rounded-2xl focus:ring-2 focus:ring-blue-500/20 outline-none" placeholder="Jean" />
  </div>
  <div className="space-y-2">
  <label className="text-xs font-bold text-slate-600 ml-1">Nom</label>
- <input required name="last_name" value={formData.last_name} onChange={handleChange} className="w-full px-4 py-3 bg-white border-blue-100 shadow-sm border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500/20 outline-none" placeholder="Kouassi" />
+ <input required name="last_name" value={formData.last_name} onChange={handleChange} className="w-full px-4 py-3 bg-white border-blue-100 shadow-sm  rounded-2xl focus:ring-2 focus:ring-blue-500/20 outline-none" placeholder="Kouassi" />
  </div>
  <div className="grid grid-cols-2 gap-4">
  <div className="space-y-2">
  <label className="text-xs font-bold text-slate-600 ml-1">Date de naissance</label>
- <input required type="date" name="birth_date" value={formData.birth_date} onChange={handleChange} className="w-full px-4 py-3 bg-white border-blue-100 shadow-sm border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500/20 outline-none text-sm" />
+ <input required type="date" name="birth_date" value={formData.birth_date} onChange={handleChange} className="w-full px-4 py-3 bg-white border-blue-100 shadow-sm  rounded-2xl focus:ring-2 focus:ring-blue-500/20 outline-none text-sm" />
  </div>
  <div className="space-y-2">
  <label className="text-xs font-bold text-slate-600 ml-1">Sexe</label>
- <select name="gender" value={formData.gender} onChange={handleChange} className="w-full px-4 py-3 bg-white border-blue-100 shadow-sm border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500/20 outline-none text-sm">
+ <select name="gender" value={formData.gender} onChange={handleChange} className="w-full px-4 py-3 bg-white border-blue-100 shadow-sm  rounded-2xl focus:ring-2 focus:ring-blue-500/20 outline-none text-sm">
  <option value="M">Masculin</option>
  <option value="F">Féminin</option>
  <option value="O">Autre</option>
@@ -111,16 +111,16 @@ export default function PatientForm({ onSuccess, onCancel }: PatientFormProps) {
  </h4>
  <div className="space-y-2">
  <label className="text-xs font-bold text-slate-600 ml-1">Téléphone</label>
- <input required name="phone" value={formData.phone} onChange={handleChange} className="w-full px-4 py-3 bg-white border-blue-100 shadow-sm border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500/20 outline-none text-sm" placeholder="+225 0700000000" />
+ <input required name="phone" value={formData.phone} onChange={handleChange} className="w-full px-4 py-3 bg-white border-blue-100 shadow-sm  rounded-2xl focus:ring-2 focus:ring-blue-500/20 outline-none text-sm" placeholder="+225 0700000000" />
  </div>
  <div className="space-y-2">
  <label className="text-xs font-bold text-slate-600 ml-1">Email</label>
- <input type="email" name="email" value={formData.email} onChange={handleChange} className="w-full px-4 py-3 bg-white border-blue-100 shadow-sm border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500/20 outline-none text-sm" placeholder="jean@exemple.com" />
+ <input type="email" name="email" value={formData.email} onChange={handleChange} className="w-full px-4 py-3 bg-white border-blue-100 shadow-sm  rounded-2xl focus:ring-2 focus:ring-blue-500/20 outline-none text-sm" placeholder="jean@exemple.com" />
  </div>
  <div className="grid grid-cols-2 gap-4">
  <div className="space-y-2">
  <label className="text-xs font-bold text-slate-600 ml-1">Groupe Sanguin</label>
- <select name="blood_group" value={formData.blood_group} onChange={handleChange} className="w-full px-4 py-3 bg-white border-blue-100 shadow-sm border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500/20 outline-none text-sm">
+ <select name="blood_group" value={formData.blood_group} onChange={handleChange} className="w-full px-4 py-3 bg-white border-blue-100 shadow-sm  rounded-2xl focus:ring-2 focus:ring-blue-500/20 outline-none text-sm">
  <option value="">Inconnu</option>
  <option value="A+">A+</option>
  <option value="A-">A-</option>
@@ -134,7 +134,7 @@ export default function PatientForm({ onSuccess, onCancel }: PatientFormProps) {
  </div>
  <div className="space-y-2">
  <label className="text-xs font-bold text-slate-600 ml-1">Allergies (séparées par virgule)</label>
- <input name="allergies" value={formData.allergies} onChange={handleChange} className="w-full px-4 py-3 bg-white border-blue-100 shadow-sm border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500/20 outline-none text-sm" placeholder="Pénicilline, Arachides..." />
+ <input name="allergies" value={formData.allergies} onChange={handleChange} className="w-full px-4 py-3 bg-white border-blue-100 shadow-sm  rounded-2xl focus:ring-2 focus:ring-blue-500/20 outline-none text-sm" placeholder="Pénicilline, Arachides..." />
  </div>
  </div>
  </div>
@@ -147,7 +147,7 @@ export default function PatientForm({ onSuccess, onCancel }: PatientFormProps) {
  </h4>
  <div className="space-y-2">
  <label className="text-xs font-bold text-slate-600 ml-1">Adresse complète</label>
- <textarea name="address" value={formData.address} onChange={handleChange} className="w-full px-4 py-3 bg-white border-blue-100 shadow-sm border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500/20 outline-none min-h-[80px] text-sm" placeholder="Abidjan, Cocody, Cité des arts..." />
+ <textarea name="address" value={formData.address} onChange={handleChange} className="w-full px-4 py-3 bg-white border-blue-100 shadow-sm  rounded-2xl focus:ring-2 focus:ring-blue-500/20 outline-none min-h-[80px] text-sm" placeholder="Abidjan, Cocody, Cité des arts..." />
  </div>
  </div>
  <div className="space-y-4">
@@ -157,11 +157,11 @@ export default function PatientForm({ onSuccess, onCancel }: PatientFormProps) {
  <div className="space-y-4">
  <div className="space-y-2">
  <label className="text-xs font-bold text-slate-600 ml-1">Assureur</label>
- <input name="insurance_provider" value={formData.insurance_provider} onChange={handleChange} className="w-full px-4 py-3 bg-white border-blue-100 shadow-sm border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500/20 outline-none text-sm" placeholder="MUGEF-CI, SAHAM, etc." />
+ <input name="insurance_provider" value={formData.insurance_provider} onChange={handleChange} className="w-full px-4 py-3 bg-white border-blue-100 shadow-sm  rounded-2xl focus:ring-2 focus:ring-blue-500/20 outline-none text-sm" placeholder="MUGEF-CI, SAHAM, etc." />
  </div>
  <div className="space-y-2">
  <label className="text-xs font-bold text-slate-600 ml-1">Numéro de police / Assuré</label>
- <input name="insurance_number" value={formData.insurance_number} onChange={handleChange} className="w-full px-4 py-3 bg-white border-blue-100 shadow-sm border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500/20 outline-none text-sm" placeholder="123-456-789" />
+ <input name="insurance_number" value={formData.insurance_number} onChange={handleChange} className="w-full px-4 py-3 bg-white border-blue-100 shadow-sm  rounded-2xl focus:ring-2 focus:ring-blue-500/20 outline-none text-sm" placeholder="123-456-789" />
  </div>
  </div>
  </div>
@@ -173,12 +173,12 @@ export default function PatientForm({ onSuccess, onCancel }: PatientFormProps) {
  </h4>
  <div className="space-y-2">
  <label className="text-xs font-bold text-slate-600 ml-1">Notes sur l&apos;historique médical</label>
- <textarea name="medical_history" value={formData.medical_history} onChange={handleChange} className="w-full px-4 py-3 bg-white border-blue-100 shadow-sm border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500/20 outline-none min-h-[120px] text-sm" placeholder="Asthme depuis l'enfance, opération du genou en 2018..." />
+ <textarea name="medical_history" value={formData.medical_history} onChange={handleChange} className="w-full px-4 py-3 bg-white border-blue-100 shadow-sm  rounded-2xl focus:ring-2 focus:ring-blue-500/20 outline-none min-h-[120px] text-sm" placeholder="Asthme depuis l'enfance, opération du genou en 2018..." />
  </div>
  </div>
 
  <div className="pt-6 flex gap-3 sticky bottom-0 bg-white pb-2">
- <button type="button" onClick={onCancel} className="flex-1 py-4 border border-slate-200 rounded-2xl font-bold text-slate-600 hover:bg-white border-blue-100 shadow-sm transition-all">
+ <button type="button" onClick={onCancel} className="flex-1 py-4  rounded-2xl font-bold text-slate-600 hover:bg-white border-blue-100 shadow-sm transition-all">
  Annuler
  </button>
  <button disabled={isLoading} type="submit" className="flex-[2] py-4 bg-blue-600 text-white rounded-2xl font-bold shadow-lg shadow-blue-200 hover:bg-blue-700 transition-all flex items-center justify-center gap-2">

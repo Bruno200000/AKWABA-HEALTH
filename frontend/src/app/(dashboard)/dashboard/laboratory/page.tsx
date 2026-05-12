@@ -23,7 +23,7 @@ import ResultEntry from "./ResultEntry";
 import { supabase } from "@/lib/supabase";
 
 const statusStyles = {
- ORDERED: "bg-white border-blue-100 shadow-sm text-slate-600 border-slate-100",
+ ORDERED: "bg-white border-blue-100 shadow-sm text-slate-600 border-blue-50",
  IN_PROGRESS: "bg-blue-50 text-blue-600 border-blue-100",
  COMPLETED: "bg-emerald-50 text-emerald-600 border-emerald-100",
 };
@@ -130,10 +130,10 @@ export default function LaboratoryPage() {
  placeholder="Rechercher par patient ou test..."
  value={searchQuery}
  onChange={(e) => setSearchQuery(e.target.value)}
- className="w-full pl-10 pr-4 py-3 bg-white border border-slate-200 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/10 transition-all"
+ className="w-full pl-10 pr-4 py-3 bg-white  rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/10 transition-all"
  />
  </div>
- <button className="flex items-center gap-2 px-4 py-3 bg-white border border-slate-200 rounded-2xl text-sm font-bold hover:bg-white border-blue-100 shadow-sm transition-all">
+ <button className="flex items-center gap-2 px-4 py-3 bg-white  rounded-2xl text-sm font-bold hover:bg-white border-blue-100 shadow-sm transition-all">
  <Filter className="w-4 h-4" />
  </button>
  </div>
@@ -184,7 +184,7 @@ export default function LaboratoryPage() {
  </td>
  <td className="px-8 py-6">
  <div className="flex items-center gap-3">
- <button onClick={() => { setSelectedTest(test); setActiveView("entry"); }} className="px-4 py-1.5 bg-slate-900 text-white text-[9px] font-black uppercase rounded-xl hover:bg-blue-600 transition-all">Saisir</button>
+ <button onClick={() => { setSelectedTest(test); setActiveView("entry"); }} className="px-4 py-1.5 bg-blue-600 text-white text-[9px] font-black uppercase rounded-xl hover:bg-blue-600 transition-all">Saisir</button>
  <button className="p-2 text-slate-300 hover:text-blue-600 transition-colors"><QrCode className="w-4 h-4" /></button>
  </div>
  </td>

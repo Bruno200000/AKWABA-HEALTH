@@ -23,11 +23,13 @@ import { cn } from "@/lib/utils";
 import { supabase } from "@/lib/supabase";
 
 const tabs = [
- { id: "profile", label: "Mon Profil", icon: User, desc: "Informations personnelles" },
- { id: "hospital", label: "Établissement", icon: Building2, desc: "Identité et coordonnées" },
- { id: "security", label: "Sécurité & Accès", icon: ShieldCheck, desc: "Mots de passe et rôles" },
- { id: "notifications", label: "Communications", icon: Bell, desc: "Alertes SMS et Emails" },
- { id: "billing", label: "Abonnement", icon: CreditCard, desc: "Plans et facturation" },
+  { id: "profile", label: "Mon Profil", icon: User, desc: "Informations personnelles" },
+  { id: "hospital", label: "Établissement", icon: Building2, desc: "Identité et coordonnées" },
+  { id: "branding", label: "Personnalisation", icon: Camera, desc: "Logo et couleurs" },
+  { id: "ai", label: "IA Akwaba", icon: Zap, desc: "Intelligence Médicale" },
+  { id: "security", label: "Sécurité & Accès", icon: ShieldCheck, desc: "Mots de passe et rôles" },
+  { id: "notifications", label: "Communications", icon: Bell, desc: "Alertes SMS et Emails" },
+  { id: "billing", label: "Abonnement", icon: CreditCard, desc: "Plans et facturation" },
 ];
 
 export default function SettingsPage() {
@@ -92,13 +94,13 @@ export default function SettingsPage() {
  className={cn(
  "w-full flex items-center gap-4 px-6 py-5 rounded-[28px] transition-all relative group",
  activeTab === tab.id 
- ? "bg-white shadow-xl shadow-slate-200/50 border border-slate-100 " 
+ ? "bg-white shadow-xl shadow-slate-200/50 border border-blue-50 " 
  : "text-slate-600 hover:bg-white border-blue-100 shadow-sm "
  )}
  >
  <div className={cn(
  "w-12 h-12 rounded-2xl flex items-center justify-center transition-all",
- activeTab === tab.id ? "bg-blue-600 text-white shadow-lg shadow-blue-200" : "bg-slate-100 text-slate-600"
+ activeTab === tab.id ? "bg-blue-600 text-white shadow-lg shadow-blue-200" : "bg-blue-50/50 text-slate-600"
  )}>
  <tab.icon className="w-6 h-6" />
  </div>
@@ -122,7 +124,7 @@ export default function SettingsPage() {
  initial={{ opacity: 0, x: 20 }}
  animate={{ opacity: 1, x: 0 }}
  exit={{ opacity: 0, x: -20 }}
- className="bg-white rounded-[40px] border border-slate-200 shadow-sm p-10 space-y-12"
+ className="bg-white rounded-[40px]  shadow-sm p-10 space-y-12"
  >
  <div className="flex flex-col md:flex-row items-center gap-10">
  <div className="relative group">
@@ -132,7 +134,7 @@ export default function SettingsPage() {
  <Camera className="w-8 h-8 text-white" />
  </div>
  </div>
- <button className="absolute -bottom-2 -right-2 w-10 h-10 bg-white rounded-2xl shadow-xl border border-slate-100 flex items-center justify-center text-slate-600 hover:scale-110 transition-transform">
+ <button className="absolute -bottom-2 -right-2 w-10 h-10 bg-white rounded-2xl shadow-xl border border-blue-50 flex items-center justify-center text-slate-600 hover:scale-110 transition-transform">
  <Plus className="w-5 h-5" />
  </button>
  </div>
@@ -141,7 +143,7 @@ export default function SettingsPage() {
  <p className="text-slate-600 font-medium mt-1">Gérez vos informations de compte et votre identité.</p>
  <div className="flex gap-4 mt-6">
  <span className="px-3 py-1 bg-blue-50 text-blue-600 rounded-xl text-[10px] font-black uppercase tracking-widest">{userProfile?.role || "Utilisateur"}</span>
- <span className="px-3 py-1 bg-slate-100 text-slate-600 rounded-xl text-[10px] font-black uppercase tracking-widest">ID: {userProfile?.id?.slice(0,8)}</span>
+ <span className="px-3 py-1 bg-blue-50/50 text-slate-600 rounded-xl text-[10px] font-black uppercase tracking-widest">ID: {userProfile?.id?.slice(0,8)}</span>
  </div>
  </div>
  </div>
@@ -194,7 +196,7 @@ export default function SettingsPage() {
  initial={{ opacity: 0, x: 20 }}
  animate={{ opacity: 1, x: 0 }}
  exit={{ opacity: 0, x: -20 }}
- className="bg-white rounded-[40px] border border-slate-200 shadow-sm p-10 space-y-12"
+ className="bg-white rounded-[40px]  shadow-sm p-10 space-y-12"
  >
  <div className="flex flex-col md:flex-row items-center gap-10">
  <div className="relative group">
@@ -204,7 +206,7 @@ export default function SettingsPage() {
  <Camera className="w-8 h-8 text-white" />
  </div>
  </div>
- <button className="absolute -bottom-2 -right-2 w-10 h-10 bg-white rounded-2xl shadow-xl border border-slate-100 flex items-center justify-center text-slate-600 hover:scale-110 transition-transform">
+ <button className="absolute -bottom-2 -right-2 w-10 h-10 bg-white rounded-2xl shadow-xl border border-blue-50 flex items-center justify-center text-slate-600 hover:scale-110 transition-transform">
  <Plus className="w-5 h-5" />
  </button>
  </div>
@@ -262,7 +264,7 @@ export default function SettingsPage() {
  initial={{ opacity: 0, x: 20 }}
  animate={{ opacity: 1, x: 0 }}
  exit={{ opacity: 0, x: -20 }}
- className="bg-white rounded-[40px] border border-slate-200 shadow-sm p-10 space-y-12"
+ className="bg-white rounded-[40px]  shadow-sm p-10 space-y-12"
  >
  <div>
  <h3 className="text-2xl font-black tracking-tight mb-2">Sécurité du Compte</h3>
@@ -270,7 +272,7 @@ export default function SettingsPage() {
  </div>
  
  <div className="space-y-6">
- <div className="p-8 bg-white border-blue-100 shadow-sm /50 rounded-[32px] border border-slate-100 flex justify-between items-center">
+ <div className="p-8 bg-white border-blue-100 shadow-sm /50 rounded-[32px] border border-blue-50 flex justify-between items-center">
  <div className="flex gap-6 items-center">
  <div className="w-14 h-14 bg-amber-100 text-amber-600 rounded-[20px] flex items-center justify-center">
  <Lock className="w-7 h-7" />
@@ -280,10 +282,10 @@ export default function SettingsPage() {
  <p className="text-xs text-slate-600 font-medium">Ajoute une étape de validation via mobile.</p>
  </div>
  </div>
- <button className="px-6 py-2 bg-slate-900 text-white rounded-xl text-[10px] font-black uppercase tracking-widest">Activer</button>
+ <button className="px-6 py-2 bg-blue-600 text-white rounded-xl text-[10px] font-black uppercase tracking-widest">Activer</button>
  </div>
 
- <div className="p-8 bg-white border-blue-100 shadow-sm /50 rounded-[32px] border border-slate-100 flex justify-between items-center">
+ <div className="p-8 bg-white border-blue-100 shadow-sm /50 rounded-[32px] border border-blue-50 flex justify-between items-center">
  <div className="flex gap-6 items-center">
  <div className="w-14 h-14 bg-blue-100 text-blue-600 rounded-[20px] flex items-center justify-center">
  <ShieldCheck className="w-7 h-7" />
@@ -293,7 +295,7 @@ export default function SettingsPage() {
  <p className="text-xs text-slate-600 font-medium">Consulter l&apos;historique des connexions.</p>
  </div>
  </div>
- <button className="px-6 py-2 bg-white border border-slate-200 rounded-xl text-[10px] font-black uppercase tracking-widest shadow-sm">Consulter</button>
+ <button className="px-6 py-2 bg-white  rounded-xl text-[10px] font-black uppercase tracking-widest shadow-sm">Consulter</button>
  </div>
  </div>
  </motion.div>
@@ -305,18 +307,18 @@ export default function SettingsPage() {
  initial={{ opacity: 0, x: 20 }}
  animate={{ opacity: 1, x: 0 }}
  exit={{ opacity: 0, x: -20 }}
- className="bg-white rounded-[40px] border border-slate-200 shadow-sm p-10 space-y-12"
+ className="bg-white rounded-[40px]  shadow-sm p-10 space-y-12"
  >
  <div>
  <h3 className="text-2xl font-black tracking-tight mb-2">Communications</h3>
  <p className="text-slate-600 font-medium">Gérez les alertes SMS et Email envoyées aux patients.</p>
  </div>
  <div className="space-y-6">
- <div className="p-8 bg-white border-blue-100 shadow-sm /50 rounded-[32px] border border-slate-100 flex justify-between items-center">
+ <div className="p-8 bg-white border-blue-100 shadow-sm /50 rounded-[32px] border border-blue-50 flex justify-between items-center">
  <p className="font-black">Rappels de Rendez-vous SMS</p>
  <div className="w-12 h-6 bg-blue-600 rounded-full relative"><div className="absolute right-1 top-1 w-4 h-4 bg-white rounded-full" /></div>
  </div>
- <div className="p-8 bg-white border-blue-100 shadow-sm /50 rounded-[32px] border border-slate-100 flex justify-between items-center">
+ <div className="p-8 bg-white border-blue-100 shadow-sm /50 rounded-[32px] border border-blue-50 flex justify-between items-center">
  <p className="font-black">Envoi Factures par Email</p>
  <div className="w-12 h-6 bg-slate-200 rounded-full relative"><div className="absolute left-1 top-1 w-4 h-4 bg-white rounded-full" /></div>
  </div>
@@ -330,7 +332,7 @@ export default function SettingsPage() {
  initial={{ opacity: 0, x: 20 }}
  animate={{ opacity: 1, x: 0 }}
  exit={{ opacity: 0, x: -20 }}
- className="bg-white rounded-[40px] border border-slate-200 shadow-sm p-10 space-y-12"
+ className="bg-white rounded-[40px]  shadow-sm p-10 space-y-12"
  >
  <div className="p-10 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-[40px] text-white">
  <h3 className="text-3xl font-black mb-2">Plan Enterprise</h3>
@@ -344,7 +346,72 @@ export default function SettingsPage() {
  </div>
  </motion.div>
  )}
- </AnimatePresence>
+             {activeTab === "branding" && (
+                <motion.div
+                  key="branding"
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -20 }}
+                  className="bg-white rounded-[40px] shadow-xl shadow-blue-900/5 p-10 space-y-12"
+                >
+                   <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+                      <div className="space-y-6">
+                         <h4 className="text-lg font-black tracking-tight">Identité Visuelle</h4>
+                         <div className="p-8 border-2 border-dashed border-blue-100 rounded-[32px] flex flex-col items-center gap-4 bg-blue-50/20">
+                            <Building2 className="w-12 h-12 text-blue-300" />
+                            <p className="text-[10px] font-black uppercase text-slate-500">Téléverser votre Logo</p>
+                            <button className="px-6 py-2 bg-blue-600 text-white rounded-xl text-[10px] font-black uppercase">Parcourir</button>
+                         </div>
+                      </div>
+                      <div className="space-y-6">
+                         <h4 className="text-lg font-black tracking-tight">Couleurs de l'Interface</h4>
+                         <div className="grid grid-cols-4 gap-4">
+                            {['#2563eb', '#10b981', '#f59e0b', '#ef4444'].map(color => (
+                               <button key={color} className="w-full h-12 rounded-2xl border border-blue-50 shadow-sm transition-transform hover:scale-110" style={{ backgroundColor: color }} />
+                            ))}
+                         </div>
+                         <p className="text-xs text-slate-500 font-medium italic">Sélectionnez la couleur dominante de votre ERP.</p>
+                      </div>
+                   </div>
+                </motion.div>
+             )}
+
+             {activeTab === "ai" && (
+                <motion.div
+                  key="ai"
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -20 }}
+                  className="bg-white rounded-[40px] shadow-xl shadow-blue-900/5 p-10 space-y-12"
+                >
+                   <div className="flex items-center gap-8 p-8 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-[32px] text-white">
+                      <div className="w-20 h-20 bg-white/20 rounded-3xl flex items-center justify-center backdrop-blur-xl">
+                         <Zap className="w-10 h-10 text-white animate-pulse" />
+                      </div>
+                      <div>
+                         <h3 className="text-2xl font-black">Akwaba AI Core</h3>
+                         <p className="opacity-80 text-sm">Moteur d'assistance au diagnostic et analyse prédictive.</p>
+                      </div>
+                   </div>
+
+                   <div className="space-y-8">
+                      <div className="flex justify-between items-center p-6 bg-blue-50/50 rounded-2xl border border-blue-100">
+                         <div>
+                            <p className="font-black text-slate-900">Assistance au Diagnostic</p>
+                            <p className="text-xs text-slate-500">Proposer des diagnostics basés sur les symptômes.</p>
+                         </div>
+                         <div className="w-12 h-6 bg-blue-600 rounded-full relative"><div className="absolute right-1 top-1 w-4 h-4 bg-white rounded-full" /></div>
+                      </div>
+                      <div className="flex justify-between items-center p-6 bg-blue-50/50 rounded-2xl border border-blue-100">
+                         <div>
+                            <p className="font-black text-slate-900">Transcription Vocale</p>
+                            <p className="text-xs text-slate-500">Saisie des notes médicales par la voix.</p>
+                         </div>
+                         <div className="w-12 h-6 bg-blue-600 rounded-full relative"><div className="absolute right-1 top-1 w-4 h-4 bg-white rounded-full" /></div>
+                      </div>
+                   </div>
+                </motion.div>
+             )}
  </div>
  </div>
  </div>

@@ -81,7 +81,7 @@ export default function PharmacyPage() {
  <p className="text-slate-600 font-medium">Gérez vos stocks et réalisez des ventes en temps réel.</p>
  </div>
  <div className="flex gap-3">
- <button className="px-4 py-2 bg-white border border-slate-200 rounded-xl text-xs font-bold shadow-sm hover:bg-white border-blue-100 shadow-sm transition-all flex items-center gap-2">
+ <button className="px-4 py-2 bg-white  rounded-xl text-xs font-bold shadow-sm hover:bg-white border-blue-100 shadow-sm transition-all flex items-center gap-2">
  <Download className="w-4 h-4" /> Rapport
  </button>
  <button 
@@ -119,7 +119,7 @@ export default function PharmacyPage() {
  </div>
 
  {/* Tabs */}
- <div className="flex gap-4 border-b border-slate-100 ">
+ <div className="flex gap-4 border-b border-blue-50 ">
  <button 
  onClick={() => setActiveTab("inventory")}
  className={cn(
@@ -160,10 +160,10 @@ export default function PharmacyPage() {
  placeholder="Rechercher un médicament..."
  value={searchQuery}
  onChange={(e) => setSearchQuery(e.target.value)}
- className="w-full pl-10 pr-4 py-3 bg-white border border-slate-200 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/10 transition-all"
+ className="w-full pl-10 pr-4 py-3 bg-white  rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/10 transition-all"
  />
  </div>
- <button className="flex items-center gap-2 px-4 py-3 bg-white border border-slate-200 rounded-2xl text-sm font-bold hover:bg-white border-blue-100 shadow-sm transition-all">
+ <button className="flex items-center gap-2 px-4 py-3 bg-white  rounded-2xl text-sm font-bold hover:bg-white border-blue-100 shadow-sm transition-all">
  <Filter className="w-4 h-4" />
  </button>
  </div>
@@ -200,7 +200,7 @@ export default function PharmacyPage() {
  </div>
  </td>
  <td className="px-8 py-6">
- <span className="px-3 py-1 bg-slate-100 rounded-lg text-[9px] font-black uppercase tracking-widest text-slate-600">{item.category}</span>
+ <span className="px-3 py-1 bg-blue-50/50 rounded-lg text-[9px] font-black uppercase tracking-widest text-slate-600">{item.category}</span>
  </td>
  <td className="px-8 py-6">
  <div className="flex items-center gap-2">

@@ -77,7 +77,7 @@ export default function ConsultationsPage() {
  placeholder="Rechercher une consultation (Patient, Docteur, Diagnostic)..."
  value={searchQuery}
  onChange={(e) => setSearchQuery(e.target.value)}
- className="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all"
+ className="w-full pl-10 pr-4 py-2.5 bg-white  rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all"
  />
  </div>
  </div>
@@ -104,7 +104,7 @@ export default function ConsultationsPage() {
  <h3 className="font-bold text-lg">{cons.patients?.first_name} {cons.patients?.last_name}</h3>
  <span className={cn(
  "px-2 py-0.5 rounded-full text-[10px] font-bold uppercase border",
- cons.type === 'Urgence' ? "bg-red-50 text-red-600 border-red-100" : "bg-white border-blue-100 shadow-sm text-slate-600 border-slate-100"
+ cons.type === 'Urgence' ? "bg-red-50 text-red-600 border-red-100" : "bg-white border-blue-100 shadow-sm text-slate-600 border-blue-50"
  )}>
  {cons.type || 'Standard'}
  </span>

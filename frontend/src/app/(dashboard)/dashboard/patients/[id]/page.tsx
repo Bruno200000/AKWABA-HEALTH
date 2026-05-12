@@ -114,7 +114,7 @@ export default function PatientDetailPage() {
  <ChevronLeft className="w-4 h-4" /> Retour à la liste
  </button>
  <div className="flex gap-2">
- <button className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-xl text-xs font-bold hover:bg-white border-blue-100 shadow-sm transition-all">
+ <button className="flex items-center gap-2 px-4 py-2 bg-white  rounded-xl text-xs font-bold hover:bg-white border-blue-100 shadow-sm transition-all">
  <Printer className="w-4 h-4" /> Imprimer Dossier
  </button>
  <button 
@@ -127,10 +127,10 @@ export default function PatientDetailPage() {
  </div>
 
  {/* Profile Card */}
- <div className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
+ <div className="bg-white rounded-3xl  shadow-sm overflow-hidden">
  <div className="h-32 bg-gradient-to-r from-blue-600 to-indigo-600 relative">
  <div className="absolute -bottom-12 left-8 p-1 bg-white rounded-3xl">
- <div className="w-24 h-24 bg-slate-100 rounded-2xl flex items-center justify-center">
+ <div className="w-24 h-24 bg-blue-50/50 rounded-2xl flex items-center justify-center">
  <User className="w-12 h-12 text-slate-600" />
  </div>
  </div>
@@ -148,7 +148,7 @@ export default function PatientDetailPage() {
  </div>
  </div>
 
- <div className="flex gap-6 items-center p-4 bg-white border-blue-100 shadow-sm /50 rounded-2xl border border-slate-100 ">
+ <div className="flex gap-6 items-center p-4 bg-white border-blue-100 shadow-sm /50 rounded-2xl border border-blue-50 ">
  <div className="text-center">
  <p className="text-[10px] font-black text-slate-600 uppercase tracking-widest mb-1">QR Accès Rapide</p>
  <div className="p-1.5 bg-white rounded-lg shadow-sm">
@@ -174,8 +174,8 @@ export default function PatientDetailPage() {
  className={cn(
  "flex items-center gap-2 px-6 py-3 rounded-2xl text-sm font-bold transition-all whitespace-nowrap",
  activeTab === tab.id 
- ? "bg-slate-900 text-white shadow-lg" 
- : "bg-white text-slate-600 border border-slate-200 hover:bg-white border-blue-100 shadow-sm"
+ ? "bg-blue-600 text-white shadow-lg" 
+ : "bg-white text-slate-600  hover:bg-white border-blue-100 shadow-sm"
  )}
  >
  <tab.icon className="w-4 h-4" />
@@ -229,24 +229,24 @@ export default function PatientDetailPage() {
  </div>
 
  {/* Medical History */}
- <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm">
+ <div className="bg-white p-6 rounded-3xl  shadow-sm">
  <h3 className="font-black uppercase text-xs tracking-widest text-slate-600 mb-6 flex items-center gap-2">
  <HeartPulse className="w-4 h-4 text-red-500" /> Antécédents Médicaux
  </h3>
- <div className="p-4 bg-white border-blue-100 shadow-sm /50 rounded-2xl border border-slate-100 ">
+ <div className="p-4 bg-white border-blue-100 shadow-sm /50 rounded-2xl border border-blue-50 ">
  <p className="text-sm text-slate-600 leading-relaxed whitespace-pre-wrap">
  {patient.medical_history?.notes || "Aucun antécédent particulier renseigné."}
  </p>
  </div>
  </div>
 
- <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm">
+ <div className="bg-white p-6 rounded-3xl  shadow-sm">
  <h3 className="font-black uppercase text-xs tracking-widest text-slate-600 mb-6 flex items-center gap-2">
  <Clock className="w-4 h-4" /> Activité Récente
  </h3>
  <div className="space-y-6">
  {history.consultations.slice(0, 3).map((c: any, i: number) => (
- <div key={c.id} className="relative pl-6 before:absolute before:left-0 before:top-2 before:bottom-0 before:w-0.5 before:bg-slate-100 ">
+ <div key={c.id} className="relative pl-6 before:absolute before:left-0 before:top-2 before:bottom-0 before:w-0.5 before:bg-blue-50/50 ">
  <div className="absolute left-[-4px] top-1.5 w-2.5 h-2.5 rounded-full bg-blue-500 border-2 border-white " />
  <div className="flex justify-between items-start">
  <div>
@@ -266,7 +266,7 @@ export default function PatientDetailPage() {
  {/* Right Column: Vitals & Documents */}
  <div className="space-y-6">
  {/* AI Smart Insights */}
- <div className="bg-slate-900 text-white p-6 rounded-3xl border border-white/10 shadow-xl relative overflow-hidden group">
+ <div className="bg-blue-600 text-white p-6 rounded-3xl border border-white/10 shadow-xl relative overflow-hidden group">
  <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
  <Sparkles className="w-12 h-12" />
  </div>
@@ -286,19 +286,19 @@ export default function PatientDetailPage() {
  </div>
  </div>
 
- <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm">
+ <div className="bg-white p-6 rounded-3xl  shadow-sm">
  <h3 className="font-black uppercase text-xs tracking-widest text-slate-600 mb-6 flex items-center gap-2">
  <Activity className="w-4 h-4" /> Dernières Constantes
  </h3>
  <div className="grid grid-cols-2 gap-4">
- <div className="p-4 bg-white border-blue-100 shadow-sm rounded-2xl border border-slate-100 ">
+ <div className="p-4 bg-white border-blue-100 shadow-sm rounded-2xl border border-blue-50 ">
  <p className="text-[10px] font-black text-slate-600 uppercase tracking-widest mb-1">Tension</p>
  <p className="text-lg font-black text-slate-900 ">
  {history.consultations[0]?.vital_signs?.bp_systolic || "12"}/{history.consultations[0]?.vital_signs?.bp_diastolic || "8"} 
  <span className="text-[10px] font-bold text-slate-600 ml-1">mmHg</span>
  </p>
  </div>
- <div className="p-4 bg-white border-blue-100 shadow-sm rounded-2xl border border-slate-100 ">
+ <div className="p-4 bg-white border-blue-100 shadow-sm rounded-2xl border border-blue-50 ">
  <p className="text-[10px] font-black text-slate-600 uppercase tracking-widest mb-1">Temp.</p>
  <p className="text-lg font-black text-slate-900 ">
  {history.consultations[0]?.vital_signs?.temp || "37.2"} 
@@ -308,7 +308,7 @@ export default function PatientDetailPage() {
  </div>
  </div>
 
- <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm">
+ <div className="bg-white p-6 rounded-3xl  shadow-sm">
  <div className="flex justify-between items-center mb-6">
  <h3 className="font-black uppercase text-xs tracking-widest text-slate-600 flex items-center gap-2">
  <FileText className="w-4 h-4" /> Documents Médicaux
@@ -322,7 +322,7 @@ export default function PatientDetailPage() {
  </div>
 
  <div className="space-y-3">
- <div className="p-3 border border-slate-100 rounded-xl flex items-center gap-3 hover:bg-white border-blue-100 shadow-sm transition-all cursor-pointer group">
+ <div className="p-3 border border-blue-50 rounded-xl flex items-center gap-3 hover:bg-white border-blue-100 shadow-sm transition-all cursor-pointer group">
  <div className="w-10 h-10 bg-blue-50 text-blue-500 rounded-lg flex items-center justify-center font-bold text-[10px]">IMG</div>
  <div className="flex-1 min-w-0">
  <p className="text-xs font-bold truncate">Radio_Thorax_01.jpg</p>
@@ -337,7 +337,7 @@ export default function PatientDetailPage() {
  )}
 
  {activeTab === "consultations" && (
- <div className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
+ <div className="bg-white rounded-3xl  shadow-sm overflow-hidden">
  <table className="w-full text-left border-collapse">
  <thead>
  <tr className="bg-white border-blue-100 shadow-sm /50 border-b border-slate-100 ">

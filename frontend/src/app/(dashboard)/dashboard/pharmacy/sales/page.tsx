@@ -52,7 +52,7 @@ export default function PharmacySalesPage() {
  <button className="px-4 py-2 bg-emerald-50 text-emerald-600 rounded-xl text-xs font-black uppercase tracking-widest border border-emerald-100 flex items-center gap-2">
  <TrendingUp className="w-4 h-4" /> Rapport Global
  </button>
- <button className="px-4 py-2 bg-white border border-slate-200 rounded-xl text-xs font-bold hover:bg-white border-blue-100 shadow-sm transition-all shadow-sm">
+ <button className="px-4 py-2 bg-white  rounded-xl text-xs font-bold hover:bg-white border-blue-100 shadow-sm transition-all shadow-sm">
  <Download className="w-4 h-4" /> CSV
  </button>
  </div>
@@ -63,7 +63,7 @@ export default function PharmacySalesPage() {
  <motion.div
  key={sale.id}
  whileHover={{ scale: 1.02 }}
- className="p-6 bg-white rounded-[32px] border border-slate-200 shadow-sm relative overflow-hidden group"
+ className="p-6 bg-white rounded-[32px]  shadow-sm relative overflow-hidden group"
  >
  <div className="flex justify-between items-start mb-6">
  <div className="text-left">
@@ -90,7 +90,7 @@ export default function PharmacySalesPage() {
  </div>
  </div>
 
- <div className="mt-8 pt-6 border-t border-slate-100 flex justify-between items-end">
+ <div className="mt-8 pt-6 border-t border-blue-50 flex justify-between items-end">
  <div>
  <p className="text-[10px] font-black text-slate-600 uppercase tracking-widest mb-1">Montant Total</p>
  <p className="text-2xl font-black text-slate-900 ">{sale.total.toLocaleString()} CFA</p>

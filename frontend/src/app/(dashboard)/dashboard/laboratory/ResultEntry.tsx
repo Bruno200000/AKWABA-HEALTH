@@ -42,7 +42,7 @@ export default function ResultEntry({ test, onCancel, onSuccess }: { test: any, 
  <div className="space-y-8 p-4">
  <div className="flex items-center justify-between">
  <div className="flex items-center gap-4">
- <button onClick={onCancel} className="p-2 hover:bg-slate-100 rounded-full transition-colors">
+ <button onClick={onCancel} className="p-2 hover:bg-blue-50/50 rounded-full transition-colors">
  <ChevronLeft className="w-5 h-5" />
  </button>
  <div>
@@ -94,7 +94,7 @@ export default function ResultEntry({ test, onCancel, onSuccess }: { test: any, 
  <button 
  type="button" 
  onClick={onCancel}
- className="flex-1 py-4 bg-slate-100 text-slate-600 rounded-[20px] font-black text-xs uppercase tracking-widest hover:bg-slate-200 transition-all"
+ className="flex-1 py-4 bg-blue-50/50 text-slate-600 rounded-[20px] font-black text-xs uppercase tracking-widest hover:bg-slate-200 transition-all"
  >
  Annuler
  </button>

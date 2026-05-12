@@ -45,7 +45,7 @@ export default function AdmissionsPage() {
  <motion.div
  key={adm.id}
  whileHover={{ y: -5 }}
- className="p-6 bg-white rounded-[32px] border border-slate-200 shadow-sm"
+ className="p-6 bg-white rounded-[32px]  shadow-sm"
  >
  <div className="flex justify-between items-start mb-6">
  <div className="w-12 h-12 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center">

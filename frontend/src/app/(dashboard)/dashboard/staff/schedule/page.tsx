@@ -40,14 +40,14 @@ export default function StaffSchedulePage() {
  </div>
 
  {/* Week Selector */}
- <div className="flex bg-white p-2 rounded-[24px] border border-slate-200 shadow-sm overflow-x-auto custom-scrollbar">
+ <div className="flex bg-white p-2 rounded-[24px]  shadow-sm overflow-x-auto custom-scrollbar">
  {days.map((day, i) => (
  <button
  key={day}
  onClick={() => setActiveDay(i)}
  className={cn(
  "flex-1 min-w-[100px] py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all",
- activeDay === i ? "bg-slate-900 text-white " : "text-slate-600 hover:bg-white border-blue-100 shadow-sm "
+ activeDay === i ? "bg-blue-600 text-white " : "text-slate-600 hover:bg-white border-blue-100 shadow-sm "
  )}
  >
  {day}
@@ -63,10 +63,10 @@ export default function StaffSchedulePage() {
  initial={{ opacity: 0, y: 10 }}
  animate={{ opacity: 1, y: 0 }}
  transition={{ delay: i * 0.1 }}
- className="p-6 bg-white rounded-[32px] border border-slate-200 shadow-sm flex items-center justify-between group"
+ className="p-6 bg-white rounded-[32px]  shadow-sm flex items-center justify-between group"
  >
  <div className="flex items-center gap-6">
- <div className="w-16 h-16 rounded-[24px] bg-white border-blue-100 shadow-sm border border-slate-100 flex items-center justify-center relative">
+ <div className="w-16 h-16 rounded-[24px] bg-white border-blue-100 shadow-sm border border-blue-50 flex items-center justify-center relative">
  <User className="w-8 h-8 text-slate-300" />
  <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-emerald-500 rounded-full border-4 border-white " />
  </div>

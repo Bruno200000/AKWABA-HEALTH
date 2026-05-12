@@ -72,7 +72,7 @@ export default function EmergencyPage() {
  <div className="flex items-center gap-6">
  <div className={cn(
  "w-14 h-14 rounded-2xl flex items-center justify-center shadow-lg",
- case_item.priority === 'CRITICAL' ? "bg-red-600 text-white" : "bg-slate-900 text-white"
+ case_item.priority === 'CRITICAL' ? "bg-red-600 text-white" : "bg-blue-600 text-white"
  )}>
  <Activity className="w-7 h-7" />
  </div>
@@ -91,7 +91,7 @@ export default function EmergencyPage() {
  </div>
  <button className={cn(
  "w-12 h-12 rounded-2xl flex items-center justify-center transition-all",
- case_item.priority === 'CRITICAL' ? "bg-red-600 text-white" : "bg-slate-100 text-slate-600 group-hover:bg-blue-600 group-hover:text-white"
+ case_item.priority === 'CRITICAL' ? "bg-red-600 text-white" : "bg-blue-50/50 text-slate-600 group-hover:bg-blue-600 group-hover:text-white"
  )}>
  <ArrowRight className="w-5 h-5" />
  </button>
@@ -103,7 +103,7 @@ export default function EmergencyPage() {
  </div>
 
  <div className="space-y-8">
- <div className="p-8 bg-slate-900 text-white rounded-[40px] border border-slate-800">
+ <div className="p-8 bg-blue-600 text-white rounded-[40px] border border-slate-800">
  <h4 className="text-lg font-black tracking-tight mb-6 flex items-center gap-3">
  <Clock className="w-5 h-5 text-blue-500" /> Stats de l'Unité
  </h4>
@@ -119,7 +119,7 @@ export default function EmergencyPage() {
  </div>
  </div>
 
- <div className="p-8 bg-white border border-slate-200 rounded-[40px] shadow-sm">
+ <div className="p-8 bg-white  rounded-[40px] shadow-sm">
  <h4 className="text-lg font-black tracking-tight mb-6">Contact SAMU / Pompiers</h4>
  <div className="space-y-4">
  <button className="w-full flex items-center justify-between p-5 bg-red-50 text-red-600 rounded-2xl font-black uppercase tracking-widest text-xs">

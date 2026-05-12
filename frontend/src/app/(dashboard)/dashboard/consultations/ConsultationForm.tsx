@@ -198,7 +198,7 @@ export default function ConsultationForm({ patientId: initialPatientId, onSucces
  <div key={s.step} className="flex flex-col items-center gap-2">
  <div className={cn(
  "w-10 h-10 rounded-full flex items-center justify-center transition-all",
- activeStep >= s.step ? "bg-blue-600 text-white shadow-lg shadow-blue-200" : "bg-slate-100 text-slate-600"
+ activeStep >= s.step ? "bg-blue-600 text-white shadow-lg shadow-blue-200" : "bg-blue-50/50 text-slate-600"
  )}>
  <s.icon className="w-5 h-5" />
  </div>
@@ -221,12 +221,12 @@ export default function ConsultationForm({ patientId: initialPatientId, onSucces
  value={patientSearch}
  onChange={(e) => setPatientSearch(e.target.value)}
  placeholder="Rechercher par nom..."
- className="w-full pl-12 pr-4 py-4 bg-white border-blue-100 shadow-sm border border-slate-200 rounded-3xl focus:ring-2 focus:ring-blue-500/20 outline-none font-bold"
+ className="w-full pl-12 pr-4 py-4 bg-white border-blue-100 shadow-sm  rounded-3xl focus:ring-2 focus:ring-blue-500/20 outline-none font-bold"
  />
  </div>
  
  {patientResults.length > 0 && (
- <div className="mt-2 bg-white border border-slate-200 rounded-3xl shadow-xl overflow-hidden">
+ <div className="mt-2 bg-white  rounded-3xl shadow-xl overflow-hidden">
  {patientResults.map((p) => (
  <button
  key={p.id}
@@ -260,7 +260,7 @@ export default function ConsultationForm({ patientId: initialPatientId, onSucces
  type="number" step="0.1" 
  value={formData.vital_signs.temp} 
  onChange={(e) => setFormData({...formData, vital_signs: {...formData.vital_signs, temp: e.target.value}})}
- className="w-full px-4 py-3 bg-white border-blue-100 shadow-sm border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500/20 outline-none font-bold" 
+ className="w-full px-4 py-3 bg-white border-blue-100 shadow-sm  rounded-2xl focus:ring-2 focus:ring-blue-500/20 outline-none font-bold" 
  placeholder="37.0"
  />
  </div>
@@ -272,7 +272,7 @@ export default function ConsultationForm({ patientId: initialPatientId, onSucces
  type="number" step="0.1" 
  value={formData.vital_signs.weight} 
  onChange={(e) => setFormData({...formData, vital_signs: {...formData.vital_signs, weight: e.target.value}})}
- className="w-full px-4 py-3 bg-white border-blue-100 shadow-sm border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500/20 outline-none font-bold" 
+ className="w-full px-4 py-3 bg-white border-blue-100 shadow-sm  rounded-2xl focus:ring-2 focus:ring-blue-500/20 outline-none font-bold" 
  placeholder="70.0"
  />
  </div>
@@ -284,7 +284,7 @@ export default function ConsultationForm({ patientId: initialPatientId, onSucces
  type="number" 
  value={formData.vital_signs.height} 
  onChange={(e) => setFormData({...formData, vital_signs: {...formData.vital_signs, height: e.target.value}})}
- className="w-full px-4 py-3 bg-white border-blue-100 shadow-sm border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500/20 outline-none font-bold" 
+ className="w-full px-4 py-3 bg-white border-blue-100 shadow-sm  rounded-2xl focus:ring-2 focus:ring-blue-500/20 outline-none font-bold" 
  placeholder="175"
  />
  </div>
@@ -296,7 +296,7 @@ export default function ConsultationForm({ patientId: initialPatientId, onSucces
  type="number" 
  value={formData.vital_signs.bp_systolic} 
  onChange={(e) => setFormData({...formData, vital_signs: {...formData.vital_signs, bp_systolic: e.target.value}})}
- className="w-full px-4 py-3 bg-white border-blue-100 shadow-sm border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500/20 outline-none font-bold" 
+ className="w-full px-4 py-3 bg-white border-blue-100 shadow-sm  rounded-2xl focus:ring-2 focus:ring-blue-500/20 outline-none font-bold" 
  placeholder="120"
  />
  </div>
@@ -308,7 +308,7 @@ export default function ConsultationForm({ patientId: initialPatientId, onSucces
  type="number" 
  value={formData.vital_signs.bp_diastolic} 
  onChange={(e) => setFormData({...formData, vital_signs: {...formData.vital_signs, bp_diastolic: e.target.value}})}
- className="w-full px-4 py-3 bg-white border-blue-100 shadow-sm border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500/20 outline-none font-bold" 
+ className="w-full px-4 py-3 bg-white border-blue-100 shadow-sm  rounded-2xl focus:ring-2 focus:ring-blue-500/20 outline-none font-bold" 
  placeholder="80"
  />
  </div>
@@ -320,7 +320,7 @@ export default function ConsultationForm({ patientId: initialPatientId, onSucces
  type="number" 
  value={formData.vital_signs.heart_rate} 
  onChange={(e) => setFormData({...formData, vital_signs: {...formData.vital_signs, heart_rate: e.target.value}})}
- className="w-full px-4 py-3 bg-white border-blue-100 shadow-sm border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500/20 outline-none font-bold" 
+ className="w-full px-4 py-3 bg-white border-blue-100 shadow-sm  rounded-2xl focus:ring-2 focus:ring-blue-500/20 outline-none font-bold" 
  placeholder="72"
  />
  </div>
@@ -341,7 +341,7 @@ export default function ConsultationForm({ patientId: initialPatientId, onSucces
  required
  value={formData.symptoms}
  onChange={(e) => setFormData({...formData, symptoms: e.target.value})}
- className="w-full px-4 py-3 bg-white border-blue-100 shadow-sm border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500/20 outline-none min-h-[100px] text-sm" 
+ className="w-full px-4 py-3 bg-white border-blue-100 shadow-sm  rounded-2xl focus:ring-2 focus:ring-blue-500/20 outline-none min-h-[100px] text-sm" 
  placeholder="Décrivez les symptômes rapportés par le patient..."
  />
  </div>
@@ -351,7 +351,7 @@ export default function ConsultationForm({ patientId: initialPatientId, onSucces
  required
  value={formData.diagnosis}
  onChange={(e) => setFormData({...formData, diagnosis: e.target.value})}
- className="w-full px-4 py-3 bg-white border-blue-100 shadow-sm border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500/20 outline-none min-h-[100px] text-sm font-bold" 
+ className="w-full px-4 py-3 bg-white border-blue-100 shadow-sm  rounded-2xl focus:ring-2 focus:ring-blue-500/20 outline-none min-h-[100px] text-sm font-bold" 
  placeholder="Saisissez le diagnostic final..."
  />
  </div>
@@ -360,12 +360,12 @@ export default function ConsultationForm({ patientId: initialPatientId, onSucces
  <textarea 
  value={formData.notes_private}
  onChange={(e) => setFormData({...formData, notes_private: e.target.value})}
- className="w-full px-4 py-3 bg-white border-blue-100 shadow-sm border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500/20 outline-none min-h-[80px] text-sm italic" 
+ className="w-full px-4 py-3 bg-white border-blue-100 shadow-sm  rounded-2xl focus:ring-2 focus:ring-blue-500/20 outline-none min-h-[80px] text-sm italic" 
  placeholder="Notes pour votre suivi personnel..."
  />
  </div>
  <div className="flex gap-4">
- <button type="button" onClick={() => setActiveStep(1)} className="flex-1 py-4 border border-slate-200 rounded-2xl font-bold text-slate-600 hover:bg-white border-blue-100 shadow-sm transition-all">
+ <button type="button" onClick={() => setActiveStep(1)} className="flex-1 py-4  rounded-2xl font-bold text-slate-600 hover:bg-white border-blue-100 shadow-sm transition-all">
  Précédent
  </button>
  <button type="button" onClick={() => setActiveStep(3)} className="flex-[2] py-4 bg-blue-600 text-white rounded-2xl font-bold shadow-lg shadow-blue-200 hover:bg-blue-700 transition-all">
@@ -378,7 +378,7 @@ export default function ConsultationForm({ patientId: initialPatientId, onSucces
  {activeStep === 3 && (
  <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="space-y-6">
  <div className="relative">
- <div className="flex items-center gap-3 px-4 py-3 bg-slate-100 rounded-2xl focus-within:ring-2 focus-within:ring-blue-500/20 transition-all">
+ <div className="flex items-center gap-3 px-4 py-3 bg-blue-50/50 rounded-2xl focus-within:ring-2 focus-within:ring-blue-500/20 transition-all">
  <Search className="w-5 h-5 text-slate-600" />
  <input 
  type="text" 
@@ -390,7 +390,7 @@ export default function ConsultationForm({ patientId: initialPatientId, onSucces
  </div>
  
  {searchResults.length > 0 && (
- <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-slate-200 rounded-2xl shadow-xl z-20 overflow-hidden">
+ <div className="absolute top-full left-0 right-0 mt-2 bg-white  rounded-2xl shadow-xl z-20 overflow-hidden">
  {searchResults.map((m) => (
  <button
  key={m.id}
@@ -411,7 +411,7 @@ export default function ConsultationForm({ patientId: initialPatientId, onSucces
 
  <div className="space-y-4 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
  {formData.prescription.map((item) => (
- <div key={item.id} className="p-4 bg-white border border-slate-100 rounded-2xl shadow-sm space-y-3 relative group">
+ <div key={item.id} className="p-4 bg-white border border-blue-50 rounded-2xl shadow-sm space-y-3 relative group">
  <div className="flex justify-between items-start">
  <div>
  <h5 className="text-sm font-black text-blue-600">{item.name}</h5>
@@ -428,7 +428,7 @@ export default function ConsultationForm({ patientId: initialPatientId, onSucces
  required
  value={item.dosage}
  onChange={(e) => updateMedicine(item.id, "dosage", e.target.value)}
- className="w-full px-3 py-2 bg-white border-blue-100 shadow-sm border border-slate-100 rounded-xl text-xs outline-none focus:ring-2 focus:ring-blue-500/10" 
+ className="w-full px-3 py-2 bg-white border-blue-100 shadow-sm border border-blue-50 rounded-xl text-xs outline-none focus:ring-2 focus:ring-blue-500/10" 
  placeholder="Ex: 1 matin, 1 soir"
  />
  </div>
@@ -438,7 +438,7 @@ export default function ConsultationForm({ patientId: initialPatientId, onSucces
  required
  value={item.duration}
  onChange={(e) => updateMedicine(item.id, "duration", e.target.value)}
- className="w-full px-3 py-2 bg-white border-blue-100 shadow-sm border border-slate-100 rounded-xl text-xs outline-none focus:ring-2 focus:ring-blue-500/10" 
+ className="w-full px-3 py-2 bg-white border-blue-100 shadow-sm border border-blue-50 rounded-xl text-xs outline-none focus:ring-2 focus:ring-blue-500/10" 
  placeholder="Ex: 5 jours"
  />
  </div>
@@ -448,7 +448,7 @@ export default function ConsultationForm({ patientId: initialPatientId, onSucces
  <input 
  value={item.instructions}
  onChange={(e) => updateMedicine(item.id, "instructions", e.target.value)}
- className="w-full px-3 py-2 bg-white border-blue-100 shadow-sm border border-slate-100 rounded-xl text-xs outline-none focus:ring-2 focus:ring-blue-500/10" 
+ className="w-full px-3 py-2 bg-white border-blue-100 shadow-sm border border-blue-50 rounded-xl text-xs outline-none focus:ring-2 focus:ring-blue-500/10" 
  placeholder="Ex: Après le repas"
  />
  </div>
@@ -463,7 +463,7 @@ export default function ConsultationForm({ patientId: initialPatientId, onSucces
  </div>
 
  <div className="flex gap-4 pt-4">
- <button type="button" onClick={() => setActiveStep(2)} className="flex-1 py-4 border border-slate-200 rounded-2xl font-bold text-slate-600 hover:bg-white border-blue-100 shadow-sm transition-all">
+ <button type="button" onClick={() => setActiveStep(2)} className="flex-1 py-4  rounded-2xl font-bold text-slate-600 hover:bg-white border-blue-100 shadow-sm transition-all">
  Précédent
  </button>
  <button type="button" onClick={() => setActiveStep(4)} className="flex-[2] py-4 bg-blue-600 text-white rounded-2xl font-bold shadow-lg shadow-blue-200 hover:bg-blue-700 transition-all">
@@ -475,13 +475,13 @@ export default function ConsultationForm({ patientId: initialPatientId, onSucces
 
  {activeStep === 4 && (
  <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="space-y-8">
- <div className="bg-white border-blue-100 shadow-sm /50 p-8 rounded-[40px] border border-slate-100 space-y-6">
+ <div className="bg-white border-blue-100 shadow-sm /50 p-8 rounded-[40px] border border-blue-50 space-y-6">
  <div className="flex justify-between items-start">
  <div>
  <h4 className="text-lg font-black tracking-tight">Récapitulatif & Signature</h4>
  <p className="text-xs text-slate-600 font-medium mt-1">Veuillez signer pour valider la consultation.</p>
  </div>
- <div className="w-16 h-16 bg-white rounded-2xl border border-slate-100 p-2 flex items-center justify-center">
+ <div className="w-16 h-16 bg-white rounded-2xl border border-blue-50 p-2 flex items-center justify-center">
  <QrCode className="w-full h-full text-slate-200" />
  </div>
  </div>
@@ -512,7 +512,7 @@ export default function ConsultationForm({ patientId: initialPatientId, onSucces
  </div>
 
  <div className="flex gap-4">
- <button type="button" onClick={() => setActiveStep(3)} className="flex-1 py-4 border border-slate-200 rounded-2xl font-bold text-slate-600 hover:bg-white border-blue-100 shadow-sm transition-all">
+ <button type="button" onClick={() => setActiveStep(3)} className="flex-1 py-4  rounded-2xl font-bold text-slate-600 hover:bg-white border-blue-100 shadow-sm transition-all">
  Précédent
  </button>
  <button disabled={isLoading} type="submit" className="flex-[2] py-4 bg-blue-600 text-white rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl shadow-blue-200 hover:bg-blue-700 transition-all flex items-center justify-center gap-2">

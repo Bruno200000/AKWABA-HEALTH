@@ -64,7 +64,7 @@ export default function PrescriptionPrintPage() {
  {data.hospitals?.logo_url ? (
  <img src={data.hospitals.logo_url} alt="Logo" className="w-24 h-24 object-contain" />
  ) : (
- <div className="w-20 h-20 bg-slate-900 text-white rounded-2xl flex items-center justify-center font-black text-2xl p-2">
+ <div className="w-20 h-20 bg-blue-600 text-white rounded-2xl flex items-center justify-center font-black text-2xl p-2">
  AK
  </div>
  )}
@@ -75,7 +75,7 @@ export default function PrescriptionPrintPage() {
  </div>
  </div>
  <div className="text-right">
- <div className="inline-block px-4 py-2 bg-slate-900 text-white font-black text-xs uppercase tracking-[0.3em] mb-4">
+ <div className="inline-block px-4 py-2 bg-blue-600 text-white font-black text-xs uppercase tracking-[0.3em] mb-4">
  Ordonnance Médicale
  </div>
  <p className="text-sm font-bold">N°: {data.id.slice(0, 8).toUpperCase()}</p>
@@ -91,7 +91,7 @@ export default function PrescriptionPrintPage() {
  <p className="text-sm font-bold text-slate-600">{data.patients?.gender === 'M' ? 'Masculin' : 'Féminin'}, {data.patients?.birth_date ? `${new Date().getFullYear() - new Date(data.patients.birth_date).getFullYear()} ans` : 'Âge inconnu'}</p>
  <p className="text-sm text-slate-600 mt-2">ID: {data.patients?.file_number}</p>
  </div>
- <div className="p-6 border border-slate-100 rounded-2xl">
+ <div className="p-6 border border-blue-50 rounded-2xl">
  <p className="text-[10px] font-black text-slate-600 uppercase tracking-widest mb-3">Médecin Prescripteur</p>
  <h2 className="text-xl font-black mb-1">Dr. {data.profiles?.first_name} {data.profiles?.last_name}</h2>
  <p className="text-sm font-bold text-blue-600">{data.profiles?.specialization || "Médecine Générale"}</p>
@@ -136,7 +136,7 @@ export default function PrescriptionPrintPage() {
  <div className="h-20 flex items-center justify-center italic text-blue-600 font-serif opacity-50">
  Dr. {data.profiles?.last_name}
  </div>
- <div className="h-px bg-slate-900 w-full mb-2" />
+ <div className="h-px bg-blue-600 w-full mb-2" />
  <p className="text-sm font-black">Dr. {data.profiles?.first_name} {data.profiles?.last_name}</p>
  </div>
  </div>

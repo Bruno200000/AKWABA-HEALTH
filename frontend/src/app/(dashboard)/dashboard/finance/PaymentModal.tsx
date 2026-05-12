@@ -42,15 +42,15 @@ export default function PaymentModal({ isOpen, onClose, onSuccess, invoice }: Pa
  if (!isOpen) return null;
 
  return (
- <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
+ <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-blue-600/60 backdrop-blur-sm">
  <motion.div 
  initial={{ opacity: 0, scale: 0.95, y: 20 }}
  animate={{ opacity: 1, scale: 1, y: 0 }}
  className="bg-white w-full max-w-md rounded-3xl shadow-2xl overflow-hidden border border-white/10"
  >
- <div className="p-6 border-b border-slate-100 flex justify-between items-center">
+ <div className="p-6 border-b border-blue-50 flex justify-between items-center">
  <h3 className="font-black text-lg uppercase tracking-tight">Paiement Facture</h3>
- <button onClick={onClose} className="p-2 hover:bg-slate-100 rounded-xl"><X className="w-5 h-5" /></button>
+ <button onClick={onClose} className="p-2 hover:bg-blue-50/50 rounded-xl"><X className="w-5 h-5" /></button>
  </div>
 
  <div className="p-8">
@@ -63,7 +63,7 @@ export default function PaymentModal({ isOpen, onClose, onSuccess, invoice }: Pa
  exit={{ opacity: 0, x: -20 }}
  className="space-y-6"
  >
- <div className="bg-white border-blue-100 shadow-sm /50 p-6 rounded-2xl text-center border border-slate-100 ">
+ <div className="bg-white border-blue-100 shadow-sm /50 p-6 rounded-2xl text-center border border-blue-50 ">
  <p className="text-xs font-bold text-slate-600 uppercase tracking-widest mb-1">Montant à régler</p>
  <h2 className="text-3xl font-black text-slate-900 ">
  {Number(invoice?.total_amount - (invoice?.paid_amount || 0)).toLocaleString()} <span className="text-sm">FCFA</span>
@@ -81,7 +81,7 @@ export default function PaymentModal({ isOpen, onClose, onSuccess, invoice }: Pa
  "p-4 rounded-2xl border-2 transition-all flex flex-col items-center gap-2",
  method === m.id 
  ? "border-blue-600 bg-blue-50 " 
- : "border-slate-100 hover:border-blue-200"
+ : "border-blue-50 hover:border-blue-200"
  )}
  >
  <div className={cn("w-10 h-10 rounded-xl flex items-center justify-center text-white font-black text-xl shadow-lg", m.color)}>
@@ -103,7 +103,7 @@ export default function PaymentModal({ isOpen, onClose, onSuccess, invoice }: Pa
  value={phoneNumber}
  onChange={(e) => setPhoneNumber(e.target.value)}
  placeholder="07 00 00 00 00"
- className="w-full pl-12 pr-4 py-4 bg-white border-blue-100 shadow-sm border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500/20 outline-none font-bold"
+ className="w-full pl-12 pr-4 py-4 bg-white border-blue-100 shadow-sm  rounded-2xl focus:ring-2 focus:ring-blue-500/20 outline-none font-bold"
  />
  </div>
  </div>
@@ -153,7 +153,7 @@ export default function PaymentModal({ isOpen, onClose, onSuccess, invoice }: Pa
  <p className="text-slate-600 text-sm mt-2">La facture #{invoice.id.slice(0,8)} a été mise à jour. Un reçu a été généré.</p>
  </div>
  <div className="pt-4 flex gap-3">
- <button onClick={onSuccess} className="flex-1 py-4 bg-slate-900 text-white rounded-2xl font-bold">Fermer</button>
+ <button onClick={onSuccess} className="flex-1 py-4 bg-blue-600 text-white rounded-2xl font-bold">Fermer</button>
  <button 
  onClick={() => window.open(`/dashboard/print/invoice/${invoice.id}`, '_blank')}
  className="flex-1 py-4 bg-emerald-600 text-white rounded-2xl font-bold flex items-center justify-center gap-2"

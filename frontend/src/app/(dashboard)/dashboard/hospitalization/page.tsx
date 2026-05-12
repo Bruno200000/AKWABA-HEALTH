@@ -84,7 +84,7 @@ export default function HospitalizationPage() {
  <p className="text-slate-600 font-medium">Gérez l&apos;occupation des lits et le suivi patient en temps réel.</p>
  </div>
  <div className="flex gap-3">
- <div className="bg-slate-100 p-1 rounded-xl flex gap-1">
+ <div className="bg-blue-50/50 p-1 rounded-xl flex gap-1">
  <button 
  onClick={() => setViewMode("grid")}
  className={cn("p-2 rounded-lg transition-all", viewMode === "grid" ? "bg-white shadow-sm text-blue-600" : "text-slate-600")}
@@ -113,7 +113,7 @@ export default function HospitalizationPage() {
  <p className="text-[10px] font-black text-slate-600 uppercase tracking-widest mb-3">Taux d&apos;occupation</p>
  <div className="flex items-end gap-2">
  <h3 className="text-2xl font-black">{stats.occupancyRate}%</h3>
- <div className="w-20 h-1.5 bg-slate-100 rounded-full mb-2 overflow-hidden">
+ <div className="w-20 h-1.5 bg-blue-50/50 rounded-full mb-2 overflow-hidden">
  <div className="h-full bg-blue-600" style={{ width: `${stats.occupancyRate}%` }} />
  </div>
  </div>
@@ -132,7 +132,7 @@ export default function HospitalizationPage() {
  <span className="text-[10px] font-bold text-slate-600 mb-1">Libres</span>
  </div>
  </div>
- <div className="bg-slate-900 text-white p-6 rounded-[32px] border border-slate-800 shadow-sm relative overflow-hidden">
+ <div className="bg-blue-600 text-white p-6 rounded-[32px] border border-slate-800 shadow-sm relative overflow-hidden">
  <div className="absolute top-0 right-0 p-6 opacity-10"><ShieldAlert className="w-8 h-8" /></div>
  <p className="text-[10px] font-black text-blue-400 uppercase tracking-widest mb-3">Capacité Totale</p>
  <div className="flex items-end gap-2">
@@ -162,11 +162,11 @@ export default function HospitalizationPage() {
  <div className="flex justify-between items-start mb-8 relative z-10">
  <div className={cn(
  "w-12 h-12 rounded-[20px] flex items-center justify-center font-black",
- room.status === 'OCCUPIED' ? "bg-blue-600 text-white shadow-xl shadow-blue-200 " : "bg-white text-slate-300 border border-slate-100 "
+ room.status === 'OCCUPIED' ? "bg-blue-600 text-white shadow-xl shadow-blue-200 " : "bg-white text-slate-300 border border-blue-50 "
  )}>
  <Bed className="w-6 h-6" />
  </div>
- <span className="text-[9px] font-black text-slate-600 uppercase tracking-widest px-3 py-1 bg-white/50 rounded-full border border-slate-100 ">{room.type}</span>
+ <span className="text-[9px] font-black text-slate-600 uppercase tracking-widest px-3 py-1 bg-white/50 rounded-full border border-blue-50 ">{room.type}</span>
  </div>
 
  <div className="relative z-10">
@@ -174,7 +174,7 @@ export default function HospitalizationPage() {
  {room.status === 'OCCUPIED' ? (
  <div className="mt-6 space-y-4">
  <div className="flex items-center gap-3">
- <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-blue-600">
+ <div className="w-8 h-8 rounded-full bg-blue-50/50 flex items-center justify-center text-blue-600">
  <User className="w-4 h-4" />
  </div>
  <div>
@@ -185,7 +185,7 @@ export default function HospitalizationPage() {
  </div>
  </div>
  </div>
- <button className="w-full mt-6 py-3 bg-white border-blue-100 shadow-sm border border-slate-100 rounded-2xl text-[10px] font-black uppercase tracking-widest text-slate-600 hover:bg-red-50 hover:text-red-600 hover:border-red-100 transition-all flex items-center justify-center gap-2">
+ <button className="w-full mt-6 py-3 bg-white border-blue-100 shadow-sm border border-blue-50 rounded-2xl text-[10px] font-black uppercase tracking-widest text-slate-600 hover:bg-red-50 hover:text-red-600 hover:border-red-100 transition-all flex items-center justify-center gap-2">
  <LogOut className="w-3.5 h-3.5" /> Libérer
  </button>
  </div>

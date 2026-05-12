@@ -51,10 +51,10 @@ export default function LabResultsPage() {
  <input 
  type="text" 
  placeholder="Rechercher par patient ou type d'analyse..."
- className="w-full pl-12 pr-4 py-4 bg-white border border-slate-200 rounded-2xl text-sm focus:ring-2 focus:ring-blue-500/10"
+ className="w-full pl-12 pr-4 py-4 bg-white  rounded-2xl text-sm focus:ring-2 focus:ring-blue-500/10"
  />
  </div>
- <button className="px-5 bg-white border border-slate-200 rounded-2xl hover:bg-white border-blue-100 shadow-sm transition-all">
+ <button className="px-5 bg-white  rounded-2xl hover:bg-white border-blue-100 shadow-sm transition-all">
  <Filter className="w-5 h-5 text-slate-600" />
  </button>
  </div>
@@ -64,7 +64,7 @@ export default function LabResultsPage() {
  <motion.div
  key={res.id}
  whileHover={{ y: -5 }}
- className="p-8 bg-white rounded-[40px] border border-slate-200 shadow-sm group"
+ className="p-8 bg-white rounded-[40px]  shadow-sm group"
  >
  <div className="flex justify-between items-start mb-8">
  <div className="w-14 h-14 bg-emerald-50 text-emerald-600 rounded-[20px] flex items-center justify-center">
@@ -85,7 +85,7 @@ export default function LabResultsPage() {
  </div>
  </div>
 
- <button className="w-full py-4 bg-slate-900 text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:opacity-90 transition-all flex items-center justify-center gap-2">
+ <button className="w-full py-4 bg-blue-600 text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:opacity-90 transition-all flex items-center justify-center gap-2">
  <FileText className="w-4 h-4" /> Voir le Rapport PDF
  </button>
  </motion.div>

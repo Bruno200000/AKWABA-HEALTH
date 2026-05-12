@@ -154,11 +154,11 @@ export default function PatientsPage() {
  placeholder="Rechercher par nom, ID ou téléphone..."
  value={searchQuery}
  onChange={(e) => setSearchQuery(e.target.value)}
- className="w-full pl-10 pr-4 py-2 bg-white border-blue-100 shadow-sm border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all"
+ className="w-full pl-10 pr-4 py-2 bg-white border-blue-100 shadow-sm  rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all"
  />
  </div>
  <div className="flex gap-2 w-full md:w-auto">
- <button className="flex-1 md:flex-none flex items-center justify-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-xl text-sm font-medium hover:bg-white border-blue-100 shadow-sm transition-all">
+ <button className="flex-1 md:flex-none flex items-center justify-center gap-2 px-4 py-2 bg-white  rounded-xl text-sm font-medium hover:bg-white border-blue-100 shadow-sm transition-all">
  <Filter className="w-4 h-4" /> Filtres
  </button>
  </div>
@@ -192,7 +192,7 @@ export default function PatientsPage() {
  >
  <td className="px-6 py-4">
  <div className="flex items-center gap-3">
- <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center">
+ <div className="w-10 h-10 rounded-full bg-blue-50/50 flex items-center justify-center">
  <User className="w-5 h-5 text-slate-600" />
  </div>
  <div>

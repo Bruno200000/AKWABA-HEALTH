@@ -94,7 +94,7 @@ export default function AppointmentForm({ onSuccess, onCancel }: AppointmentForm
  <label className="text-sm font-bold text-slate-700 flex items-center gap-2">
  <User className="w-4 h-4 text-blue-500" /> Patient
  </label>
- <select required name="patient_id" value={formData.patient_id} onChange={handleChange} className="w-full px-4 py-3 bg-white border-blue-100 shadow-sm border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500/20 outline-none">
+ <select required name="patient_id" value={formData.patient_id} onChange={handleChange} className="w-full px-4 py-3 bg-white border-blue-100 shadow-sm  rounded-2xl focus:ring-2 focus:ring-blue-500/20 outline-none">
  <option value="">Sélectionner un patient</option>
  {patients.map(p => (
  <option key={p.id} value={p.id}>{p.first_name} {p.last_name}</option>
@@ -106,7 +106,7 @@ export default function AppointmentForm({ onSuccess, onCancel }: AppointmentForm
  <label className="text-sm font-bold text-slate-700 flex items-center gap-2">
  <Stethoscope className="w-4 h-4 text-emerald-500" /> Médecin
  </label>
- <select required name="doctor_id" value={formData.doctor_id} onChange={handleChange} className="w-full px-4 py-3 bg-white border-blue-100 shadow-sm border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500/20 outline-none">
+ <select required name="doctor_id" value={formData.doctor_id} onChange={handleChange} className="w-full px-4 py-3 bg-white border-blue-100 shadow-sm  rounded-2xl focus:ring-2 focus:ring-blue-500/20 outline-none">
  <option value="">Sélectionner un médecin</option>
  {doctors.map(d => (
  <option key={d.id} value={d.id}>{d.first_name} {d.last_name}</option>
@@ -118,19 +118,19 @@ export default function AppointmentForm({ onSuccess, onCancel }: AppointmentForm
  <label className="text-sm font-bold text-slate-700 flex items-center gap-2">
  <Calendar className="w-4 h-4 text-amber-500" /> Date et Heure
  </label>
- <input required type="datetime-local" name="appointment_date" value={formData.appointment_date} onChange={handleChange} className="w-full px-4 py-3 bg-white border-blue-100 shadow-sm border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500/20 outline-none" />
+ <input required type="datetime-local" name="appointment_date" value={formData.appointment_date} onChange={handleChange} className="w-full px-4 py-3 bg-white border-blue-100 shadow-sm  rounded-2xl focus:ring-2 focus:ring-blue-500/20 outline-none" />
  </div>
 
  <div className="space-y-2">
  <label className="text-sm font-bold text-slate-700 flex items-center gap-2">
  <FileText className="w-4 h-4 text-slate-600" /> Motif de la consultation
  </label>
- <textarea name="reason" value={formData.reason} onChange={handleChange} className="w-full px-4 py-3 bg-white border-blue-100 shadow-sm border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500/20 outline-none min-h-[100px]" placeholder="Symptômes, suivi, etc." />
+ <textarea name="reason" value={formData.reason} onChange={handleChange} className="w-full px-4 py-3 bg-white border-blue-100 shadow-sm  rounded-2xl focus:ring-2 focus:ring-blue-500/20 outline-none min-h-[100px]" placeholder="Symptômes, suivi, etc." />
  </div>
  </div>
 
  <div className="pt-6 flex gap-3">
- <button type="button" onClick={onCancel} className="flex-1 py-4 border border-slate-200 rounded-2xl font-bold text-slate-600 hover:bg-white border-blue-100 shadow-sm transition-all">
+ <button type="button" onClick={onCancel} className="flex-1 py-4  rounded-2xl font-bold text-slate-600 hover:bg-white border-blue-100 shadow-sm transition-all">
  Annuler
  </button>
  <button disabled={isLoading} type="submit" className="flex-[2] py-4 bg-blue-600 text-white rounded-2xl font-bold shadow-lg shadow-blue-200 hover:bg-blue-700 transition-all flex items-center justify-center gap-2">

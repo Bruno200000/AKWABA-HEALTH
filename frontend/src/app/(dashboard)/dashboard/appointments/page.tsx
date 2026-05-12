@@ -115,7 +115,7 @@ export default function AppointmentsPage() {
  <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
  <div className="lg:col-span-2 space-y-8">
  {/* Timeline / Queue Header */}
- <div className="flex gap-4 border-b border-slate-100 ">
+ <div className="flex gap-4 border-b border-blue-50 ">
  {["today", "upcoming", "history"].map((tab) => (
  <button
  key={tab}
@@ -141,10 +141,10 @@ export default function AppointmentsPage() {
  initial={{ opacity: 0, y: 10 }}
  animate={{ opacity: 1, y: 0 }}
  transition={{ delay: index * 0.05 }}
- className="bg-white p-6 rounded-[32px] border border-slate-100 shadow-sm flex items-center justify-between group hover:shadow-xl hover:-translate-y-1 transition-all"
+ className="bg-white p-6 rounded-[32px] border border-blue-50 shadow-sm flex items-center justify-between group hover:shadow-xl hover:-translate-y-1 transition-all"
  >
  <div className="flex items-center gap-6">
- <div className="flex flex-col items-center justify-center w-16 h-16 bg-white border-blue-100 shadow-sm rounded-3xl border border-slate-100 ">
+ <div className="flex flex-col items-center justify-center w-16 h-16 bg-white border-blue-100 shadow-sm rounded-3xl border border-blue-50 ">
  <p className="text-[10px] font-black text-slate-600 uppercase">{new Date(getAppointmentStart(apt)).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
  </div>
  <div>
@@ -181,7 +181,7 @@ export default function AppointmentsPage() {
  </motion.div>
  ))}
  {(!isLoading && tabAppointments.length === 0) && (
- <div className="text-center py-20 bg-white border-blue-100 shadow-sm /50 rounded-[40px] border-2 border-dashed border-slate-100 ">
+ <div className="text-center py-20 bg-white border-blue-100 shadow-sm /50 rounded-[40px] border-2 border-dashed border-blue-50 ">
  <CalendarIcon className="w-12 h-12 text-slate-200 mx-auto mb-4" />
  <p className="text-xs font-black text-slate-600 uppercase tracking-widest">Aucun rendez-vous</p>
  </div>
@@ -191,7 +191,7 @@ export default function AppointmentsPage() {
 
  {/* Sidebar: Quick Actions & Queue Stats */}
  <div className="space-y-8">
- <div className="bg-slate-900 text-white p-8 rounded-[40px] shadow-2xl relative overflow-hidden">
+ <div className="bg-blue-600 text-white p-8 rounded-[40px] shadow-2xl relative overflow-hidden">
  <div className="absolute bottom-0 right-0 p-8 opacity-10"><Activity className="w-20 h-20" /></div>
  <h3 className="font-black text-xs uppercase tracking-widest text-blue-400 mb-8">Statut du Flux</h3>
  <div className="space-y-8">

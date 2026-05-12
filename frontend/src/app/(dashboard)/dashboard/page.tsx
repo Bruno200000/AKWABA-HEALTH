@@ -246,7 +246,7 @@ export default function DashboardHome() {
  i === new Date().getMonth() ? "bg-blue-600 shadow-lg shadow-blue-300" : "bg-blue-50 group-hover:bg-blue-400 group-hover:bg-opacity-70"
  )}
  />
- <div className="absolute -top-10 bg-slate-900 text-white text-[10px] font-black px-2 py-1 rounded-lg shadow-xl opacity-0 group-hover:opacity-100 transition-opacity z-10">
+ <div className="absolute -top-10 bg-blue-600 text-white text-[10px] font-black px-2 py-1 rounded-lg shadow-xl opacity-0 group-hover:opacity-100 transition-opacity z-10">
  {val}
  </div>
  </div>

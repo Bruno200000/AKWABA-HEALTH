@@ -40,7 +40,7 @@ export default function ConsultationHistoryPage() {
  <h1 className="text-3xl font-black text-slate-900 tracking-tight">Historique des Consultations</h1>
  <p className="text-slate-600 font-medium">Archive complète de toutes les consultations passées.</p>
  </div>
- <button className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-xl text-xs font-bold hover:bg-white border-blue-100 shadow-sm transition-all shadow-sm">
+ <button className="flex items-center gap-2 px-4 py-2 bg-white  rounded-xl text-xs font-bold hover:bg-white border-blue-100 shadow-sm transition-all shadow-sm">
  <Download className="w-4 h-4" /> Exporter l'archive
  </button>
  </div>
@@ -51,18 +51,18 @@ export default function ConsultationHistoryPage() {
  <input 
  type="text" 
  placeholder="Rechercher par patient, docteur ou diagnostic..."
- className="w-full pl-12 pr-4 py-4 bg-white border border-slate-200 rounded-2xl text-sm focus:ring-2 focus:ring-blue-500/10"
+ className="w-full pl-12 pr-4 py-4 bg-white  rounded-2xl text-sm focus:ring-2 focus:ring-blue-500/10"
  />
  </div>
- <button className="px-5 bg-white border border-slate-200 rounded-2xl hover:bg-white border-blue-100 shadow-sm transition-all">
+ <button className="px-5 bg-white  rounded-2xl hover:bg-white border-blue-100 shadow-sm transition-all">
  <Filter className="w-5 h-5 text-slate-600" />
  </button>
  </div>
 
- <div className="bg-white rounded-[32px] border border-slate-200 overflow-hidden shadow-sm">
+ <div className="bg-white rounded-[32px]  overflow-hidden shadow-sm">
  <table className="w-full text-left">
  <thead>
- <tr className="bg-white border-blue-100 shadow-sm /50 border-b border-slate-100 ">
+ <tr className="bg-white border-blue-100 shadow-sm /50 border-b border-blue-50 ">
  <th className="px-8 py-5 text-[10px] font-black text-slate-600 uppercase tracking-widest">Date</th>
  <th className="px-8 py-5 text-[10px] font-black text-slate-600 uppercase tracking-widest">Patient</th>
  <th className="px-8 py-5 text-[10px] font-black text-slate-600 uppercase tracking-widest">Diagnostic</th>

@@ -158,7 +158,7 @@ export default function RemotePage() {
  <div className="grid grid-cols-1 gap-4">
  {[
  { label: "Diffusion Alerte", sub: "Notification push à tout le staff", icon: Bell, color: "bg-blue-600" },
- { label: "Verrouillage Cyber", sub: "Protocole de sécurité AES-256", icon: ShieldCheck, color: "bg-slate-800" },
+ { label: "Verrouillage Cyber", sub: "Protocole de sécurité AES-256", icon: ShieldCheck, color: "bg-blue-700" },
  { label: "Backup Cloud", sub: "Dernière synchro il y a 2 min", icon: Globe, color: "bg-emerald-600" },
  ].map((action, i) => (
  <motion.button

@@ -93,7 +93,7 @@ export default function FinancePage() {
  <p className="text-slate-600 font-medium">Suivez les encaissements et revenus en temps réel.</p>
  </div>
  <div className="flex gap-3">
- <button className="px-4 py-2 bg-white border border-slate-200 rounded-xl text-xs font-bold shadow-sm hover:bg-white border-blue-100 shadow-sm transition-all flex items-center gap-2">
+ <button className="px-4 py-2 bg-white  rounded-xl text-xs font-bold shadow-sm hover:bg-white border-blue-100 shadow-sm transition-all flex items-center gap-2">
  <Download className="w-4 h-4" /> Rapport
  </button>
  <button 
@@ -143,7 +143,7 @@ export default function FinancePage() {
 
  <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
  <div className="lg:col-span-2 space-y-6">
- <div className="flex gap-4 border-b border-slate-100 ">
+ <div className="flex gap-4 border-b border-blue-50 ">
  {["invoices", "quotes", "cash-report"].map((tab) => (
  <button
  key={tab}
@@ -184,7 +184,7 @@ export default function FinancePage() {
  </span>
  </td>
  <td className="px-8 py-5">
- <button onClick={() => { setSelectedInvoice(inv); setIsPaymentModalOpen(true); }} className="px-4 py-1.5 bg-slate-900 text-white text-[9px] font-black uppercase rounded-xl">Payer</button>
+ <button onClick={() => { setSelectedInvoice(inv); setIsPaymentModalOpen(true); }} className="px-4 py-1.5 bg-blue-600 text-white text-[9px] font-black uppercase rounded-xl">Payer</button>
  </td>
  </tr>
  ))}
@@ -194,7 +194,7 @@ export default function FinancePage() {
  </div>
 
  <div className="space-y-8">
- <div className="bg-slate-900 text-white p-8 rounded-[40px] shadow-2xl relative overflow-hidden">
+ <div className="bg-blue-600 text-white p-8 rounded-[40px] shadow-2xl relative overflow-hidden">
  <div className="absolute bottom-0 right-0 p-8 opacity-10"><Wallet className="w-20 h-20" /></div>
  <h3 className="font-black text-xs uppercase tracking-widest text-blue-400 mb-8">Répartition Mobile</h3>
  <div className="space-y-6">

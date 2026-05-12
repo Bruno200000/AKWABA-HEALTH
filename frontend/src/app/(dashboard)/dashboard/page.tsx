@@ -167,8 +167,8 @@ export default function DashboardHome() {
             {isLoading
               ? "…"
               : profile
-                ? `${profile.role === "DOCTOR" ? "Dr. " : ""}${[profile.first_name, profile.last_name].filter(Boolean).join(" ").trim()}`
-                : "Collaborateur"}{" "}
+                ? `${profile.role === "DOCTOR" ? "Dr. " : ""}${profile.first_name} ${profile.last_name}`
+                : "Akwaba User"}{" "}
             👋
           </h1>
           <p className="text-slate-600 font-medium">

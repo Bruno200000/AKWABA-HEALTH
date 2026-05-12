@@ -16,6 +16,10 @@ import {
   Menu, 
   X,
   Bell,
+  Mic,
+  BrainCircuit,
+  MessageSquare,
+  Sparkles,
   Search,
   ChevronLeft,
   ChevronRight,
@@ -327,24 +331,39 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         {/* Top Header */}
         <header className="h-20 bg-white/90 backdrop-blur-xl border-b border-blue-100/80 flex items-center justify-between px-8 sticky top-0 z-30 shadow-sm shadow-blue-500/5">
           <div className="flex items-center gap-6 flex-1">
-            <div className="relative max-w-md w-full hidden lg:block group">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-slate-400 group-focus-within:text-blue-600 transition-colors" />
+            <div className="relative max-w-xl w-full hidden lg:block ai-chat-bar">
+              <div className="absolute left-4 top-1/2 -translate-y-1/2 flex items-center gap-2">
+                <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center shadow-lg shadow-blue-500/20">
+                  <Sparkles className="w-4 h-4 text-white" />
+                </div>
+              </div>
               <input 
                 type="text" 
-                placeholder="Rechercher un patient, une analyse..."
-                className="w-full pl-12 pr-4 py-2.5 bg-blue-50/50 border border-blue-100/80 focus:border-blue-400/50 rounded-2xl text-sm focus:outline-none focus:ring-4 focus:ring-blue-500/10 transition-all"
+                placeholder="Comment puis-je vous aider, Docteur ?"
+                className="w-full pl-16 pr-12 py-3 bg-transparent border-none rounded-[24px] text-sm font-medium focus:outline-none focus:ring-0 transition-all"
               />
+              <button className="absolute right-3 top-1/2 -translate-y-1/2 p-2 text-blue-600 hover:bg-blue-200/20 rounded-xl transition-all">
+                <Mic className="w-5 h-5" />
+              </button>
             </div>
           </div>
 
           <div className="flex items-center gap-5">
             <div className="flex items-center gap-2">
-              <button className="relative p-2.5 text-slate-500 hover:bg-blue-50 rounded-xl transition-all hover:scale-105 active:scale-95">
+              <button className="relative p-2.5 text-slate-500 hover:bg-blue-50 rounded-xl transition-all hover:scale-105 active:scale-95 group">
                 <Bell className="w-5 h-5" />
                 <span className="absolute top-2.5 right-2.5 w-2 h-2 bg-blue-500 rounded-full ring-2 ring-white" />
+                <div className="absolute top-full right-0 mt-2 hidden group-hover:block bg-white shadow-xl rounded-xl p-3 border border-blue-100 text-[10px] w-48 z-50">
+                  <p className="font-bold text-slate-400 uppercase mb-2">Notifications</p>
+                  <p className="text-slate-600">Pas de nouvelles notifications.</p>
+                </div>
               </button>
-              <button className="relative p-2.5 text-slate-500 hover:bg-blue-50 rounded-xl transition-all hover:scale-105 active:scale-95">
-                <Activity className="w-5 h-5" />
+              <button className="relative p-2.5 text-slate-500 hover:bg-blue-50 rounded-xl transition-all hover:scale-105 active:scale-95 group">
+                <MessageSquare className="w-5 h-5" />
+                <div className="absolute top-full right-0 mt-2 hidden group-hover:block bg-white shadow-xl rounded-xl p-3 border border-blue-100 text-[10px] w-48 z-50">
+                  <p className="font-bold text-slate-400 uppercase mb-2">Messages</p>
+                  <p className="text-slate-600">Aucune discussion en cours.</p>
+                </div>
               </button>
             </div>
             
@@ -360,10 +379,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 </div>
                 <div className="text-left hidden sm:block">
                   <p className="text-sm font-bold text-slate-900 leading-none mb-1">
-                    {profile ? `${profile.first_name} ${profile.last_name}` : "Chargement..."}
+                    {profile ? `${profile.first_name ? (profile.role === "DOCTOR" ? "Dr. " : "") + profile.first_name + " " + profile.last_name : profile.email}` : "Utilisateur"}
                   </p>
                   <p className="text-[10px] text-blue-600 uppercase font-black tracking-wider">
-                    {profile?.role || "Utilisateur"}
+                    {profile?.role || "Collaborateur"}
                   </p>
                 </div>
                 <ChevronDown className={cn("w-4 h-4 text-slate-400 transition-transform", isProfileOpen && "rotate-180")} />
@@ -407,10 +426,13 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </header>
 
         {/* Content Area */}
-        <main className="flex-1 overflow-y-auto bg-[#f0f7ff]/80 p-8 custom-scrollbar">
-          <div className="max-w-7xl mx-auto">
+        <main className="flex-1 overflow-y-auto bg-[#f0f7ff] p-8 custom-scrollbar relative">
+          <div className="max-w-7xl mx-auto relative z-10">
             {children}
           </div>
+          {/* Subtle background decoration to avoid 'noir' look */}
+          <div className="absolute top-0 right-0 w-96 h-96 bg-blue-200/20 blur-[100px] -z-0 pointer-events-none" />
+          <div className="absolute bottom-0 left-0 w-96 h-96 bg-sky-200/20 blur-[100px] -z-0 pointer-events-none" />
         </main>
       </div>
       <AkwabaAI />

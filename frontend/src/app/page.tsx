@@ -36,9 +36,14 @@ export default function LandingPage() {
               <a href="#features" className="hover:text-blue-600 transition-colors">Fonctionnalités</a>
               <a href="#solutions" className="hover:text-blue-600 transition-colors">Solutions</a>
               <a href="#pricing" className="hover:text-blue-600 transition-colors">Tarifs</a>
-              <Link href="/login" className="px-5 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-all shadow-lg shadow-blue-500/25">
-                Connexion
-              </Link>
+              <div className="flex items-center gap-3">
+                <Link href="/login" className="px-5 py-2 border-2 border-blue-600 text-blue-600 rounded-full hover:bg-blue-50 font-bold transition-all">
+                  Démo
+                </Link>
+                <Link href="/login" className="px-5 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-all shadow-lg shadow-blue-500/25 font-bold">
+                  Espace Pro
+                </Link>
+              </div>
             </div>
           </div>
         </div>
@@ -72,10 +77,10 @@ export default function LandingPage() {
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link href="/login" className="w-full sm:w-auto px-8 py-4 bg-blue-600 text-white rounded-2xl font-bold text-lg shadow-xl shadow-blue-200 hover:bg-blue-700 transition-all flex items-center justify-center gap-2 group">
-                Commencer <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                Essayer Gratuitement <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Link>
-              <Link href="/login" className="w-full sm:w-auto px-8 py-4 bg-white text-blue-800 border-2 border-blue-200 rounded-2xl font-bold text-lg hover:bg-blue-50 transition-all text-center shadow-sm shadow-blue-500/10">
-                Espace Hospitalier
+              <Link href="/login" className="w-full sm:w-auto px-8 py-4 bg-white text-blue-800 border-2 border-blue-200 rounded-2xl font-bold text-lg hover:bg-blue-50 transition-all text-center shadow-sm shadow-blue-500/10 flex items-center justify-center gap-2">
+                <Smartphone className="w-5 h-5" /> Accès Démo
               </Link>
             </div>
           </motion.div>
@@ -173,30 +178,47 @@ export default function LandingPage() {
           </div>
           <div className="grid md:grid-cols-3 gap-8">
             {[
-              { name: "Essentiel", price: "Sur devis", feats: ["Jusqu’à 25 lits", "Pharmacie & labo", "Support email"] },
-              { name: "Pro", price: "Sur devis", feats: ["Multi-sites", "Rôles avancés", "Reporting étendu"], highlight: true },
-              { name: "Enterprise", price: "Sur devis", feats: ["SLA dédié", "Intégrations API", "Formation sur site"] },
+              { name: "Essentiel", price: "25 000", period: "/mois", desc: "Idéal pour les petites cliniques de quartier.", feats: ["Jusqu’à 10 lits", "Dossiers Patients illimités", "Pharmacie standard", "Support email 24/7"] },
+              { name: "Premium", price: "75 000", period: "/mois", desc: "Le pack complet pour les centres hospitaliers.", feats: ["Lits illimités", "Laboratoire intégré", "Facturation Wave/OM", "Rôles d'accès avancés"], highlight: true },
+              { name: "Hôpital Gnl", price: "Sur Devis", period: "", desc: "Solutions personnalisées pour grands établissements.", feats: ["Multi-sites & Réseau", "Formation sur site", "SLA Garanti 99.9%", "Intégrations API sur mesure"] },
             ].map((p) => (
-              <div
+              <motion.div
                 key={p.name}
-                className={`rounded-3xl p-8 border bg-white ${p.highlight ? "border-blue-500 shadow-xl shadow-blue-500/15 ring-2 ring-blue-500" : "border-blue-100"}`}
+                whileHover={{ y: -10 }}
+                className={`relative rounded-[40px] p-10 border bg-white flex flex-col ${p.highlight ? "border-blue-600 shadow-2xl shadow-blue-600/20 ring-1 ring-blue-600" : "border-blue-100 shadow-xl shadow-blue-900/5"}`}
               >
-                <h3 className="font-black text-lg text-slate-900">{p.name}</h3>
-                <p className="text-3xl font-black text-blue-600 mt-4">{p.price}</p>
-                <ul className="mt-8 space-y-3 text-sm text-slate-600 text-left">
+                {p.highlight && (
+                  <div className="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1 bg-blue-600 text-white text-[10px] font-black uppercase tracking-widest rounded-full shadow-lg">
+                    Recommandé
+                  </div>
+                )}
+                <h3 className="font-black text-xl text-slate-900 uppercase tracking-tight">{p.name}</h3>
+                <p className="text-sm text-slate-500 font-medium mt-2">{p.desc}</p>
+                
+                <div className="mt-8 flex items-baseline gap-1">
+                  <span className="text-4xl font-black text-slate-900">{p.price}</span>
+                  <span className="text-sm font-bold text-slate-400">{p.price === "Sur Devis" ? "" : "CFA"}</span>
+                  <span className="text-sm font-bold text-slate-400">{p.period}</span>
+                </div>
+
+                <ul className="mt-10 space-y-4 flex-1">
                   {p.feats.map((f) => (
-                    <li key={f} className="flex gap-2">
-                      <span className="text-blue-500 font-bold">✓</span> {f}
+                    <li key={f} className="flex items-start gap-3 text-sm font-medium text-slate-600">
+                      <div className="w-5 h-5 rounded-full bg-blue-50 flex items-center justify-center shrink-0 mt-0.5">
+                        <ShieldCheck className="w-3.5 h-3.5 text-blue-600" />
+                      </div>
+                      {f}
                     </li>
                   ))}
                 </ul>
+
                 <Link
                   href="/login"
-                  className={`mt-8 block text-center py-3 rounded-2xl font-bold text-sm ${p.highlight ? "bg-blue-600 text-white" : "border-2 border-blue-200 text-blue-700"}`}
+                  className={`mt-10 block text-center py-4 rounded-2xl font-black text-xs uppercase tracking-[0.1em] transition-all ${p.highlight ? "bg-blue-600 text-white shadow-xl shadow-blue-600/30 hover:bg-blue-700" : "bg-slate-50 text-blue-900 hover:bg-blue-100"}`}
                 >
-                  Demander une démo
+                  Démarrer maintenant
                 </Link>
-              </div>
+              </motion.div>
             ))}
           </div>
         </div>

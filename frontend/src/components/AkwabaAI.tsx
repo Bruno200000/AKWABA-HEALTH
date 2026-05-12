@@ -107,16 +107,16 @@ export default function AkwabaAI() {
     <>
       {/* Floating Button - Circular with Logo */}
       <motion.button
-        initial={{ scale: 0, rotate: -180 }}
-        animate={{ scale: 1, rotate: 0 }}
-        whileHover={{ scale: 1.1, rotate: 5 }}
+        initial={{ scale: 0 }}
+        animate={{ scale: 1 }}
+        whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-8 right-8 w-16 h-16 bg-gradient-to-br from-blue-600 to-blue-800 rounded-full shadow-2xl shadow-blue-500/35 flex items-center justify-center text-white z-50 group border-4 border-white"
+        className="fixed bottom-8 right-8 w-16 h-16 bg-white rounded-full shadow-2xl shadow-blue-500/35 flex items-center justify-center z-50 group border-4 border-blue-600 p-2 overflow-hidden"
       >
-        <div className="relative">
-           <Zap className="w-8 h-8 fill-current text-white group-hover:scale-110 transition-transform" />
-           <div className="absolute -top-1 -right-1 w-4 h-4 bg-sky-400 rounded-full border-2 border-white animate-pulse" />
+        <div className="relative w-full h-full">
+           <img src="/logo.png" alt="AI Logo" className="w-full h-full object-contain group-hover:scale-110 transition-transform" />
+           <div className="absolute -top-1 -right-1 w-4 h-4 bg-emerald-500 rounded-full border-2 border-white animate-pulse" />
         </div>
       </motion.button>
 

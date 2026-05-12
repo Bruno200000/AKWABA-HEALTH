@@ -138,8 +138,8 @@ function NavItem({ item, isSidebarOpen, pathname }: { item: any, isSidebarOpen: 
           className={cn(
             "flex items-center gap-3 px-4 py-3 rounded-2xl transition-all relative z-10",
             isActive && !hasSubItems
-              ? "bg-blue-600 text-white shadow-lg shadow-blue-600/25" 
-              : "text-slate-600 hover:bg-blue-50 hover:text-blue-900"
+              ? "bg-white text-blue-900 shadow-xl" 
+              : "text-blue-100/70 hover:bg-white/10 hover:text-white"
           )}
         >
           <item.icon className={cn("w-5 h-5 shrink-0 text-current", !isActive && "group-hover:scale-110 transition-transform")} />
@@ -157,7 +157,7 @@ function NavItem({ item, isSidebarOpen, pathname }: { item: any, isSidebarOpen: 
         {isActive && !hasSubItems && (
           <motion.div 
             layoutId="activeNav"
-            className="absolute inset-0 bg-blue-600 rounded-2xl -z-0"
+            className="absolute inset-0 bg-white rounded-2xl -z-0 shadow-lg shadow-blue-900/20"
             transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
           />
         )}
@@ -169,7 +169,7 @@ function NavItem({ item, isSidebarOpen, pathname }: { item: any, isSidebarOpen: 
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            className="ml-9 border-l border-blue-100 space-y-1 overflow-hidden"
+            className="ml-9 border-l border-white/10 space-y-1 overflow-hidden"
           >
             {item.subItems.map((sub: any) => {
               const isSubActive = pathname === sub.href;
@@ -180,8 +180,8 @@ function NavItem({ item, isSidebarOpen, pathname }: { item: any, isSidebarOpen: 
                   className={cn(
                     "block px-4 py-2 text-sm transition-all rounded-lg",
                     isSubActive
-                      ? "text-blue-600 font-bold"
-                      : "text-slate-500 hover:text-blue-700 hover:bg-blue-50/80"
+                      ? "text-white font-black"
+                      : "text-blue-100/50 hover:text-white hover:bg-white/5"
                   )}
                 >
                   {sub.label}
@@ -259,10 +259,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       <motion.aside
         initial={false}
         animate={{ width: isSidebarOpen ? 280 : 80 }}
-        className="relative bg-white border-r border-blue-100 flex flex-col z-40 shadow-sm transition-all duration-300"
+        className="relative bg-slate-950 border-r border-white/5 flex flex-col z-40 shadow-2xl transition-all duration-300 bg-grid"
       >
         {/* Logo Section */}
-        <div className="h-20 flex items-center px-6 border-b border-blue-50 bg-gradient-to-r from-blue-50/90 to-white">
+        <div className="h-20 flex items-center px-6 border-b border-white/5 bg-slate-900/50">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center shrink-0 shadow-md p-1.5 ring-2 ring-blue-100">
               <img src="/logo.png" alt="Logo" className="w-full h-full object-contain" />
@@ -273,8 +273,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 animate={{ opacity: 1, x: 0 }}
                 className="flex flex-col min-w-0"
               >
-                <span className="font-black text-sm tracking-tight text-slate-900 leading-tight">AKWABA HEALTH</span>
-                <span className="text-[9px] font-bold text-blue-600 uppercase tracking-widest leading-none mt-1">Plateforme Médicale</span>
+                <span className="font-black text-sm tracking-tight text-white leading-tight">AKWABA HEALTH</span>
+                <span className="text-[9px] font-bold text-blue-400 uppercase tracking-widest leading-none mt-1">Plateforme Médicale</span>
               </motion.div>
             )}
           </div>
@@ -285,7 +285,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           {menuGroups.map((group) => (
             <div key={group.title} className="space-y-2">
               {isSidebarOpen && (
-                <div className="px-4 text-[10px] font-black text-blue-900/35 uppercase tracking-[0.2em] mb-4">
+                <div className="px-4 text-[10px] font-black text-white/30 uppercase tracking-[0.2em] mb-4">
                   {group.title}
                 </div>
               )}
@@ -299,10 +299,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </nav>
 
         {/* Sidebar Footer */}
-        <div className="p-4 mt-auto border-t border-blue-50 bg-blue-50/40">
+        <div className="p-4 mt-auto border-t border-white/5 bg-slate-900/30">
           <button 
             onClick={handleLogout}
-            className="flex items-center gap-3 w-full px-4 py-3 rounded-2xl text-slate-500 hover:bg-red-50 hover:text-red-600 transition-all group"
+            className="flex items-center gap-3 w-full px-4 py-3 rounded-2xl text-blue-100/60 hover:bg-white/5 hover:text-white transition-all group"
           >
             <LogOut className="w-5 h-5 shrink-0 group-hover:-translate-x-1 transition-transform" />
             {isSidebarOpen && <span className="font-bold text-sm">Déconnexion</span>}
@@ -312,7 +312,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         {/* Toggle Button */}
         <button 
           onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-          className="absolute -right-3 top-24 w-6 h-6 bg-white border border-blue-200 rounded-full flex items-center justify-center shadow-lg z-50 hover:bg-blue-600 hover:border-blue-600 transition-all text-blue-700 hover:text-white group"
+          className="absolute -right-3 top-24 w-6 h-6 bg-slate-900 border border-white/10 rounded-full flex items-center justify-center shadow-lg z-50 hover:bg-white hover:text-slate-900 transition-all text-blue-400 group"
         >
           {isSidebarOpen ? (
             <ChevronLeft className="w-3.5 h-3.5 group-hover:scale-110 transition-transform" />

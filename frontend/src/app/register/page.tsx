@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { supabase } from "@/lib/supabase";
+import { isSupabaseConfigured, supabase } from "@/lib/supabase";
 
 export default function RegisterPage() {
   const [isLoading, setIsLoading] = useState(false);
@@ -34,6 +34,14 @@ export default function RegisterPage() {
     e.preventDefault();
     setIsLoading(true);
     setError(null);
+
+    if (!isSupabaseConfigured) {
+      setError(
+        "Configuration Supabase manquante : renseignez NEXT_PUBLIC_SUPABASE_URL et NEXT_PUBLIC_SUPABASE_ANON_KEY dans frontend/.env.local."
+      );
+      setIsLoading(false);
+      return;
+    }
 
     try {
       // 1. Create User
@@ -87,7 +95,7 @@ export default function RegisterPage() {
           animate={{ opacity: 1, scale: 1 }}
           className="max-w-md w-full bg-white p-10 rounded-3xl shadow-2xl text-center space-y-6"
         >
-          <div className="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto">
+          <div className="w-20 h-20 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto">
             <CheckCircle2 className="w-10 h-10" />
           </div>
           <h2 className="text-2xl font-black text-slate-900">Compte créé avec succès !</h2>
@@ -186,7 +194,7 @@ export default function RegisterPage() {
                 <p className="text-xs font-bold uppercase tracking-widest text-slate-500">Ivoirien</p>
               </div>
               <div>
-                <p className="text-4xl font-black text-emerald-500">Securisé</p>
+                <p className="text-4xl font-black text-sky-400">Sécurisé</p>
                 <p className="text-xs font-bold uppercase tracking-widest text-slate-500">Données cryptées</p>
               </div>
            </div>

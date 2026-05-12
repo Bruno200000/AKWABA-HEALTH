@@ -38,14 +38,23 @@ export default function PatientForm({ onSuccess, onCancel }: PatientFormProps) {
       const { data: profile } = await supabase.from('profiles').select('hospital_id').eq('id', user.id).single();
       if (!profile?.hospital_id) throw new Error("Profil hospitalier non trouvé");
       
-      const fileNumber = `PAT-${Math.floor(Math.random() * 900000) + 100000}`;
+      const fileNumber = `PAT-${Date.now().toString(36).toUpperCase()}-${Math.floor(Math.random() * 999)}`;
 
       const { error } = await supabase.from("patients").insert([
         {
-          ...formData,
           hospital_id: profile.hospital_id,
           file_number: fileNumber,
-          allergies: formData.allergies ? formData.allergies.split(',').map(s => s.trim()) : [],
+          first_name: formData.first_name,
+          last_name: formData.last_name,
+          birth_date: formData.birth_date || null,
+          gender: formData.gender,
+          blood_group: formData.blood_group || null,
+          phone: formData.phone,
+          email: formData.email || null,
+          address: formData.address || null,
+          insurance_provider: formData.insurance_provider || null,
+          insurance_number: formData.insurance_number || null,
+          allergies: formData.allergies ? formData.allergies.split(",").map((s) => s.trim()).filter(Boolean) : [],
           medical_history: { notes: formData.medical_history },
         },
       ]);

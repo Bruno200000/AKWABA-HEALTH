@@ -6,8 +6,15 @@ import { Save, Beaker, AlertCircle, CheckCircle2, ChevronLeft } from "lucide-rea
 import { cn } from "@/lib/utils";
 import { supabase } from "@/lib/supabase";
 
+function extractResultsText(data: unknown): string {
+  if (data && typeof data === "object" && "text" in data && typeof (data as { text: unknown }).text === "string") {
+    return (data as { text: string }).text;
+  }
+  return "";
+}
+
 export default function ResultEntry({ test, onCancel, onSuccess }: { test: any, onCancel: () => void, onSuccess: () => void }) {
-  const [results, setResults] = useState(test.results || "");
+  const [results, setResults] = useState(() => extractResultsText(test.results_data) || "");
   const [observations, setObservations] = useState(test.observations || "");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -18,10 +25,10 @@ export default function ResultEntry({ test, onCancel, onSuccess }: { test: any, 
     const { error } = await supabase
       .from("lab_tests")
       .update({
-        results,
+        results_data: { text: results },
         observations,
-        status: 'COMPLETED',
-        completed_at: new Date().toISOString()
+        status: "COMPLETED",
+        completed_at: new Date().toISOString(),
       })
       .eq("id", test.id);
 

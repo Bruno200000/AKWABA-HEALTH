@@ -15,15 +15,23 @@ export default function LabTestForm({ onSuccess, onCancel }: LabTestFormProps) {
   const [formData, setFormData] = useState({
     patient_id: "",
     test_type: "",
-    status: "PENDING",
-    results: {},
     doctor_id: "",
+    notes: "",
   });
 
   useEffect(() => {
     const fetchData = async () => {
-      const { data: patientsData } = await supabase.from('patients').select('id, first_name, last_name');
-      const { data: doctorsData } = await supabase.from('profiles').select('id, first_name, last_name').eq('role', 'DOCTOR');
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const { data: prof } = await supabase.from("profiles").select("hospital_id").eq("id", user.id).maybeSingle();
+      const hid = prof?.hospital_id;
+      if (!hid) return;
+
+      const [{ data: patientsData }, { data: doctorsData }] = await Promise.all([
+        supabase.from("patients").select("id, first_name, last_name").eq("hospital_id", hid).order("last_name"),
+        supabase.from("profiles").select("id, first_name, last_name").eq("hospital_id", hid).eq("role", "DOCTOR"),
+      ]);
       
       if (patientsData) setPatients(patientsData);
       if (doctorsData && doctorsData.length > 0) {
@@ -45,8 +53,13 @@ export default function LabTestForm({ onSuccess, onCancel }: LabTestFormProps) {
 
       const { error } = await supabase.from("lab_tests").insert([
         {
-          ...formData,
           hospital_id: profile.hospital_id,
+          patient_id: formData.patient_id,
+          doctor_id: formData.doctor_id,
+          test_type: formData.test_type,
+          status: "ORDERED",
+          notes: formData.notes || null,
+          results_data: null,
         },
       ]);
 
@@ -97,7 +110,7 @@ export default function LabTestForm({ onSuccess, onCancel }: LabTestFormProps) {
           <label className="text-sm font-bold text-slate-700 flex items-center gap-2">
             <FileText className="w-4 h-4 text-slate-400" /> Notes / Indications
           </label>
-          <textarea name="notes" className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500/20 outline-none min-h-[100px]" placeholder="Pourquoi cet examen ? Précisions médicales..." />
+          <textarea name="notes" value={formData.notes} onChange={handleChange} className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500/20 outline-none min-h-[100px]" placeholder="Pourquoi cet examen ? Précisions médicales..." />
         </div>
       </div>
 

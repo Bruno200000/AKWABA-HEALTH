@@ -23,9 +23,23 @@ export default function AppointmentForm({ onSuccess, onCancel }: AppointmentForm
 
   useEffect(() => {
     const fetchData = async () => {
-      const { data: patientsData } = await supabase.from('patients').select('id, first_name, last_name');
-      const { data: doctorsData } = await supabase.from('profiles').select('id, first_name, last_name').eq('role', 'DOCTOR');
-      
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("hospital_id")
+        .eq("id", user.id)
+        .maybeSingle();
+
+      const hid = profile?.hospital_id;
+      if (!hid) return;
+
+      const [{ data: patientsData }, { data: doctorsData }] = await Promise.all([
+        supabase.from("patients").select("id, first_name, last_name").eq("hospital_id", hid).order("last_name"),
+        supabase.from("profiles").select("id, first_name, last_name").eq("hospital_id", hid).eq("role", "DOCTOR"),
+      ]);
+
       if (patientsData) setPatients(patientsData);
       if (doctorsData) setDoctors(doctorsData);
     };
@@ -43,11 +57,20 @@ export default function AppointmentForm({ onSuccess, onCancel }: AppointmentForm
       const { data: profile } = await supabase.from('profiles').select('hospital_id').eq('id', user.id).single();
       if (!profile?.hospital_id) throw new Error("Profil hospitalier non trouvé");
       
+      const start = new Date(formData.appointment_date);
+      if (Number.isNaN(start.getTime())) throw new Error("Date invalide");
+
+      const end = new Date(start.getTime() + 30 * 60 * 1000);
+
       const { error } = await supabase.from("appointments").insert([
         {
-          ...formData,
           hospital_id: profile.hospital_id,
-          appointment_date: new Date(formData.appointment_date).toISOString(),
+          patient_id: formData.patient_id,
+          doctor_id: formData.doctor_id,
+          status: formData.status as "PENDING" | "CONFIRMED" | "CANCELLED" | "COMPLETED" | "IN_PROGRESS",
+          reason: formData.reason || null,
+          start_time: start.toISOString(),
+          end_time: end.toISOString(),
         },
       ]);
 

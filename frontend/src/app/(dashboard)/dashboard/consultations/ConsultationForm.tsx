@@ -61,11 +61,19 @@ export default function ConsultationForm({ patientId: initialPatientId, onSucces
   }, [patientSearch]);
 
   const searchPatients = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+
+    const { data: profile } = await supabase.from("profiles").select("hospital_id").eq("id", user.id).maybeSingle();
+    const hid = profile?.hospital_id;
+    if (!hid) return;
+
     const { data } = await supabase
       .from("patients")
       .select("*")
-      .ilike("last_name", `%${patientSearch}%`)
-      .limit(5);
+      .eq("hospital_id", hid)
+      .or(`last_name.ilike.%${patientSearch}%,first_name.ilike.%${patientSearch}%`)
+      .limit(8);
     setPatientResults(data || []);
   };
 
@@ -78,11 +86,19 @@ export default function ConsultationForm({ patientId: initialPatientId, onSucces
   }, [searchQuery]);
 
   const searchMedicines = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+
+    const { data: profile } = await supabase.from("profiles").select("hospital_id").eq("id", user.id).maybeSingle();
+    const hid = profile?.hospital_id;
+    if (!hid) return;
+
     const { data } = await supabase
       .from("medicines")
       .select("*")
+      .eq("hospital_id", hid)
       .ilike("name", `%${searchQuery}%`)
-      .limit(5);
+      .limit(8);
     setSearchResults(data || []);
   };
 

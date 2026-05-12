@@ -4,7 +4,8 @@ import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Sparkles, X, Send, User, Bot, Zap, Brain } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { supabase } from "@/lib/supabase";
+import { DEMO_DASHBOARD, isDemoSession } from "@/lib/demo-mode";
+import { isSupabaseConfigured, supabase } from "@/lib/supabase";
 
 export default function AkwabaAI() {
   const [isOpen, setIsOpen] = useState(false);
@@ -23,14 +24,53 @@ export default function AkwabaAI() {
     setIsTyping(true);
 
     try {
-      let aiResponse = "Désolé, je n'ai pas pu traiter votre demande.";
+      let aiResponse =
+        "Je suis Akwaba AI. Posez une question sur les patients, consultations, pharmacie ou finances.";
       const query = input.toLowerCase();
 
+      if (isDemoSession()) {
+        const d = DEMO_DASHBOARD;
+        if (query.includes("patient") || query.includes("malade")) {
+          aiResponse = `En démo : vous avez environ ${d.patients.toLocaleString()} patients en exemple.`;
+        } else if (query.includes("consultation") || query.includes("visite")) {
+          aiResponse = `En démo : ${d.consultations.toLocaleString()} consultations (données factices).`;
+        } else if (query.includes("stock") || query.includes("pharmacie") || query.includes("médicament")) {
+          aiResponse =
+            "En mode démo, la pharmacie n’est pas reliée à la base : connectez Supabase pour des alertes stock réelles.";
+        } else if (query.includes("argent") || query.includes("revenu") || query.includes("finance") || query.includes("chiffre")) {
+          aiResponse = `En démo : revenus affichés d’exemple ~ ${d.revenue.toLocaleString()} CFA.`;
+        } else if (query.includes("médecin") || query.includes("staff") || query.includes("docteur") || query.includes("équipe")) {
+          aiResponse = `En démo : ${d.staffPerformance.length} praticiens exemple dans le tableau de bord.`;
+        }
+        setMessages((prev) => [...prev, { role: "assistant", content: aiResponse }]);
+        return;
+      }
+
+      if (!isSupabaseConfigured) {
+        aiResponse =
+          "Supabase n’est pas configuré. Ajoutez les clés NEXT_PUBLIC_* ou utilisez le mode démo depuis la page de connexion.";
+        setMessages((prev) => [...prev, { role: "assistant", content: aiResponse }]);
+        return;
+      }
+
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
-      const { data: profile } = await supabase.from('profiles').select('hospital_id').eq('id', user.id).single();
+      if (!user) {
+        aiResponse = "Session expirée. Reconnectez-vous pour interroger les données live.";
+        setMessages((prev) => [...prev, { role: "assistant", content: aiResponse }]);
+        return;
+      }
+
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("hospital_id")
+        .eq("id", user.id)
+        .maybeSingle();
       const hospitalId = profile?.hospital_id;
-      if (!hospitalId) return;
+      if (!hospitalId) {
+        aiResponse = "Profil sans établissement lié ; complétez votre profil ou contactez un administrateur.";
+        setMessages((prev) => [...prev, { role: "assistant", content: aiResponse }]);
+        return;
+      }
 
       // Smart AI Search Logic
       if (query.includes("patient") || query.includes("malade")) {
@@ -53,8 +93,6 @@ export default function AkwabaAI() {
       } else if (query.includes("médecin") || query.includes("staff") || query.includes("docteur") || query.includes("équipe")) {
         const { count } = await supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('hospital_id', hospitalId);
         aiResponse = `Votre équipe est composée de ${count} membres du personnel enregistrés.`;
-      } else {
-        aiResponse = "Je suis Akwaba AI. Je peux vous donner des infos sur les patients, les consultations, le stock de la pharmacie ou vos revenus. Posez-moi une question précise !";
       }
 
       setMessages(prev => [...prev, { role: "assistant", content: aiResponse }]);
@@ -74,11 +112,11 @@ export default function AkwabaAI() {
         whileHover={{ scale: 1.1, rotate: 5 }}
         whileTap={{ scale: 0.9 }}
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-8 right-8 w-16 h-16 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-full shadow-2xl shadow-blue-500/40 flex items-center justify-center text-white z-50 group border-4 border-white dark:border-slate-900"
+        className="fixed bottom-8 right-8 w-16 h-16 bg-gradient-to-br from-blue-600 to-blue-800 rounded-full shadow-2xl shadow-blue-500/35 flex items-center justify-center text-white z-50 group border-4 border-white"
       >
         <div className="relative">
            <Zap className="w-8 h-8 fill-current text-white group-hover:scale-110 transition-transform" />
-           <div className="absolute -top-1 -right-1 w-4 h-4 bg-emerald-500 rounded-full border-2 border-white animate-pulse" />
+           <div className="absolute -top-1 -right-1 w-4 h-4 bg-sky-400 rounded-full border-2 border-white animate-pulse" />
         </div>
       </motion.button>
 
@@ -89,7 +127,7 @@ export default function AkwabaAI() {
             initial={{ opacity: 0, y: 100, scale: 0.8, x: 50 }}
             animate={{ opacity: 1, y: 0, scale: 1, x: 0 }}
             exit={{ opacity: 0, y: 100, scale: 0.8, x: 50 }}
-            className="fixed bottom-28 right-8 w-[400px] max-w-[90vw] h-[600px] bg-white dark:bg-slate-900 rounded-[40px] shadow-[0_20px_50px_rgba(0,0,0,0.2)] border border-slate-200 dark:border-slate-800 z-50 flex flex-col overflow-hidden"
+            className="fixed bottom-28 right-8 w-[400px] max-w-[90vw] h-[600px] bg-white rounded-[40px] shadow-[0_20px_50px_rgba(37,99,235,0.18)] border border-blue-100 z-50 flex flex-col overflow-hidden"
           >
             {/* Header */}
             <div className="p-8 bg-gradient-to-br from-slate-900 to-blue-950 text-white relative">
@@ -115,7 +153,7 @@ export default function AkwabaAI() {
             </div>
 
             {/* Messages */}
-            <div className="flex-1 overflow-y-auto p-8 space-y-6 bg-slate-50/50 dark:bg-slate-900/50 custom-scrollbar">
+            <div className="flex-1 overflow-y-auto p-8 space-y-6 bg-blue-50/40 custom-scrollbar">
               {messages.map((msg, i) => (
                 <motion.div
                   key={i}
@@ -128,14 +166,14 @@ export default function AkwabaAI() {
                 >
                   <div className={cn(
                     "w-10 h-10 rounded-2xl flex items-center justify-center shrink-0 shadow-lg",
-                    msg.role === 'user' ? "bg-slate-900 text-white" : "bg-blue-600 text-white"
+                    msg.role === 'user' ? "bg-blue-900 text-white" : "bg-blue-600 text-white"
                   )}>
                     {msg.role === 'user' ? <User className="w-5 h-5" /> : <Bot className="w-5 h-5" />}
                   </div>
                   <div className={cn(
                     "p-4 rounded-3xl max-w-[80%] text-sm font-medium leading-relaxed",
                     msg.role === 'user' 
-                      ? "bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white rounded-tr-none shadow-sm" 
+                      ? "bg-white border border-blue-100 text-slate-900 rounded-tr-none shadow-sm" 
                       : "bg-blue-600 text-white shadow-xl shadow-blue-500/20 rounded-tl-none"
                   )}>
                     {msg.content}
@@ -157,7 +195,7 @@ export default function AkwabaAI() {
             </div>
 
             {/* Input */}
-            <div className="p-6 bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800">
+            <div className="p-6 bg-white border-t border-blue-100">
               <div className="relative">
                 <input 
                   type="text"
@@ -165,7 +203,7 @@ export default function AkwabaAI() {
                   onChange={(e) => setInput(e.target.value)}
                   onKeyPress={(e) => e.key === 'Enter' && handleSend()}
                   placeholder="Posez une question à l'IA..."
-                  className="w-full pl-6 pr-16 py-4 bg-slate-100 dark:bg-slate-800 border-none rounded-2xl text-sm font-medium focus:ring-2 focus:ring-blue-500/20"
+                  className="w-full pl-6 pr-16 py-4 bg-blue-50/70 border border-blue-100 rounded-2xl text-sm font-medium focus:ring-2 focus:ring-blue-400/25"
                 />
                 <button 
                   onClick={handleSend}

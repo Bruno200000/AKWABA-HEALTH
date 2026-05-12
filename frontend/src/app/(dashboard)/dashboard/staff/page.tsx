@@ -171,7 +171,8 @@ export default function StaffPage() {
                         <Mail className="w-4 h-4 opacity-40" /> {staff.email || "Pas d'email"}
                       </div>
                       <div className="flex items-center gap-3 text-xs text-slate-500 font-medium">
-                        <Award className="w-4 h-4 opacity-40" /> {staff.specialty || "Praticien Akwaba"}
+                        <Award className="w-4 h-4 opacity-40" />{" "}
+                        {staff.specialization || staff.specialty || "Praticien"}
                       </div>
                     </div>
                   </div>

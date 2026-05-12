@@ -22,7 +22,19 @@ export default function InvoiceForm({ onSuccess, onCancel }: InvoiceFormProps) {
 
   useEffect(() => {
     const fetchData = async () => {
-      const { data } = await supabase.from('patients').select('id, first_name, last_name');
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const { data: profile } = await supabase.from("profiles").select("hospital_id").eq("id", user.id).maybeSingle();
+      const hid = profile?.hospital_id;
+      if (!hid) return;
+
+      const { data } = await supabase
+        .from("patients")
+        .select("id, first_name, last_name")
+        .eq("hospital_id", hid)
+        .order("last_name");
+
       if (data) setPatients(data);
     };
     fetchData();

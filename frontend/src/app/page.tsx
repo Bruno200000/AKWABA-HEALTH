@@ -15,21 +15,20 @@ import {
   Smartphone,
   ChevronRight
 } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 
 export default function LandingPage() {
   return (
-    <div className="min-h-screen bg-white text-slate-900 font-sans selection:bg-blue-100 selection:text-blue-900">
+    <div className="min-h-screen bg-gradient-to-b from-white via-[#f0f7ff] to-white text-slate-900 font-sans selection:bg-blue-100 selection:text-blue-900">
       {/* Navigation */}
-      <nav className="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-md border-b border-slate-100">
+      <nav className="fixed top-0 w-full z-50 bg-white/90 backdrop-blur-md border-b border-blue-100/80 shadow-sm shadow-blue-500/5">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16 items-center">
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
                 <Activity className="text-white w-5 h-5" />
               </div>
-              <span className="text-xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-emerald-600">
+              <span className="text-xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-700 via-blue-600 to-sky-500">
                 AKWABA HEALTH
               </span>
             </div>
@@ -37,7 +36,7 @@ export default function LandingPage() {
               <a href="#features" className="hover:text-blue-600 transition-colors">Fonctionnalités</a>
               <a href="#solutions" className="hover:text-blue-600 transition-colors">Solutions</a>
               <a href="#pricing" className="hover:text-blue-600 transition-colors">Tarifs</a>
-              <Link href="/login" className="px-5 py-2 bg-slate-900 text-white rounded-full hover:bg-slate-800 transition-all shadow-lg shadow-slate-200">
+              <Link href="/login" className="px-5 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-all shadow-lg shadow-blue-500/25">
                 Connexion
               </Link>
             </div>
@@ -47,9 +46,9 @@ export default function LandingPage() {
 
       {/* Hero Section */}
       <section className="pt-32 pb-20 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full -z-10 opacity-30">
-          <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-400 blur-[120px] rounded-full" />
-          <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-emerald-400 blur-[120px] rounded-full" />
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full -z-10 opacity-35">
+          <div className="absolute top-[-10%] left-[-10%] w-[45%] h-[45%] bg-blue-300 blur-[120px] rounded-full" />
+          <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-sky-300 blur-[120px] rounded-full" />
         </div>
 
         <div className="max-w-7xl mx-auto text-center">
@@ -63,7 +62,7 @@ export default function LandingPage() {
             </span>
             <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight text-slate-900 mb-6 leading-[1.1]">
               Propulsez votre Hôpital <br /> 
-              <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 via-blue-500 to-emerald-500">
+              <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-700 via-blue-600 to-sky-500">
                 dans l&apos;ère du Digital
               </span>
             </h1>
@@ -75,7 +74,7 @@ export default function LandingPage() {
               <Link href="/login" className="w-full sm:w-auto px-8 py-4 bg-blue-600 text-white rounded-2xl font-bold text-lg shadow-xl shadow-blue-200 hover:bg-blue-700 transition-all flex items-center justify-center gap-2 group">
                 Commencer <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Link>
-              <Link href="/login" className="w-full sm:w-auto px-8 py-4 bg-white text-slate-900 border border-slate-200 rounded-2xl font-bold text-lg hover:bg-slate-50 transition-all text-center">
+              <Link href="/login" className="w-full sm:w-auto px-8 py-4 bg-white text-blue-800 border-2 border-blue-200 rounded-2xl font-bold text-lg hover:bg-blue-50 transition-all text-center shadow-sm shadow-blue-500/10">
                 Espace Hospitalier
               </Link>
             </div>
@@ -87,9 +86,10 @@ export default function LandingPage() {
             transition={{ duration: 0.8, delay: 0.2 }}
             className="mt-16 relative"
           >
-            <div className="relative mx-auto max-w-5xl rounded-3xl overflow-hidden border border-slate-200 shadow-2xl bg-white p-2">
-              <div className="bg-slate-50 rounded-2xl w-full aspect-video flex items-center justify-center">
-                 <span className="text-slate-400 font-medium">Dashboard Preview Placeholder</span>
+            <div className="relative mx-auto max-w-5xl rounded-3xl overflow-hidden border border-blue-100 shadow-2xl shadow-blue-500/15 bg-white p-2">
+              <div className="bg-gradient-to-br from-blue-50 via-white to-sky-50 rounded-2xl w-full aspect-video flex flex-col items-center justify-center gap-3 border border-blue-50">
+                 <Activity className="w-14 h-14 text-blue-500 opacity-90" />
+                 <span className="text-blue-900/55 font-semibold text-sm tracking-wide uppercase">Tableau de bord — clinique digitale</span>
               </div>
             </div>
           </motion.div>
@@ -97,7 +97,7 @@ export default function LandingPage() {
       </section>
 
       {/* Features Grid */}
-      <section id="features" className="py-24 bg-slate-50">
+      <section id="features" className="py-24 bg-white border-y border-blue-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">Une gestion complète à 360°</h2>
@@ -141,8 +141,69 @@ export default function LandingPage() {
         </div>
       </section>
 
+      <section id="solutions" className="py-20 bg-white border-y border-blue-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-slate-900 mb-3">Solutions pour chaque service</h2>
+            <p className="text-slate-600 max-w-2xl mx-auto">
+              Urgences, médecine générale, maternité ou admin : les modules AKWABA HEALTH partagent le même dossier
+              patient et la même base sécurisée.
+            </p>
+          </div>
+          <div className="grid md:grid-cols-3 gap-8 text-center">
+            {[
+              { t: "Bloc & Hospitalisation", d: "Lits, admissions et sorties suivis en temps réel." },
+              { t: "Ambulatoire & RDV", d: "Agenda médecins, file d’attente et historique des consultations." },
+              { t: "Support & conformité", d: "Traçabilité des factures, analyses et prescriptions." },
+            ].map((x) => (
+              <div key={x.t} className="p-8 rounded-3xl border border-blue-100 bg-blue-50/30">
+                <h3 className="font-bold text-slate-900 mb-2">{x.t}</h3>
+                <p className="text-sm text-slate-600">{x.d}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section id="pricing" className="py-24 bg-[#f0f7ff]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-14">
+            <h2 className="text-3xl font-bold text-slate-900 mb-3">Tarifs transparents</h2>
+            <p className="text-slate-600">Choisissez l’échelle adaptée à votre structure ; passage à l’échelle sans friction.</p>
+          </div>
+          <div className="grid md:grid-cols-3 gap-8">
+            {[
+              { name: "Essentiel", price: "Sur devis", feats: ["Jusqu’à 25 lits", "Pharmacie & labo", "Support email"] },
+              { name: "Pro", price: "Sur devis", feats: ["Multi-sites", "Rôles avancés", "Reporting étendu"], highlight: true },
+              { name: "Enterprise", price: "Sur devis", feats: ["SLA dédié", "Intégrations API", "Formation sur site"] },
+            ].map((p) => (
+              <div
+                key={p.name}
+                className={`rounded-3xl p-8 border bg-white ${p.highlight ? "border-blue-500 shadow-xl shadow-blue-500/15 ring-2 ring-blue-500" : "border-blue-100"}`}
+              >
+                <h3 className="font-black text-lg text-slate-900">{p.name}</h3>
+                <p className="text-3xl font-black text-blue-600 mt-4">{p.price}</p>
+                <ul className="mt-8 space-y-3 text-sm text-slate-600 text-left">
+                  {p.feats.map((f) => (
+                    <li key={f} className="flex gap-2">
+                      <span className="text-blue-500 font-bold">✓</span> {f}
+                    </li>
+                  ))}
+                </ul>
+                <Link
+                  href="/login"
+                  className={`mt-8 block text-center py-3 rounded-2xl font-bold text-sm ${p.highlight ? "bg-blue-600 text-white" : "border-2 border-blue-200 text-blue-700"}`}
+                >
+                  Demander une démo
+                </Link>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Stats Section */}
-      <section className="py-20 bg-blue-600">
+      <section className="py-20 bg-gradient-to-r from-blue-700 via-blue-600 to-sky-600">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-white">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             <div>
@@ -166,7 +227,7 @@ export default function LandingPage() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-slate-900 text-white py-12 px-4">
+      <footer className="bg-[#0c2d4a] text-white py-12 px-4 border-t border-blue-400/20">
         <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12">
           <div className="col-span-1 md:col-span-2">
             <div className="flex items-center gap-2 mb-6">
@@ -195,7 +256,7 @@ export default function LandingPage() {
             </ul>
           </div>
         </div>
-        <div className="max-w-7xl mx-auto pt-12 mt-12 border-t border-slate-800 text-center text-slate-500 text-sm">
+        <div className="max-w-7xl mx-auto pt-12 mt-12 border-t border-blue-500/20 text-center text-blue-200/70 text-sm">
           &copy; {new Date().getFullYear()} AKWABA HEALTH. Tous droits réservés.
         </div>
       </footer>
@@ -205,7 +266,7 @@ export default function LandingPage() {
 
 function FeatureCard({ icon, title, description }: { icon: React.ReactNode, title: string, description: string }) {
   return (
-    <div className="p-8 bg-white rounded-3xl border border-slate-100 hover:border-blue-200 hover:shadow-xl hover:shadow-blue-50 transition-all group">
+    <div className="p-8 bg-white rounded-3xl border border-blue-100/80 hover:border-blue-300 hover:shadow-xl hover:shadow-blue-500/10 transition-all group">
       <div className="w-12 h-12 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-blue-600 group-hover:text-white transition-colors">
         {icon}
       </div>

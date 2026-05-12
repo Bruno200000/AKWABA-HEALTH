@@ -15,7 +15,8 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { supabase } from "@/lib/supabase";
+import { isSupabaseConfigured, supabase } from "@/lib/supabase";
+import { setDemoSession } from "@/lib/demo-mode";
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
@@ -25,10 +26,21 @@ export default function LoginPage() {
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
+  const enterDemo = () => {
+    setDemoSession();
+    router.push("/dashboard");
+  };
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     setError(null);
+
+    if (!isSupabaseConfigured) {
+      setError("Supabase n’est pas configuré. Ajoutez NEXT_PUBLIC_SUPABASE_URL et NEXT_PUBLIC_SUPABASE_ANON_KEY, ou utilisez le mode démo.");
+      setIsLoading(false);
+      return;
+    }
 
     try {
       const { data, error } = await supabase.auth.signInWithPassword({
@@ -139,10 +151,17 @@ export default function LoginPage() {
               </label>
             </div>
 
+            {!isSupabaseConfigured && (
+              <div className="p-4 rounded-2xl bg-amber-50 border border-amber-100 text-amber-900 text-sm font-medium leading-relaxed">
+                Les variables Supabase sont absentes (.env.local). Vous pouvez quand même parcourir l’interface avec le mode démo ci-dessous.
+              </div>
+            )}
+
             <motion.button 
               whileHover={{ scale: 1.01 }}
               whileTap={{ scale: 0.99 }}
               disabled={isLoading}
+              type="submit"
               className="w-full py-4 bg-blue-600 text-white rounded-2xl font-bold text-lg shadow-xl shadow-blue-200 hover:bg-blue-700 transition-all flex items-center justify-center gap-2 group disabled:opacity-70 disabled:cursor-not-allowed"
             >
               {isLoading ? (
@@ -157,6 +176,14 @@ export default function LoginPage() {
                 </>
               )}
             </motion.button>
+
+            <button
+              type="button"
+              onClick={enterDemo}
+              className="w-full py-3.5 border-2 border-blue-200 bg-white text-blue-700 rounded-2xl font-bold text-sm hover:bg-blue-50 transition-all"
+            >
+              Explorer le tableau de bord (mode démo)
+            </button>
           </form>
 
           {/* Hospital Footer Info */}
@@ -175,7 +202,7 @@ export default function LoginPage() {
         {/* Background Image / Pattern */}
         <div className="absolute inset-0 opacity-20 pointer-events-none">
            <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_30%_20%,#3b82f6_0%,transparent_50%)]" />
-           <div className="absolute bottom-0 right-0 w-full h-full bg-[radial-gradient(circle_at_70%_80%,#10b981_0%,transparent_50%)]" />
+           <div className="absolute bottom-0 right-0 w-full h-full bg-[radial-gradient(circle_at_70%_80%,#0ea5e9_0%,transparent_50%)]" />
         </div>
 
         {/* Dynamic Pattern Overlay */}

@@ -21,13 +21,15 @@ import {
   ChevronRight,
   ChevronDown,
   Activity,
-  Zap
+  Zap,
+  Loader2
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
-import { supabase } from "@/lib/supabase";
+import { isSupabaseConfigured, supabase } from "@/lib/supabase";
+import { DEMO_PROFILE, clearDemoSession, isDemoSession } from "@/lib/demo-mode";
 import AkwabaAI from "@/components/AkwabaAI";
 
 const menuGroups = [
@@ -136,11 +138,11 @@ function NavItem({ item, isSidebarOpen, pathname }: { item: any, isSidebarOpen: 
           className={cn(
             "flex items-center gap-3 px-4 py-3 rounded-2xl transition-all relative z-10",
             isActive && !hasSubItems
-              ? "bg-blue-600 text-white shadow-lg shadow-blue-600/30" 
-              : "text-slate-400 hover:bg-white/5 hover:text-white"
+              ? "bg-blue-600 text-white shadow-lg shadow-blue-600/25" 
+              : "text-slate-600 hover:bg-blue-50 hover:text-blue-900"
           )}
         >
-          <item.icon className={cn("w-5 h-5 shrink-0", isActive ? "text-white" : "group-hover:scale-110 transition-transform")} />
+          <item.icon className={cn("w-5 h-5 shrink-0 text-current", !isActive && "group-hover:scale-110 transition-transform")} />
           {isSidebarOpen && (
             <div className="flex-1 flex items-center justify-between min-w-0">
               <span className="font-bold text-sm truncate">{item.label}</span>
@@ -167,7 +169,7 @@ function NavItem({ item, isSidebarOpen, pathname }: { item: any, isSidebarOpen: 
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            className="ml-9 border-l border-white/10 space-y-1 overflow-hidden"
+            className="ml-9 border-l border-blue-100 space-y-1 overflow-hidden"
           >
             {item.subItems.map((sub: any) => {
               const isSubActive = pathname === sub.href;
@@ -178,8 +180,8 @@ function NavItem({ item, isSidebarOpen, pathname }: { item: any, isSidebarOpen: 
                   className={cn(
                     "block px-4 py-2 text-sm transition-all rounded-lg",
                     isSubActive
-                      ? "text-blue-400 font-bold"
-                      : "text-slate-500 hover:text-white hover:bg-white/5"
+                      ? "text-blue-600 font-bold"
+                      : "text-slate-500 hover:text-blue-700 hover:bg-blue-50/80"
                   )}
                 >
                   {sub.label}
@@ -197,43 +199,72 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [profile, setProfile] = useState<any>(null);
+  const [gateReady, setGateReady] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
 
   React.useEffect(() => {
     const fetchProfile = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
-        const { data } = await supabase
-          .from("profiles")
-          .select("*, hospitals(name)")
-          .eq("id", user.id)
-          .single();
-        setProfile(data);
-      } else {
-        router.push("/login");
+      if (typeof window !== "undefined" && isDemoSession()) {
+        setProfile(DEMO_PROFILE);
+        setGateReady(true);
+        return;
       }
+
+      if (!isSupabaseConfigured) {
+        router.replace("/login");
+        setGateReady(true);
+        return;
+      }
+
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        router.replace("/login");
+        setGateReady(true);
+        return;
+      }
+
+      const { data } = await supabase
+        .from("profiles")
+        .select("*, hospitals(name)")
+        .eq("id", user.id)
+        .maybeSingle();
+
+      setProfile(data);
+      setGateReady(true);
     };
     fetchProfile();
   }, [router]);
 
   const handleLogout = async () => {
-    await supabase.auth.signOut();
+    clearDemoSession();
+    if (isSupabaseConfigured) {
+      await supabase.auth.signOut();
+    }
     router.push("/login");
   };
 
+  if (!gateReady) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center gap-4 bg-[#f0f7ff] text-blue-900">
+        <Loader2 className="w-12 h-12 text-blue-600 animate-spin" />
+        <p className="text-sm font-medium text-blue-900/70">Chargement de votre espace…</p>
+      </div>
+    );
+  }
+
   return (
-    <div className="flex h-screen bg-[#F8FAFC] dark:bg-[#020617] text-slate-900 dark:text-slate-100 overflow-hidden font-sans">
+    <div className="flex h-screen bg-[#f0f7ff] text-slate-900 overflow-hidden font-sans">
       {/* Sidebar */}
       <motion.aside
         initial={false}
         animate={{ width: isSidebarOpen ? 280 : 80 }}
-        className="relative bg-[#0F172A] border-r border-white/5 flex flex-col z-40 transition-all duration-300"
+        className="relative bg-white border-r border-blue-100 flex flex-col z-40 shadow-sm transition-all duration-300"
       >
         {/* Logo Section */}
-        <div className="h-20 flex items-center px-6 border-b border-white/5">
+        <div className="h-20 flex items-center px-6 border-b border-blue-50 bg-gradient-to-r from-blue-50/90 to-white">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center shrink-0 shadow-xl p-1.5 ring-4 ring-blue-500/10">
+            <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center shrink-0 shadow-md p-1.5 ring-2 ring-blue-100">
               <img src="/logo.png" alt="Logo" className="w-full h-full object-contain" />
             </div>
             {isSidebarOpen && (
@@ -242,8 +273,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 animate={{ opacity: 1, x: 0 }}
                 className="flex flex-col min-w-0"
               >
-                <span className="font-black text-sm tracking-tight text-white leading-tight">AKWABA HEALTH</span>
-                <span className="text-[9px] font-bold text-blue-400 uppercase tracking-widest leading-none mt-1">Plateforme Médicale</span>
+                <span className="font-black text-sm tracking-tight text-slate-900 leading-tight">AKWABA HEALTH</span>
+                <span className="text-[9px] font-bold text-blue-600 uppercase tracking-widest leading-none mt-1">Plateforme Médicale</span>
               </motion.div>
             )}
           </div>
@@ -254,7 +285,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           {menuGroups.map((group) => (
             <div key={group.title} className="space-y-2">
               {isSidebarOpen && (
-                <div className="px-4 text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-4">
+                <div className="px-4 text-[10px] font-black text-blue-900/35 uppercase tracking-[0.2em] mb-4">
                   {group.title}
                 </div>
               )}
@@ -268,10 +299,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </nav>
 
         {/* Sidebar Footer */}
-        <div className="p-4 mt-auto border-t border-white/5 bg-slate-900/40">
+        <div className="p-4 mt-auto border-t border-blue-50 bg-blue-50/40">
           <button 
             onClick={handleLogout}
-            className="flex items-center gap-3 w-full px-4 py-3 rounded-2xl text-slate-400 hover:bg-red-500/10 hover:text-red-400 transition-all group"
+            className="flex items-center gap-3 w-full px-4 py-3 rounded-2xl text-slate-500 hover:bg-red-50 hover:text-red-600 transition-all group"
           >
             <LogOut className="w-5 h-5 shrink-0 group-hover:-translate-x-1 transition-transform" />
             {isSidebarOpen && <span className="font-bold text-sm">Déconnexion</span>}
@@ -281,7 +312,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         {/* Toggle Button */}
         <button 
           onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-          className="absolute -right-3 top-24 w-6 h-6 bg-[#0F172A] border border-white/10 rounded-full flex items-center justify-center shadow-2xl z-50 hover:bg-blue-600 transition-all text-white group"
+          className="absolute -right-3 top-24 w-6 h-6 bg-white border border-blue-200 rounded-full flex items-center justify-center shadow-lg z-50 hover:bg-blue-600 hover:border-blue-600 transition-all text-blue-700 hover:text-white group"
         >
           {isSidebarOpen ? (
             <ChevronLeft className="w-3.5 h-3.5 group-hover:scale-110 transition-transform" />
@@ -294,44 +325,44 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       {/* Main Content */}
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
         {/* Top Header */}
-        <header className="h-20 bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl border-b border-slate-200/60 dark:border-white/5 flex items-center justify-between px-8 sticky top-0 z-30">
+        <header className="h-20 bg-white/90 backdrop-blur-xl border-b border-blue-100/80 flex items-center justify-between px-8 sticky top-0 z-30 shadow-sm shadow-blue-500/5">
           <div className="flex items-center gap-6 flex-1">
             <div className="relative max-w-md w-full hidden lg:block group">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-slate-400 group-focus-within:text-blue-500 transition-colors" />
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-slate-400 group-focus-within:text-blue-600 transition-colors" />
               <input 
                 type="text" 
                 placeholder="Rechercher un patient, une analyse..."
-                className="w-full pl-12 pr-4 py-2.5 bg-slate-100/50 dark:bg-slate-800/50 border border-transparent focus:border-blue-500/30 rounded-2xl text-sm focus:outline-none focus:ring-4 focus:ring-blue-500/5 transition-all"
+                className="w-full pl-12 pr-4 py-2.5 bg-blue-50/50 border border-blue-100/80 focus:border-blue-400/50 rounded-2xl text-sm focus:outline-none focus:ring-4 focus:ring-blue-500/10 transition-all"
               />
             </div>
           </div>
 
           <div className="flex items-center gap-5">
             <div className="flex items-center gap-2">
-              <button className="relative p-2.5 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-all hover:scale-105 active:scale-95">
+              <button className="relative p-2.5 text-slate-500 hover:bg-blue-50 rounded-xl transition-all hover:scale-105 active:scale-95">
                 <Bell className="w-5 h-5" />
-                <span className="absolute top-2.5 right-2.5 w-2 h-2 bg-blue-500 rounded-full ring-2 ring-white dark:ring-slate-900" />
+                <span className="absolute top-2.5 right-2.5 w-2 h-2 bg-blue-500 rounded-full ring-2 ring-white" />
               </button>
-              <button className="relative p-2.5 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-all hover:scale-105 active:scale-95">
+              <button className="relative p-2.5 text-slate-500 hover:bg-blue-50 rounded-xl transition-all hover:scale-105 active:scale-95">
                 <Activity className="w-5 h-5" />
               </button>
             </div>
             
-            <div className="h-8 w-px bg-slate-200 dark:bg-white/10 mx-2" />
+            <div className="h-8 w-px bg-blue-100 mx-2" />
             
             <div className="relative">
               <button 
                 onClick={() => setIsProfileOpen(!isProfileOpen)}
-                className="flex items-center gap-3.5 p-1 pr-3 rounded-full hover:bg-slate-100/50 dark:hover:bg-slate-800/50 transition-all border border-transparent hover:border-slate-200/60 dark:hover:border-white/5"
+                className="flex items-center gap-3.5 p-1 pr-3 rounded-full hover:bg-blue-50/70 transition-all border border-transparent hover:border-blue-100"
               >
-                <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-700 rounded-full flex items-center justify-center text-white font-black shadow-lg shadow-blue-500/20">
+                <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-700 rounded-full flex items-center justify-center text-white font-black shadow-lg shadow-blue-500/25">
                   {profile ? `${profile.first_name?.[0]}${profile.last_name?.[0]}` : "??"}
                 </div>
                 <div className="text-left hidden sm:block">
-                  <p className="text-sm font-bold text-slate-900 dark:text-white leading-none mb-1">
+                  <p className="text-sm font-bold text-slate-900 leading-none mb-1">
                     {profile ? `${profile.first_name} ${profile.last_name}` : "Chargement..."}
                   </p>
-                  <p className="text-[10px] text-blue-500 dark:text-blue-400 uppercase font-black tracking-wider">
+                  <p className="text-[10px] text-blue-600 uppercase font-black tracking-wider">
                     {profile?.role || "Utilisateur"}
                   </p>
                 </div>
@@ -346,9 +377,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                       initial={{ opacity: 0, y: 15, scale: 0.95 }}
                       animate={{ opacity: 1, y: 0, scale: 1 }}
                       exit={{ opacity: 0, y: 15, scale: 0.95 }}
-                      className="absolute right-0 mt-3 w-64 bg-white dark:bg-[#0F172A] border border-slate-200 dark:border-white/10 rounded-2xl shadow-2xl z-50 p-2 overflow-hidden"
+                      className="absolute right-0 mt-3 w-64 bg-white border border-blue-100 rounded-2xl shadow-xl shadow-blue-900/10 z-50 p-2 overflow-hidden"
                     >
-                      <div className="px-4 py-3 border-b border-slate-100 dark:border-white/5 mb-1 bg-slate-50/50 dark:bg-white/5 -m-2 mb-2">
+                      <div className="px-4 py-3 border-b border-blue-50 mb-1 bg-blue-50/60 -m-2 mb-2">
                         <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Compte Connecté</p>
                         <p className="text-xs text-slate-500 truncate mt-0.5">{profile?.email}</p>
                       </div>
@@ -356,13 +387,13 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                         <Link 
                           href="/dashboard/settings" 
                           onClick={() => setIsProfileOpen(false)}
-                          className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/5 transition-all"
+                          className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-slate-600 hover:bg-blue-50 transition-all"
                         >
                           <Settings className="w-4 h-4 text-slate-400" /> Mon Profil
                         </Link>
                         <button 
                           onClick={handleLogout}
-                          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 transition-all"
+                          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-red-600 hover:bg-red-50 transition-all"
                         >
                           <LogOut className="w-4 h-4" /> Déconnexion
                         </button>
@@ -376,7 +407,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </header>
 
         {/* Content Area */}
-        <main className="flex-1 overflow-y-auto bg-[#F8FAFC] dark:bg-[#020617] p-8 custom-scrollbar">
+        <main className="flex-1 overflow-y-auto bg-[#f0f7ff]/80 p-8 custom-scrollbar">
           <div className="max-w-7xl mx-auto">
             {children}
           </div>

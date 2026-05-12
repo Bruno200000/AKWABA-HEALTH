@@ -23,7 +23,9 @@ import {
   Pill
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { DEMO_DASHBOARD, DEMO_PROFILE, isDemoSession } from "@/lib/demo-mode";
 import { supabase } from "@/lib/supabase";
+import { getAppointmentStart } from "@/lib/appointment-utils";
 import Link from "next/link";
 
 export default function DashboardHome() {
@@ -42,13 +44,39 @@ export default function DashboardHome() {
 
   useEffect(() => {
     const fetchStats = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
+      try {
+        if (isDemoSession()) {
+          setProfile(DEMO_PROFILE);
+          const d = DEMO_DASHBOARD;
+          setData({
+            patients: d.patients,
+            consultations: d.consultations,
+            appointments: d.appointments,
+            revenue: d.revenue,
+            roomOccupancy: d.roomOccupancy,
+          });
+          setActivityData(d.activityData);
+          setStaffPerformance(d.staffPerformance);
+          setRecentApps(d.recentAppointments);
+          return;
+        }
 
-      const { data: prof } = await supabase.from('profiles').select('*, hospitals(name)').eq('id', user.id).single();
-      const hospitalId = prof?.hospital_id;
-      if (!hospitalId) return;
-      setProfile(prof);
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) {
+          return;
+        }
+
+        const { data: prof } = await supabase
+          .from("profiles")
+          .select("*, hospitals(name)")
+          .eq("id", user.id)
+          .maybeSingle();
+        const hospitalId = prof?.hospital_id;
+        if (!hospitalId) {
+          setProfile(prof ?? null);
+          return;
+        }
+        setProfile(prof);
 
       const [
         { count: patientsCount },
@@ -68,7 +96,7 @@ export default function DashboardHome() {
         supabase.from('appointments')
           .select('*, patients(first_name, last_name)')
           .eq('hospital_id', hospitalId)
-          .order('appointment_date', { ascending: false })
+          .order('start_time', { ascending: false })
           .limit(5),
         supabase.from('rooms').select('*', { count: 'exact', head: true }).eq('hospital_id', hospitalId),
         supabase.from('admissions').select('*', { count: 'exact', head: true }).eq('hospital_id', hospitalId).eq('status', 'ADMITTED'),
@@ -95,7 +123,7 @@ export default function DashboardHome() {
             name: `${s.first_name?.[0] || ''}. ${s.last_name || ''}`, 
             role: s.role || "Praticien", 
             score: Math.min(100, (count || 0) * 10),
-            color: s.role === 'DOCTOR' ? 'bg-blue-500' : 'bg-emerald-500'
+            color: s.role === 'DOCTOR' ? 'bg-blue-600' : 'bg-sky-500'
           };
         }));
         setStaffPerformance(perf);
@@ -110,7 +138,11 @@ export default function DashboardHome() {
         roomOccupancy: occupancy,
       }));
       setRecentApps(recentAppointments || []);
-      setIsLoading(false);
+      } catch {
+        /* Laisser le tableau vide ; le layout gère déjà l’accès */
+      } finally {
+        setIsLoading(false);
+      }
     };
 
     fetchStats();
@@ -118,9 +150,9 @@ export default function DashboardHome() {
 
   const stats = [
     { label: "Total Patients", value: data.patients.toLocaleString(), change: "Live", trending: "up", icon: Users, color: "from-blue-500 to-blue-700" },
-    { label: "Consultations", value: data.consultations.toLocaleString(), change: "Live", trending: "up", icon: Activity, color: "from-emerald-500 to-emerald-700" },
-    { label: "Occupation Lits", value: `${data.roomOccupancy}%`, change: "Live", trending: "up", icon: Bed, color: "from-amber-500 to-orange-700" },
-    { label: "Revenus (CFA)", value: (data.revenue / 1000).toFixed(0) + "k", change: "Live", trending: "up", icon: CreditCard, color: "from-indigo-500 to-purple-700" },
+    { label: "Consultations", value: data.consultations.toLocaleString(), change: "Live", trending: "up", icon: Activity, color: "from-blue-400 to-blue-600" },
+    { label: "Occupation Lits", value: `${data.roomOccupancy}%`, change: "Live", trending: "up", icon: Bed, color: "from-sky-500 to-blue-700" },
+    { label: "Revenus (CFA)", value: (data.revenue / 1000).toFixed(0) + "k", change: "Live", trending: "up", icon: CreditCard, color: "from-blue-600 to-blue-800" },
   ];
 
   const maxActivity = Math.max(...activityData, 1);
@@ -130,18 +162,31 @@ export default function DashboardHome() {
       {/* Welcome Section */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-black text-slate-900 dark:text-white tracking-tight">
-            Bonjour, {profile ? `Dr. ${profile.last_name}` : "Chargement..."} 👋
+          <h1 className="text-3xl font-black text-slate-900 tracking-tight">
+            Bonjour,{" "}
+            {isLoading
+              ? "…"
+              : profile
+                ? `${profile.role === "DOCTOR" ? "Dr. " : ""}${[profile.first_name, profile.last_name].filter(Boolean).join(" ").trim()}`
+                : "Collaborateur"}{" "}
+            👋
           </h1>
-          <p className="text-slate-500 dark:text-slate-400 font-medium">
-            Voici le rapport d&apos;activité de <span className="text-blue-600 font-bold uppercase">{profile?.hospitals?.name || "Votre Établissement"}</span> pour aujourd&apos;hui.
+          <p className="text-slate-600 font-medium">
+            Voici le rapport d&apos;activité de{" "}
+            <span className="text-blue-600 font-bold uppercase">{profile?.hospitals?.name || "Votre Établissement"}</span>{" "}
+            pour aujourd&apos;hui.
+            {isDemoSession() && (
+              <span className="ml-2 text-xs font-bold text-blue-500 normal-case tracking-normal">
+                (mode démo — données exemple)
+              </span>
+            )}
           </p>
         </div>
         <div className="flex gap-3">
-          <button className="px-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl text-xs font-bold shadow-sm hover:bg-slate-50 transition-all flex items-center gap-2">
-            <Calendar className="w-4 h-4 text-slate-400" /> {new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}
+          <button className="px-4 py-2 bg-white border border-blue-100 rounded-xl text-xs font-bold shadow-sm hover:bg-blue-50/80 transition-all flex items-center gap-2 text-slate-700">
+            <Calendar className="w-4 h-4 text-blue-500" /> {new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}
           </button>
-          <button className="px-4 py-2 bg-slate-900 text-white rounded-xl text-xs font-bold shadow-xl shadow-slate-900/20 flex items-center gap-2">
+          <button className="px-4 py-2 bg-blue-600 text-white rounded-xl text-xs font-bold shadow-lg shadow-blue-600/25 flex items-center gap-2 hover:bg-blue-700 transition-colors">
             <Download className="w-4 h-4" /> Exporter PDF
           </button>
         </div>
@@ -155,7 +200,7 @@ export default function DashboardHome() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.1 }}
-            className="bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all group relative overflow-hidden"
+            className="bg-white p-6 rounded-3xl border border-blue-100/90 shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all group relative overflow-hidden"
           >
             <div className={cn("absolute -right-4 -top-4 w-24 h-24 bg-gradient-to-br opacity-5 group-hover:opacity-10 transition-opacity rounded-full", stat.color)} />
             <div className="flex justify-between items-start mb-6">
@@ -164,14 +209,14 @@ export default function DashboardHome() {
               </div>
               <div className={cn(
                 "flex items-center gap-1 text-[10px] font-black px-2 py-1 rounded-full uppercase tracking-tighter",
-                "text-emerald-600 bg-emerald-50 dark:bg-emerald-900/20"
+                "text-blue-700 bg-blue-50"
               )}>
                 {stat.change}
                 <ArrowUpRight className="w-3 h-3" />
               </div>
             </div>
             <div>
-              <p className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">{stat.label}</p>
+              <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">{stat.label}</p>
               <h3 className="text-3xl font-black mt-1 tracking-tight">{stat.value}</h3>
             </div>
           </motion.div>
@@ -181,7 +226,7 @@ export default function DashboardHome() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Main Chart Section */}
         <div className="lg:col-span-2 space-y-8">
-          <div className="bg-white dark:bg-slate-900 p-8 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm relative overflow-hidden">
+          <div className="bg-white p-8 rounded-3xl border border-blue-100/90 shadow-sm relative overflow-hidden">
             <div className="flex justify-between items-center mb-10">
               <div>
                 <h3 className="font-black text-xl tracking-tight">Activité Médicale</h3>
@@ -198,7 +243,7 @@ export default function DashboardHome() {
                       transition={{ delay: i * 0.05, duration: 1 }}
                       className={cn(
                         "w-full max-w-[12px] rounded-full transition-all relative group-hover:scale-x-125",
-                        i === new Date().getMonth() ? "bg-blue-600 shadow-lg shadow-blue-300" : "bg-slate-100 dark:bg-slate-800 group-hover:bg-blue-400"
+                        i === new Date().getMonth() ? "bg-blue-600 shadow-lg shadow-blue-300" : "bg-blue-50 group-hover:bg-blue-400 group-hover:bg-opacity-70"
                       )}
                     />
                     <div className="absolute -top-10 bg-slate-900 text-white text-[10px] font-black px-2 py-1 rounded-lg shadow-xl opacity-0 group-hover:opacity-100 transition-opacity z-10">
@@ -213,7 +258,7 @@ export default function DashboardHome() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {/* Performance Card */}
-            <div className="bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm">
+            <div className="bg-white p-6 rounded-3xl border border-blue-100/90 shadow-sm">
               <div className="flex justify-between items-center mb-6">
                 <h3 className="font-black text-sm uppercase tracking-widest text-slate-400 flex items-center gap-2">
                   <Target className="w-4 h-4 text-blue-600" /> Top Praticiens
@@ -227,7 +272,7 @@ export default function DashboardHome() {
                       <span className="font-bold">{s.name}</span>
                       <span className="font-black text-blue-600">{s.score}%</span>
                     </div>
-                    <div className="h-1.5 bg-slate-50 dark:bg-slate-800 rounded-full overflow-hidden">
+                    <div className="h-1.5 bg-blue-50 rounded-full overflow-hidden">
                       <motion.div 
                         initial={{ width: 0 }}
                         animate={{ width: `${s.score}%` }}
@@ -246,19 +291,19 @@ export default function DashboardHome() {
             <div className="grid grid-cols-2 gap-4">
               {[
                 { label: "Nouvelle Admission", icon: Plus, color: "bg-blue-600", href: "/dashboard/patients" },
-                { label: "Générer Facture", icon: FileText, color: "bg-slate-900", href: "/dashboard/finance" },
-                { label: "Rapport Labo", icon: Beaker, color: "bg-purple-600", href: "/dashboard/laboratory" },
-                { label: "Stock Pharma", icon: Pill, color: "bg-emerald-600", href: "/dashboard/pharmacy" },
+                { label: "Générer Facture", icon: FileText, color: "bg-blue-800", href: "/dashboard/finance" },
+                { label: "Rapport Labo", icon: Beaker, color: "bg-blue-500", href: "/dashboard/laboratory" },
+                { label: "Stock Pharma", icon: Pill, color: "bg-sky-600", href: "/dashboard/pharmacy" },
               ].map((action) => (
                 <Link 
                   key={action.label} 
                   href={action.href}
-                  className="flex flex-col items-center justify-center gap-3 p-4 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 hover:border-blue-500 hover:shadow-lg transition-all group text-center"
+                  className="flex flex-col items-center justify-center gap-3 p-4 bg-white rounded-3xl border border-blue-100 hover:border-blue-400 hover:shadow-md transition-all group text-center"
                 >
                   <div className={cn("p-3 rounded-2xl text-white shadow-lg group-hover:scale-110 transition-transform", action.color)}>
                     <action.icon className="w-5 h-5" />
                   </div>
-                  <span className="text-[10px] font-black uppercase tracking-widest text-slate-500 group-hover:text-blue-600">{action.label}</span>
+                  <span className="text-[10px] font-black uppercase tracking-widest text-slate-600 group-hover:text-blue-600">{action.label}</span>
                 </Link>
               ))}
             </div>
@@ -287,7 +332,7 @@ export default function DashboardHome() {
                   </p>
                 </div>
                 <div className="p-4 bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl">
-                  <p className="text-[10px] font-black text-emerald-400 uppercase tracking-widest mb-2">Stock</p>
+                  <p className="text-[10px] font-black text-blue-300 uppercase tracking-widest mb-2">Stock</p>
                   <p className="text-sm font-medium leading-relaxed">
                     Posez une question à l&apos;IA sur les stocks, patients ou revenus via le bouton en bas à droite.
                   </p>
@@ -300,26 +345,26 @@ export default function DashboardHome() {
           </div>
 
           {/* Recent Appointments */}
-          <div className="bg-white dark:bg-slate-900 p-8 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm">
+          <div className="bg-white p-8 rounded-3xl border border-blue-100/90 shadow-sm">
             <div className="flex justify-between items-center mb-8">
               <h3 className="font-black text-sm uppercase tracking-widest text-slate-400">Rendez-vous</h3>
-              <Link href="/dashboard/appointments" className="p-2 bg-slate-50 dark:bg-slate-800 rounded-xl hover:bg-blue-50 hover:text-blue-600 transition-all">
+              <Link href="/dashboard/appointments" className="p-2 bg-blue-50 rounded-xl hover:bg-blue-100 text-blue-700 transition-all">
                 <ChevronRight className="w-4 h-4" />
               </Link>
             </div>
             <div className="space-y-6">
               {recentApps.length > 0 ? recentApps.map((app) => (
                 <div key={app.id} className="flex items-center gap-4 group cursor-pointer">
-                  <div className="w-12 h-12 rounded-2xl bg-slate-50 dark:bg-slate-800 flex items-center justify-center font-black text-blue-600 shrink-0 border border-transparent group-hover:border-blue-200 transition-all uppercase">
+                  <div className="w-12 h-12 rounded-2xl bg-blue-50 flex items-center justify-center font-black text-blue-600 shrink-0 border border-blue-100 group-hover:border-blue-300 transition-all uppercase">
                     {app.patients?.first_name?.[0]}{app.patients?.last_name?.[0]}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-black text-slate-900 dark:text-white truncate">{app.patients?.first_name} {app.patients?.last_name}</p>
+                    <p className="text-sm font-black text-slate-900 truncate">{app.patients?.first_name} {app.patients?.last_name}</p>
                     <p className="text-[10px] font-bold text-slate-400 uppercase tracking-tight mt-0.5">{app.reason || "Consultation Générale"}</p>
                   </div>
                   <div className="text-right shrink-0">
-                    <div className="flex items-center gap-1 text-[10px] font-black text-blue-600 bg-blue-50 dark:bg-blue-900/20 px-2 py-1 rounded-lg">
-                      <Clock className="w-3 h-3" /> {new Date(app.appointment_date).toLocaleDateString('fr-FR')}
+                    <div className="flex items-center gap-1 text-[10px] font-black text-blue-700 bg-blue-50 px-2 py-1 rounded-lg border border-blue-100">
+                      <Clock className="w-3 h-3" /> {new Date(getAppointmentStart(app)).toLocaleDateString('fr-FR')}
                     </div>
                   </div>
                 </div>

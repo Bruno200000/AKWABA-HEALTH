@@ -22,12 +22,14 @@ import { cn } from "@/lib/utils";
 import { Modal } from "@/components/ui/modal";
 import AppointmentForm from "./AppointmentForm";
 import { supabase } from "@/lib/supabase";
+import { getAppointmentStart } from "@/lib/appointment-utils";
 
-const statusStyles = {
+const statusStyles: Record<string, string> = {
   CONFIRMED: "bg-blue-50 text-blue-600 border-blue-100",
   PENDING: "bg-amber-50 text-amber-600 border-amber-100",
   CANCELLED: "bg-red-50 text-red-600 border-red-100",
   COMPLETED: "bg-emerald-50 text-emerald-600 border-emerald-100",
+  IN_PROGRESS: "bg-indigo-50 text-indigo-700 border-indigo-100",
 };
 
 export default function AppointmentsPage() {
@@ -50,9 +52,11 @@ export default function AppointmentsPage() {
 
     const { data } = await supabase
       .from("appointments")
-      .select("*, patients(first_name, last_name), profiles!appointments_doctor_id_fkey(first_name, last_name, specialty)")
+      .select(
+        "*, patients(first_name, last_name), doctor:profiles!doctor_id(first_name, last_name, specialization)"
+      )
       .eq("hospital_id", profile.hospital_id)
-      .order("appointment_date", { ascending: true });
+      .order("start_time", { ascending: true });
 
     if (data) setAppointments(data);
     setIsLoading(false);
@@ -62,11 +66,35 @@ export default function AppointmentsPage() {
     `${apt.patients?.first_name} ${apt.patients?.last_name}`.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const todayApts = filteredAppointments.filter(apt => {
-    const date = new Date(apt.appointment_date);
-    const today = new Date();
-    return date.toDateString() === today.toDateString();
+  const startOfToday = () => {
+    const d = new Date();
+    d.setHours(0, 0, 0, 0);
+    return d;
+  };
+
+  const endOfToday = () => {
+    const d = startOfToday();
+    d.setDate(d.getDate() + 1);
+    return d;
+  };
+
+  const todayApts = filteredAppointments.filter((apt) => {
+    const date = new Date(getAppointmentStart(apt));
+    return date >= startOfToday() && date < endOfToday();
   });
+
+  const upcomingApts = filteredAppointments.filter((apt) => {
+    const date = new Date(getAppointmentStart(apt));
+    return date >= endOfToday();
+  });
+
+  const historyApts = filteredAppointments.filter((apt) => {
+    const date = new Date(getAppointmentStart(apt));
+    return date < startOfToday();
+  });
+
+  const tabAppointments =
+    activeTab === "today" ? todayApts : activeTab === "upcoming" ? upcomingApts : historyApts;
 
   return (
     <div className="space-y-8 pb-20">
@@ -107,7 +135,7 @@ export default function AppointmentsPage() {
           <div className="space-y-4">
              {isLoading ? (
                <div className="text-center py-20 text-slate-400 font-black uppercase text-[10px] tracking-widest">Sychronisation du calendrier...</div>
-             ) : (activeTab === 'today' ? todayApts : filteredAppointments).map((apt, index) => (
+             ) : tabAppointments.map((apt, index) => (
                <motion.div 
                  key={apt.id}
                  initial={{ opacity: 0, y: 10 }}
@@ -117,22 +145,34 @@ export default function AppointmentsPage() {
                >
                  <div className="flex items-center gap-6">
                     <div className="flex flex-col items-center justify-center w-16 h-16 bg-slate-50 dark:bg-slate-800 rounded-3xl border border-slate-100 dark:border-slate-700">
-                       <p className="text-[10px] font-black text-slate-400 uppercase">{new Date(apt.appointment_date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
+                       <p className="text-[10px] font-black text-slate-400 uppercase">{new Date(getAppointmentStart(apt)).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
                     </div>
                     <div>
                        <h4 className="font-black text-slate-900 dark:text-white tracking-tight">{apt.patients?.first_name} {apt.patients?.last_name}</h4>
                        <div className="flex items-center gap-2 mt-1">
                           <Stethoscope className="w-3 h-3 text-blue-500" />
-                          <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Dr. {apt.profiles?.last_name} • {apt.profiles?.specialty}</p>
+                          <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                            Dr. {apt.doctor?.last_name} • {apt.doctor?.specialization || "—"}
+                          </p>
                        </div>
                     </div>
                  </div>
                  <div className="flex items-center gap-6">
                     <span className={cn(
                       "px-3 py-1 rounded-xl text-[9px] font-black border uppercase tracking-widest",
-                      statusStyles[apt.status as keyof typeof statusStyles]
+                      statusStyles[apt.status as string] || statusStyles.PENDING
                     )}>
-                      {apt.status === 'CONFIRMED' ? 'Confirmé' : apt.status === 'PENDING' ? 'Attente' : 'Terminé'}
+                      {apt.status === "CONFIRMED"
+                        ? "Confirmé"
+                        : apt.status === "PENDING"
+                          ? "Attente"
+                          : apt.status === "COMPLETED"
+                            ? "Terminé"
+                            : apt.status === "CANCELLED"
+                              ? "Annulé"
+                              : apt.status === "IN_PROGRESS"
+                                ? "En cours"
+                                : String(apt.status)}
                     </span>
                     <button className="p-2 text-slate-300 hover:text-blue-600 transition-colors">
                        <MoreVertical className="w-5 h-5" />
@@ -140,7 +180,7 @@ export default function AppointmentsPage() {
                  </div>
                </motion.div>
              ))}
-             {(!isLoading && (activeTab === 'today' ? todayApts : filteredAppointments).length === 0) && (
+             {(!isLoading && tabAppointments.length === 0) && (
                <div className="text-center py-20 bg-slate-50 dark:bg-slate-900/50 rounded-[40px] border-2 border-dashed border-slate-100 dark:border-slate-800">
                   <CalendarIcon className="w-12 h-12 text-slate-200 mx-auto mb-4" />
                   <p className="text-xs font-black text-slate-400 uppercase tracking-widest">Aucun rendez-vous</p>

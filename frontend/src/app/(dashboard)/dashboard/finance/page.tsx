@@ -107,7 +107,7 @@ export default function FinancePage() {
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div className="bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm">
+        <div className="dash-card !p-6">
           <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Chiffre d&apos;Affaires</p>
           <div className="flex items-end gap-2">
             <h3 className="text-2xl font-black">{stats.totalRevenue.toLocaleString()}</h3>
@@ -115,7 +115,7 @@ export default function FinancePage() {
           </div>
         </div>
 
-        <div className="bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm relative overflow-hidden">
+        <div className="dash-card !p-6">
           <div className="absolute top-0 right-0 p-4 opacity-5"><Smartphone className="w-12 h-12" /></div>
           <p className="text-[10px] font-black text-blue-500 uppercase tracking-widest mb-3">Mobile Money</p>
           <div className="flex items-end gap-2">
@@ -124,7 +124,7 @@ export default function FinancePage() {
           </div>
         </div>
 
-        <div className="bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm">
+        <div className="dash-card !p-6">
           <p className="text-[10px] font-black text-emerald-500 uppercase tracking-widest mb-3">Caisse (Espèces)</p>
           <div className="flex items-end gap-2">
             <h3 className="text-2xl font-black">{stats.cashRevenue.toLocaleString()}</h3>
@@ -132,7 +132,7 @@ export default function FinancePage() {
           </div>
         </div>
 
-        <div className="bg-red-50 dark:bg-red-900/10 p-6 rounded-3xl border border-red-100 dark:border-red-900/20">
+        <div className="dash-card !p-6 !bg-red-50/50 !border-red-100">
           <p className="text-[10px] font-black text-red-500 uppercase tracking-widest mb-3">Impayés</p>
           <div className="flex items-end gap-2">
             <h3 className="text-2xl font-black text-red-600">{stats.unpaidAmount.toLocaleString()}</h3>
@@ -159,10 +159,10 @@ export default function FinancePage() {
             ))}
           </div>
 
-          <div className="bg-white dark:bg-slate-900 rounded-[32px] border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
+          <div className="dash-table-container">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800">
+                <tr className="dash-table-header">
                   <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">N°</th>
                   <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Patient</th>
                   <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Montant</th>

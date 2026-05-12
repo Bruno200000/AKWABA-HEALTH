@@ -112,7 +112,7 @@ export default function AkwabaAI() {
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-8 right-8 w-16 h-16 bg-white rounded-full shadow-2xl shadow-blue-500/35 flex items-center justify-center z-50 group border-4 border-blue-600 p-2 overflow-hidden"
+        className="fixed bottom-8 right-8 w-16 h-16 bg-white rounded-full shadow-2xl shadow-blue-500/35 flex items-center justify-center z-50 group border-4 border-blue-600 p-2 overflow-hidden animate-float"
       >
         <div className="relative w-full h-full">
            <img src="/logo.png" alt="AI Logo" className="w-full h-full object-contain group-hover:scale-110 transition-transform" />

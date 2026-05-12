@@ -94,7 +94,7 @@ export default function LaboratoryPage() {
 
           {/* Stats Grid */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="bg-white dark:bg-slate-900 p-6 rounded-[32px] border border-slate-200 dark:border-slate-800 shadow-sm relative overflow-hidden group">
+            <div className="dash-card !p-6">
               <div className="absolute top-0 right-0 p-6 opacity-5 group-hover:scale-110 transition-transform"><Clock className="w-12 h-12" /></div>
               <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">En Attente</p>
               <div className="flex items-end gap-2">
@@ -102,7 +102,7 @@ export default function LaboratoryPage() {
                 <span className="text-[10px] font-bold text-slate-400 mb-1">Prélèvements</span>
               </div>
             </div>
-            <div className="bg-white dark:bg-slate-900 p-6 rounded-[32px] border border-slate-200 dark:border-slate-800 shadow-sm relative overflow-hidden group">
+            <div className="dash-card !p-6">
               <div className="absolute top-0 right-0 p-6 opacity-5 group-hover:scale-110 transition-transform text-blue-500"><FlaskConical className="w-12 h-12" /></div>
               <p className="text-[10px] font-black text-blue-500 uppercase tracking-widest mb-3">En Cours</p>
               <div className="flex items-end gap-2">
@@ -110,7 +110,7 @@ export default function LaboratoryPage() {
                 <span className="text-[10px] font-bold text-slate-400 mb-1">Analyses</span>
               </div>
             </div>
-            <div className="bg-emerald-50 dark:bg-emerald-900/10 p-6 rounded-[32px] border border-emerald-100 dark:border-emerald-900/20 relative overflow-hidden">
+            <div className="dash-card !p-6 !bg-emerald-50/50 !border-emerald-100">
                <div className="absolute top-0 right-0 p-6 opacity-10"><CheckCircle2 className="w-12 h-12 text-emerald-600" /></div>
               <p className="text-[10px] font-black text-emerald-500 uppercase tracking-widest mb-3">Terminés Aujourd&apos;hui</p>
               <div className="flex items-end gap-2">
@@ -138,10 +138,10 @@ export default function LaboratoryPage() {
               </button>
             </div>
 
-            <div className="bg-white dark:bg-slate-900 rounded-[32px] border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
+            <div className="dash-table-container">
               <table className="w-full text-left border-collapse">
                 <thead>
-                  <tr className="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800">
+                  <tr className="dash-table-header">
                     <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Patient</th>
                     <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Type d&apos;examen</th>
                     <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Prescrit</th>

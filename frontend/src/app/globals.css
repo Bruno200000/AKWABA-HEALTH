@@ -69,3 +69,25 @@ body {
 .ai-chat-bar {
   @apply bg-blue-50/50 backdrop-blur-md border border-blue-100/50 rounded-[24px] focus-within:bg-white focus-within:border-blue-400 focus-within:ring-4 focus-within:ring-blue-500/10 transition-all duration-300;
 }
+
+.dash-card {
+  @apply bg-white rounded-[32px] p-8 border border-blue-100/50 shadow-xl shadow-blue-900/5 relative overflow-hidden transition-all duration-500;
+}
+
+.dash-table-container {
+  @apply bg-white rounded-[32px] border border-blue-100/50 shadow-xl shadow-blue-900/5 overflow-hidden;
+}
+
+.dash-table-header {
+  @apply bg-blue-50/50 border-b border-blue-100/50;
+}
+
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0px); }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}

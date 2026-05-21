@@ -277,8 +277,12 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 animate={{ opacity: 1, x: 0 }}
                 className="flex flex-col min-w-0"
               >
-                <span className="font-black text-sm tracking-tight text-white leading-tight">AKWABA HEALTH</span>
-                <span className="text-[9px] font-bold text-blue-400 uppercase tracking-widest leading-none mt-1">Plateforme Médicale</span>
+                <span className="font-black text-sm tracking-tight text-white leading-tight truncate max-w-[160px]">
+                  {profile?.hospitals?.name || "AKWABA HEALTH"}
+                </span>
+                <span className="text-[9px] font-bold text-blue-400 uppercase tracking-widest leading-none mt-1">
+                  Plateforme Médicale
+                </span>
               </motion.div>
             )}
           </div>

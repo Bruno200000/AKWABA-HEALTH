@@ -42,6 +42,7 @@ CREATE TABLE hospitals (
   email TEXT UNIQUE,
   subscription_plan TEXT DEFAULT 'free',
   is_active BOOLEAN DEFAULT true,
+  settings JSONB DEFAULT '{}'::jsonb,
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );

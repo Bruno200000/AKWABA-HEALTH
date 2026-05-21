@@ -34,48 +34,71 @@ const tabs = [
 ];
 
 export default function SettingsPage() {
- const [activeTab, setActiveTab] = useState("profile");
- const [isSaving, setIsSaving] = useState(false);
- const [isLoading, setIsLoading] = useState(true);
- const [hospital, setHospital] = useState<any>(null);
- const [userProfile, setUserProfile] = useState<any>(null);
+  const [activeTab, setActiveTab] = useState("profile");
+  const [isSaving, setIsSaving] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [hospital, setHospital] = useState<any>(null);
+  const [userProfile, setUserProfile] = useState<any>(null);
+  const [integrations, setIntegrations] = useState({
+    openai: "",
+    anthropic: "",
+    gemini: "",
+    mistral: "",
+    whatsapp_token: "",
+    whatsapp_phone: "",
+    pharmacy_webhook: "https://api.mapharmacie.ci/webhook"
+  });
 
- useEffect(() => {
- fetchData();
- }, []);
+  useEffect(() => {
+    fetchData();
+  }, []);
 
- const fetchData = async () => {
- const { data: { user } } = await supabase.auth.getUser();
- if (!user) return;
+  const fetchData = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
 
- const { data: profile } = await supabase.from('profiles').select('*, hospitals(*)').eq('id', user.id).single();
- if (profile) {
- setUserProfile(profile);
- if (profile.hospitals) setHospital(profile.hospitals);
- }
- setIsLoading(false);
- };
+    const { data: profile } = await supabase.from('profiles').select('*, hospitals(*)').eq('id', user.id).single();
+    if (profile) {
+      setUserProfile(profile);
+      if (profile.hospitals) {
+        setHospital(profile.hospitals);
+        if (profile.hospitals.settings?.integrations) {
+          setIntegrations(prev => ({ ...prev, ...profile.hospitals.settings.integrations }));
+        }
+      }
+    }
+    setIsLoading(false);
+  };
 
- const handleSave = async () => {
- setIsSaving(true);
- 
- if (activeTab === "hospital" && hospital) {
- await supabase.from('hospitals').update({
- name: hospital.name,
- email: hospital.email,
- phone: hospital.phone,
- address: hospital.address
- }).eq('id', hospital.id);
- } else if (activeTab === "profile" && userProfile) {
- await supabase.from('profiles').update({
- first_name: userProfile.first_name,
- last_name: userProfile.last_name,
- phone: userProfile.phone
- }).eq('id', userProfile.id);
- }
+  const handleSave = async () => {
+    setIsSaving(true);
+    
+    if (activeTab === "hospital" && hospital) {
+      await supabase.from('hospitals').update({
+        name: hospital.name,
+        email: hospital.email,
+        phone: hospital.phone,
+        address: hospital.address
+      }).eq('id', hospital.id);
+    } else if (activeTab === "profile" && userProfile) {
+      await supabase.from('profiles').update({
+        first_name: userProfile.first_name,
+        last_name: userProfile.last_name,
+        phone: userProfile.phone
+      }).eq('id', userProfile.id);
+    } else if (activeTab === "integrations" && hospital) {
+      const updatedSettings = {
+        ...(hospital.settings || {}),
+        integrations: integrations
+      };
+      await supabase.from('hospitals').update({
+        settings: updatedSettings
+      }).eq('id', hospital.id);
+      setHospital({ ...hospital, settings: updatedSettings });
+    }
 
- setTimeout(() => setIsSaving(false), 1000);
- };
+    setTimeout(() => setIsSaving(false), 1000);
+  };
 
  return (
  <div className="space-y-8 pb-20">
@@ -140,7 +163,7 @@ export default function SettingsPage() {
  </button>
  </div>
  <div>
- <h3 className="text-2xl font-black tracking-tight">Mon Profil Personnel</h3>
+ <h3 className="text-2xl font-black tracking-tight">{userProfile ? `${userProfile.first_name} ${userProfile.last_name}` : "Mon Profil Personnel"}</h3>
  <p className="text-slate-600 font-medium mt-1">Gérez vos informations de compte et votre identité.</p>
  <div className="flex gap-4 mt-6">
  <span className="px-3 py-1 bg-blue-50 text-blue-600 rounded-xl text-[10px] font-black uppercase tracking-widest">{userProfile?.role || "Utilisateur"}</span>
@@ -336,49 +359,94 @@ export default function SettingsPage() {
  >
  <div>
  <h3 className="text-2xl font-black tracking-tight mb-2">Intégrations & Logiciels Tiers</h3>
- <p className="text-slate-600 font-medium">Connectez AKWABA HEALTH à d'autres outils (Pharmacie externe, IA, ChatGPT).</p>
+ <p className="text-slate-600 font-medium">Connectez AKWABA HEALTH à WhatsApp, vos IAs préférées et d'autres outils externes.</p>
  </div>
  
  <div className="space-y-6">
- <div className="p-8 bg-white shadow-sm rounded-[32px] border border-blue-50 flex flex-col gap-6">
- <div className="flex gap-6 items-center">
- <div className="w-14 h-14 bg-green-100 text-green-600 rounded-[20px] flex items-center justify-center">
- <Zap className="w-7 h-7" />
- </div>
- <div className="flex-1">
- <p className="font-black text-slate-900 tracking-tight">OpenAI (ChatGPT)</p>
- <p className="text-xs text-slate-600 font-medium">Connectez votre propre clé API OpenAI pour débloquer les assistants IA sans limites.</p>
- </div>
- <div className="flex items-center gap-2">
- <div className="w-2 h-2 rounded-full bg-slate-300"></div>
- <span className="text-[10px] font-black uppercase text-slate-400">Déconnecté</span>
- </div>
- </div>
- <div className="relative">
- <input type="password" placeholder="sk-..." className="w-full pl-6 pr-32 py-4 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-medium focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all outline-none" />
- <button className="absolute right-2 top-1/2 -translate-y-1/2 px-6 py-2 bg-slate-900 text-white rounded-xl text-[10px] font-black uppercase tracking-widest shadow-xl">Connecter</button>
- </div>
- </div>
+  <div className="p-8 bg-white shadow-sm rounded-[32px] border border-blue-50 flex flex-col gap-6">
+    <div className="flex gap-6 items-center">
+    <div className="w-14 h-14 bg-green-100 text-green-600 rounded-[20px] flex items-center justify-center">
+      <Cloud className="w-7 h-7" />
+    </div>
+    <div className="flex-1">
+      <p className="font-black text-slate-900 tracking-tight">WhatsApp Business API</p>
+      <p className="text-xs text-slate-600 font-medium">Envoyez des rappels de rendez-vous et des ordonnances directement sur WhatsApp.</p>
+    </div>
+    <div className="flex items-center gap-2">
+      <div className={cn("w-2 h-2 rounded-full", integrations.whatsapp_token ? "bg-emerald-400" : "bg-slate-300")}></div>
+      <span className={cn("text-[10px] font-black uppercase", integrations.whatsapp_token ? "text-emerald-600" : "text-slate-400")}>{integrations.whatsapp_token ? "Actif" : "Déconnecté"}</span>
+    </div>
+    </div>
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="space-y-1">
+        <label className="text-xs font-bold text-slate-700 ml-1">Token API (Permanent)</label>
+        <input type="password" placeholder="EAAD..." value={integrations.whatsapp_token} onChange={(e) => setIntegrations({ ...integrations, whatsapp_token: e.target.value })} className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-medium focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all outline-none" />
+      </div>
+      <div className="space-y-1">
+        <label className="text-xs font-bold text-slate-700 ml-1">Phone Number ID</label>
+        <input type="text" placeholder="10423049..." value={integrations.whatsapp_phone} onChange={(e) => setIntegrations({ ...integrations, whatsapp_phone: e.target.value })} className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-medium focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all outline-none" />
+      </div>
+    </div>
+  </div>
+
+  <div className="p-8 bg-white shadow-sm rounded-[32px] border border-blue-50 flex flex-col gap-6">
+    <div className="flex gap-6 items-center">
+    <div className="w-14 h-14 bg-indigo-100 text-indigo-600 rounded-[20px] flex items-center justify-center">
+      <Zap className="w-7 h-7" />
+    </div>
+    <div className="flex-1">
+      <p className="font-black text-slate-900 tracking-tight">Intelligence Artificielle (Modèles)</p>
+      <p className="text-xs text-slate-600 font-medium">Configurez jusqu'à quatre fournisseurs d'IA pour les diagnostics et analyses médicales.</p>
+    </div>
+    </div>
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="space-y-1 relative">
+        <label className="text-xs font-bold text-slate-700 ml-1">OpenAI (ChatGPT)</label>
+        <input type="password" placeholder="sk-proj-..." value={integrations.openai} onChange={(e) => setIntegrations({ ...integrations, openai: e.target.value })} className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-medium focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all outline-none" />
+      </div>
+      <div className="space-y-1 relative">
+        <label className="text-xs font-bold text-slate-700 ml-1">Anthropic (Claude)</label>
+        <input type="password" placeholder="sk-ant-..." value={integrations.anthropic} onChange={(e) => setIntegrations({ ...integrations, anthropic: e.target.value })} className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-medium focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all outline-none" />
+      </div>
+      <div className="space-y-1 relative">
+        <label className="text-xs font-bold text-slate-700 ml-1">Google (Gemini)</label>
+        <input type="password" placeholder="AIza..." value={integrations.gemini} onChange={(e) => setIntegrations({ ...integrations, gemini: e.target.value })} className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-medium focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all outline-none" />
+      </div>
+      <div className="space-y-1 relative">
+        <label className="text-xs font-bold text-slate-700 ml-1">Mistral AI</label>
+        <input type="password" placeholder="API Key Mistral..." value={integrations.mistral} onChange={(e) => setIntegrations({ ...integrations, mistral: e.target.value })} className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-medium focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all outline-none" />
+      </div>
+    </div>
+  </div>
 
  <div className="p-8 bg-white shadow-sm rounded-[32px] border border-blue-50 flex flex-col gap-6">
  <div className="flex gap-6 items-center">
- <div className="w-14 h-14 bg-indigo-100 text-indigo-600 rounded-[20px] flex items-center justify-center">
- <Cloud className="w-7 h-7" />
+ <div className="w-14 h-14 bg-slate-100 text-slate-600 rounded-[20px] flex items-center justify-center">
+ <Globe className="w-7 h-7" />
  </div>
  <div className="flex-1">
  <p className="font-black text-slate-900 tracking-tight">Logiciel de Pharmacie Externe (Webhook)</p>
  <p className="text-xs text-slate-600 font-medium">Synchronisez votre inventaire ou envoyez des ordonnances automatiquement via Webhook.</p>
  </div>
  <div className="flex items-center gap-2">
- <div className="w-2 h-2 rounded-full bg-emerald-400"></div>
- <span className="text-[10px] font-black uppercase text-emerald-600">Actif</span>
+ <div className={cn("w-2 h-2 rounded-full", integrations.pharmacy_webhook ? "bg-emerald-400" : "bg-slate-300")}></div>
+ <span className={cn("text-[10px] font-black uppercase", integrations.pharmacy_webhook ? "text-emerald-600" : "text-slate-400")}>{integrations.pharmacy_webhook ? "Actif" : "Désactivé"}</span>
  </div>
  </div>
  <div className="relative">
- <input type="text" placeholder="https://api.mapharmacie.ci/webhook" defaultValue="https://api.mapharmacie.ci/webhook" className="w-full pl-6 pr-32 py-4 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-medium focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all outline-none" />
- <button className="absolute right-2 top-1/2 -translate-y-1/2 px-6 py-2 bg-indigo-600 text-white rounded-xl text-[10px] font-black uppercase tracking-widest shadow-xl shadow-indigo-200">Mettre à jour</button>
+ <input type="text" placeholder="https://api.mapharmacie.ci/webhook" value={integrations.pharmacy_webhook} onChange={(e) => setIntegrations({ ...integrations, pharmacy_webhook: e.target.value })} className="w-full pl-6 pr-32 py-4 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-medium focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all outline-none" />
  </div>
  </div>
+ </div>
+ 
+ <div className="pt-10 border-t border-slate-50 flex justify-end items-center">
+ <button 
+ onClick={handleSave}
+ disabled={isSaving}
+ className="flex items-center gap-2 px-10 py-4 bg-blue-600 text-white rounded-3xl font-black text-xs uppercase tracking-widest shadow-xl shadow-blue-200 hover:bg-blue-700 transition-all hover:-translate-y-1"
+ >
+ {isSaving ? "Enregistrement..." : <><Save className="w-4 h-4" /> Sauvegarder</>}
+ </button>
  </div>
  </motion.div>
  )}

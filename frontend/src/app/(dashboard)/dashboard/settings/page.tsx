@@ -26,6 +26,7 @@ const tabs = [
   { id: "profile", label: "Mon Profil", icon: User, desc: "Informations personnelles" },
   { id: "hospital", label: "Établissement", icon: Building2, desc: "Identité et coordonnées" },
   { id: "branding", label: "Personnalisation", icon: Camera, desc: "Logo et couleurs" },
+  { id: "integrations", label: "Intégrations", icon: Cloud, desc: "API, IA et Webhooks" },
   { id: "ai", label: "IA Akwaba", icon: Zap, desc: "Intelligence Médicale" },
   { id: "security", label: "Sécurité & Accès", icon: ShieldCheck, desc: "Mots de passe et rôles" },
   { id: "notifications", label: "Communications", icon: Bell, desc: "Alertes SMS et Emails" },
@@ -320,6 +321,63 @@ export default function SettingsPage() {
  <p className="text-xs text-slate-500">Saisie des notes médicales par la voix.</p>
  </div>
  <div className="w-12 h-6 bg-blue-600 rounded-full relative"><div className="absolute right-1 top-1 w-4 h-4 bg-white rounded-full" /></div>
+ </div>
+ </div>
+ </motion.div>
+ )}
+
+ {activeTab === "integrations" && (
+ <motion.div
+ key="integrations"
+ initial={{ opacity: 0, x: 20 }}
+ animate={{ opacity: 1, x: 0 }}
+ exit={{ opacity: 0, x: -20 }}
+ className="bg-white rounded-[40px] shadow-xl shadow-blue-900/5 p-10 space-y-12"
+ >
+ <div>
+ <h3 className="text-2xl font-black tracking-tight mb-2">Intégrations & Logiciels Tiers</h3>
+ <p className="text-slate-600 font-medium">Connectez AKWABA HEALTH à d'autres outils (Pharmacie externe, IA, ChatGPT).</p>
+ </div>
+ 
+ <div className="space-y-6">
+ <div className="p-8 bg-white shadow-sm rounded-[32px] border border-blue-50 flex flex-col gap-6">
+ <div className="flex gap-6 items-center">
+ <div className="w-14 h-14 bg-green-100 text-green-600 rounded-[20px] flex items-center justify-center">
+ <Zap className="w-7 h-7" />
+ </div>
+ <div className="flex-1">
+ <p className="font-black text-slate-900 tracking-tight">OpenAI (ChatGPT)</p>
+ <p className="text-xs text-slate-600 font-medium">Connectez votre propre clé API OpenAI pour débloquer les assistants IA sans limites.</p>
+ </div>
+ <div className="flex items-center gap-2">
+ <div className="w-2 h-2 rounded-full bg-slate-300"></div>
+ <span className="text-[10px] font-black uppercase text-slate-400">Déconnecté</span>
+ </div>
+ </div>
+ <div className="relative">
+ <input type="password" placeholder="sk-..." className="w-full pl-6 pr-32 py-4 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-medium focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all outline-none" />
+ <button className="absolute right-2 top-1/2 -translate-y-1/2 px-6 py-2 bg-slate-900 text-white rounded-xl text-[10px] font-black uppercase tracking-widest shadow-xl">Connecter</button>
+ </div>
+ </div>
+
+ <div className="p-8 bg-white shadow-sm rounded-[32px] border border-blue-50 flex flex-col gap-6">
+ <div className="flex gap-6 items-center">
+ <div className="w-14 h-14 bg-indigo-100 text-indigo-600 rounded-[20px] flex items-center justify-center">
+ <Cloud className="w-7 h-7" />
+ </div>
+ <div className="flex-1">
+ <p className="font-black text-slate-900 tracking-tight">Logiciel de Pharmacie Externe (Webhook)</p>
+ <p className="text-xs text-slate-600 font-medium">Synchronisez votre inventaire ou envoyez des ordonnances automatiquement via Webhook.</p>
+ </div>
+ <div className="flex items-center gap-2">
+ <div className="w-2 h-2 rounded-full bg-emerald-400"></div>
+ <span className="text-[10px] font-black uppercase text-emerald-600">Actif</span>
+ </div>
+ </div>
+ <div className="relative">
+ <input type="text" placeholder="https://api.mapharmacie.ci/webhook" defaultValue="https://api.mapharmacie.ci/webhook" className="w-full pl-6 pr-32 py-4 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-medium focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all outline-none" />
+ <button className="absolute right-2 top-1/2 -translate-y-1/2 px-6 py-2 bg-indigo-600 text-white rounded-xl text-[10px] font-black uppercase tracking-widest shadow-xl shadow-indigo-200">Mettre à jour</button>
+ </div>
  </div>
  </div>
  </motion.div>

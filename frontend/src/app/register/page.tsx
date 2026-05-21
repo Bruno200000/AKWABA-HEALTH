@@ -136,7 +136,7 @@ export default function RegisterPage() {
               <label className="text-xs font-bold text-slate-700 ml-1">Nom de l&apos;Hôpital / Clinique</label>
               <div className="relative group">
                 <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 group-focus-within:text-blue-500" />
-                <input required type="text" placeholder="Clinique Akwaba" className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none" onChange={e => setFormData({...formData, hospitalName: e.target.value})} />
+                <input required type="text" placeholder="Clinique Akwaba" className="w-full pl-12 pr-4 py-3 bg-white border border-slate-200 shadow-sm rounded-2xl focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none" onChange={e => setFormData({...formData, hospitalName: e.target.value})} />
               </div>
             </div>
 
@@ -144,7 +144,7 @@ export default function RegisterPage() {
               <label className="text-xs font-bold text-slate-700 ml-1">Nom du Responsable</label>
               <div className="relative group">
                 <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 group-focus-within:text-blue-500" />
-                <input required type="text" placeholder="Jean Kouassi" className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none" onChange={e => setFormData({...formData, adminName: e.target.value})} />
+                <input required type="text" placeholder="Jean Kouassi" className="w-full pl-12 pr-4 py-3 bg-white border border-slate-200 shadow-sm rounded-2xl focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none" onChange={e => setFormData({...formData, adminName: e.target.value})} />
               </div>
             </div>
 
@@ -153,14 +153,14 @@ export default function RegisterPage() {
                 <label className="text-xs font-bold text-slate-700 ml-1">Email</label>
                 <div className="relative group">
                   <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                  <input required type="email" placeholder="admin@clinique.ci" className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none" onChange={e => setFormData({...formData, email: e.target.value})} />
+                  <input required type="email" placeholder="admin@clinique.ci" className="w-full pl-10 pr-4 py-3 bg-white border border-slate-200 shadow-sm rounded-2xl focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none" onChange={e => setFormData({...formData, email: e.target.value})} />
                 </div>
               </div>
               <div className="space-y-1">
                 <label className="text-xs font-bold text-slate-700 ml-1">Téléphone</label>
                 <div className="relative group">
                   <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                  <input required type="tel" placeholder="0700000000" className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none" onChange={e => setFormData({...formData, phone: e.target.value})} />
+                  <input required type="tel" placeholder="0700000000" className="w-full pl-10 pr-4 py-3 bg-white border border-slate-200 shadow-sm rounded-2xl focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none" onChange={e => setFormData({...formData, phone: e.target.value})} />
                 </div>
               </div>
             </div>
@@ -169,7 +169,7 @@ export default function RegisterPage() {
               <label className="text-xs font-bold text-slate-700 ml-1">Mot de passe</label>
               <div className="relative group">
                 <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
-                <input required type="password" placeholder="••••••••••••" className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none" onChange={e => setFormData({...formData, password: e.target.value})} />
+                <input required type="password" placeholder="••••••••••••" className="w-full pl-12 pr-4 py-3 bg-white border border-slate-200 shadow-sm rounded-2xl focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none" onChange={e => setFormData({...formData, password: e.target.value})} />
               </div>
             </div>
 

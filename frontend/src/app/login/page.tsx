@@ -16,7 +16,6 @@ import {
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { isSupabaseConfigured, supabase } from "@/lib/supabase";
-import { setDemoSession } from "@/lib/demo-mode";
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
@@ -26,18 +25,13 @@ export default function LoginPage() {
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
-  const enterDemo = () => {
-    setDemoSession();
-    router.push("/dashboard");
-  };
-
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     setError(null);
 
     if (!isSupabaseConfigured) {
-      setError("Supabase n’est pas configuré. Ajoutez NEXT_PUBLIC_SUPABASE_URL et NEXT_PUBLIC_SUPABASE_ANON_KEY, ou utilisez le mode démo.");
+      setError("Supabase n’est pas configuré. Ajoutez NEXT_PUBLIC_SUPABASE_URL et NEXT_PUBLIC_SUPABASE_ANON_KEY dans frontend/.env.local.");
       setIsLoading(false);
       return;
     }
@@ -153,7 +147,7 @@ export default function LoginPage() {
 
             {!isSupabaseConfigured && (
               <div className="p-4 rounded-2xl bg-amber-50 border border-amber-100 text-amber-900 text-sm font-medium leading-relaxed">
-                Les variables Supabase sont absentes (.env.local). Vous pouvez quand même parcourir l’interface avec le mode démo ci-dessous.
+                Les variables Supabase sont absentes. La connexion est bloquée tant que la base de données n’est pas configurée.
               </div>
             )}
 
@@ -177,13 +171,6 @@ export default function LoginPage() {
               )}
             </motion.button>
 
-            <button
-              type="button"
-              onClick={enterDemo}
-              className="w-full py-3.5 border-2 border-blue-200 bg-white text-blue-700 rounded-2xl font-bold text-sm hover:bg-blue-50 transition-all"
-            >
-              Explorer le tableau de bord (mode démo)
-            </button>
           </form>
 
           {/* Hospital Footer Info */}

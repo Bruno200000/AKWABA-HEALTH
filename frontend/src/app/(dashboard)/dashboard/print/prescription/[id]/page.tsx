@@ -69,9 +69,9 @@ export default function PrescriptionPrintPage() {
  </div>
  )}
  <div>
- <h1 className="text-3xl font-black tracking-tighter uppercase">{data.hospitals?.name || "AKWABA HEALTH"}</h1>
- <p className="text-sm font-bold text-slate-600 max-w-xs">{data.hospitals?.address || "Abidjan, Côte d'Ivoire"}</p>
- <p className="text-sm font-bold text-slate-600">{data.hospitals?.phone || "+225 00 00 00 00"}</p>
+ <h1 className="text-3xl font-black tracking-tighter uppercase">{data.hospitals?.name || "Etablissement"}</h1>
+ <p className="text-sm font-bold text-slate-600 max-w-xs">{data.hospitals?.address || "Adresse non renseignee"}</p>
+ <p className="text-sm font-bold text-slate-600">{data.hospitals?.phone || "Telephone non renseigne"}</p>
  </div>
  </div>
  <div className="text-right">
@@ -94,8 +94,8 @@ export default function PrescriptionPrintPage() {
  <div className="p-6 border border-blue-50 rounded-2xl">
  <p className="text-[10px] font-black text-slate-600 uppercase tracking-widest mb-3">Médecin Prescripteur</p>
  <h2 className="text-xl font-black mb-1">Dr. {data.profiles?.first_name} {data.profiles?.last_name}</h2>
- <p className="text-sm font-bold text-blue-600">{data.profiles?.specialization || "Médecine Générale"}</p>
- <p className="text-sm text-slate-600 mt-2">Licence: {data.profiles?.license_number || "CI-12345-MED"}</p>
+ <p className="text-sm font-bold text-blue-600">{data.profiles?.specialization || "Specialisation non renseignee"}</p>
+ <p className="text-sm text-slate-600 mt-2">Licence: {data.profiles?.license_number || "Non renseignee"}</p>
  </div>
  </div>
 

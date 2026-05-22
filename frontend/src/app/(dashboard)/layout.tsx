@@ -33,7 +33,6 @@ import { usePathname, useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { isSupabaseConfigured, supabase } from "@/lib/supabase";
-import { DEMO_PROFILE, clearDemoSession, isDemoSession } from "@/lib/demo-mode";
 import AkwabaAI from "@/components/AkwabaAI";
 
 const menuGroups = [
@@ -209,12 +208,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   React.useEffect(() => {
     const fetchProfile = async () => {
-      if (typeof window !== "undefined" && isDemoSession()) {
-        setProfile(DEMO_PROFILE);
-        setGateReady(true);
-        return;
-      }
-
       if (!isSupabaseConfigured) {
         router.replace("/login");
         setGateReady(true);
@@ -230,7 +223,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
       const { data } = await supabase
         .from("profiles")
-        .select("*, hospitals(name)")
+        .select("*, hospitals(name, logo_url, primary_color)")
         .eq("id", user.id)
         .maybeSingle();
 
@@ -241,7 +234,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   }, [router]);
 
   const handleLogout = async () => {
-    clearDemoSession();
     if (isSupabaseConfigured) {
       await supabase.auth.signOut();
     }

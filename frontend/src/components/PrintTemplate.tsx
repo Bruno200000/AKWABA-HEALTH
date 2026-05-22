@@ -20,14 +20,14 @@ export default function PrintTemplate({ type, data, hospital }: PrintTemplatePro
             <img src="/logo.png" alt="Logo" className="w-full h-full object-contain invert" />
           </div>
           <div>
-            <h1 className="text-2xl font-black tracking-tighter text-blue-600 uppercase">{hospital?.name || "AKWABA HEALTH"}</h1>
+            <h1 className="text-2xl font-black tracking-tighter text-blue-600 uppercase">{hospital?.name || "Etablissement"}</h1>
             <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest italic">Simplement Efficace</p>
           </div>
         </div>
         <div className="text-right text-xs space-y-1">
-          <p className="font-bold">{hospital?.address || "Abidjan, Côte d'Ivoire"}</p>
-          <p>Tél: {hospital?.phone || "+225 07 00 00 00 00"}</p>
-          <p>Email: {hospital?.email || "contact@hopital.ci"}</p>
+          <p className="font-bold">{hospital?.address || "Adresse non renseignee"}</p>
+          <p>Tél: {hospital?.phone || "Non renseigne"}</p>
+          <p>Email: {hospital?.email || "Non renseigne"}</p>
         </div>
       </div>
 
@@ -60,7 +60,7 @@ export default function PrintTemplate({ type, data, hospital }: PrintTemplatePro
             </thead>
             <tbody className="divide-y divide-slate-100">
               <tr>
-                <td className="py-4 px-2 text-sm font-bold">Consultation Médicale / Soins</td>
+                <td className="py-4 px-2 text-sm font-bold">{data.notes || "Prestation facturee"}</td>
                 <td className="py-4 px-2 text-sm font-bold text-right">{Number(data.total_amount).toLocaleString()} FCFA</td>
               </tr>
               {/* Add more items if available */}
@@ -76,7 +76,7 @@ export default function PrintTemplate({ type, data, hospital }: PrintTemplatePro
           <div className="space-y-8">
             <div className="p-6 bg-slate-50 rounded-2xl border-l-4 border-blue-600">
                <p className="text-sm italic text-slate-700 leading-loose whitespace-pre-wrap">
-                 {data.notes || "Aucun médicament prescrit."}
+                 {data.notes || "Aucune note enregistree."}
                </p>
             </div>
             <div className="grid grid-cols-2 gap-8 pt-20">
@@ -86,7 +86,7 @@ export default function PrintTemplate({ type, data, hospital }: PrintTemplatePro
                </div>
                <div className="text-center pt-8">
                   <p className="text-[10px] font-black uppercase text-slate-400 mb-8 tracking-widest">Signature du Médecin</p>
-                  <p className="text-sm font-bold italic underline">Dr. {data.profiles?.last_name || "Nom du médecin"}</p>
+                  <p className="text-sm font-bold italic underline">Dr. {data.profiles?.last_name || ""}</p>
                </div>
             </div>
           </div>

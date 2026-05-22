@@ -48,7 +48,7 @@ export default function HospitalizationPage() {
 
  const { data } = await supabase
  .from("rooms")
- .select("*, admissions(patients(first_name, last_name), status)")
+ .select("*, admissions(id, patients(first_name, last_name, status), status)")
  .eq("hospital_id", profile.hospital_id)
  .order("room_number", { ascending: true });
 
@@ -58,6 +58,8 @@ export default function HospitalizationPage() {
  return {
  ...room,
  status: activeAdmission ? 'OCCUPIED' : 'FREE',
+ admission_id: activeAdmission?.id,
+ patient_status: activeAdmission?.patients?.status,
  patient: activeAdmission ? `${activeAdmission.patients?.first_name} ${activeAdmission.patients?.last_name}` : null
  };
  });
@@ -73,6 +75,26 @@ export default function HospitalizationPage() {
  });
  }
  setIsLoading(false);
+ };
+
+ const handleDischarge = async (room: any) => {
+ if (!room.admission_id) return;
+ const { error } = await supabase
+ .from("admissions")
+ .update({ status: "DISCHARGED", discharge_date: new Date().toISOString() })
+ .eq("id", room.admission_id);
+
+ if (error) {
+ alert(error.message);
+ return;
+ }
+
+ await supabase
+ .from("rooms")
+ .update({ occupied_beds: Math.max(0, Number(room.occupied_beds || 1) - 1) })
+ .eq("id", room.id);
+
+ fetchRooms();
  };
 
  return (
@@ -181,11 +203,17 @@ export default function HospitalizationPage() {
  <p className="text-sm font-black truncate">{room.patient}</p>
  <div className="flex items-center gap-2 mt-0.5">
  <Activity className="w-3 h-3 text-emerald-500" />
- <span className="text-[10px] font-bold text-slate-600 uppercase">Stable</span>
+ <span className="text-[10px] font-bold text-slate-600 uppercase">{room.patient_status || "ADMITTED"}</span>
  </div>
  </div>
  </div>
- <button className="w-full mt-6 py-3 bg-white border-blue-100 shadow-sm border border-blue-50 rounded-2xl text-[10px] font-black uppercase tracking-widest text-slate-600 hover:bg-red-50 hover:text-red-600 hover:border-red-100 transition-all flex items-center justify-center gap-2">
+ <button
+ onClick={(e) => {
+ e.stopPropagation();
+ handleDischarge(room);
+ }}
+ className="w-full mt-6 py-3 bg-white border-blue-100 shadow-sm border border-blue-50 rounded-2xl text-[10px] font-black uppercase tracking-widest text-slate-600 hover:bg-red-50 hover:text-red-600 hover:border-red-100 transition-all flex items-center justify-center gap-2"
+ >
  <LogOut className="w-3.5 h-3.5" /> Libérer
  </button>
  </div>

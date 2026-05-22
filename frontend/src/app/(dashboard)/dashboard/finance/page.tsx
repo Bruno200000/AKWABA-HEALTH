@@ -209,7 +209,7 @@ export default function FinancePage() {
  <span>{method.amount.toLocaleString()} CFA</span>
  </div>
  <div className="h-1.5 bg-white/10 rounded-full overflow-hidden">
- <div className={cn("h-full", method.color)} style={{ width: `${(method.amount / stats.paidAmount) * 100}%` }} />
+ <div className={cn("h-full", method.color)} style={{ width: `${stats.paidAmount > 0 ? (method.amount / stats.paidAmount) * 100 : 0}%` }} />
  </div>
  </div>
  ))}

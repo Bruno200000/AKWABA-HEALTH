@@ -77,7 +77,17 @@ export default function PharmacyPOS({ onComplete }: { onComplete: () => void }) 
  
  if (!profile?.hospital_id) throw new Error("Hospital ID not found");
 
- // Record the transaction (using invoices table for simplicity or a dedicated transactions if exists)
+ const saleDetails = {
+ type: "PHARMACY_POS",
+ items: cart.map((item) => ({
+ id: item.id,
+ name: item.name,
+ quantity: item.quantity,
+ unit_price: Number(item.unit_price) || 0,
+ total: (Number(item.unit_price) || 0) * item.quantity,
+ })),
+ };
+
  const { error: invError } = await supabase.from("invoices").insert([
  {
  hospital_id: profile.hospital_id,
@@ -86,7 +96,7 @@ export default function PharmacyPOS({ onComplete }: { onComplete: () => void }) 
  paid_amount: total,
  status: "PAID",
  payment_method: method.toUpperCase(),
- notes: "Vente Pharmacie POS",
+ notes: JSON.stringify(saleDetails),
  },
  ]).select().single();
 

@@ -1,4 +1,4 @@
-/** Début de RDV : schéma DB (start_time) ou anciennes données / démo */
+/** Debut de RDV : schema DB courant (start_time) avec compatibilite historique. */
 export function getAppointmentStart(row: {
   start_time?: string | null;
   appointment_date?: string | null;

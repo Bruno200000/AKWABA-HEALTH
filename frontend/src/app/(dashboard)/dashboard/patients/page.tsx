@@ -20,7 +20,6 @@ import { cn } from "@/lib/utils";
 import { Modal } from "@/components/ui/modal";
 import PatientForm from "./PatientForm";
 
-import { DEMO_DASHBOARD, isDemoSession } from "@/lib/demo-mode";
 import { supabase } from "@/lib/supabase";
 
 const statusStyles = {
@@ -53,19 +52,6 @@ export default function PatientsPage() {
 
  const fetchPatients = async () => {
  try {
- if (isDemoSession()) {
- const data = DEMO_DASHBOARD.mockPatients;
- setPatients(data);
- const now = new Date();
- const firstDayOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
- setStats({
- total: data.length,
- newThisMonth: data.filter((p) => new Date(p.created_at) >= firstDayOfMonth).length,
- critical: data.filter((p) => p.status === "CRITICAL").length,
- });
- return;
- }
-
  const { data: { user } } = await supabase.auth.getUser();
  if (!user) return;
 

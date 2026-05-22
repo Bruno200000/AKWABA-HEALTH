@@ -17,13 +17,10 @@ import {
  Download,
  Printer,
  Plus,
- QrCode as QrIcon,
- Upload,
  AlertCircle,
  Stethoscope,
  Heart,
  Sparkles,
- ChevronRight,
  ShieldCheck,
  HeartPulse
 } from "lucide-react";
@@ -94,6 +91,28 @@ export default function PatientDetailPage() {
  { id: "hospitalization", label: "Hospitalisation", icon: Bed },
  { id: "finance", label: "Finance", icon: CreditCard },
  ];
+
+ const latestConsultation = history.consultations[0];
+ const latestVitals = latestConsultation?.vital_signs || {};
+ const hasBloodPressure = latestVitals.bp_systolic && latestVitals.bp_diastolic;
+ const medicalDocuments = [
+ ...history.consultations.map((item: any) => ({
+ id: `consultation-${item.id}`,
+ label: `Consultation - ${item.diagnosis || "Sans diagnostic"}`,
+ date: item.created_at,
+ type: "Consultation",
+ href: `/dashboard/print/prescription/${item.id}`,
+ })),
+ ...history.labTests
+ .filter((item: any) => item.status === "COMPLETED")
+ .map((item: any) => ({
+ id: `lab-${item.id}`,
+ label: `Resultat labo - ${item.test_type}`,
+ date: item.completed_at || item.created_at,
+ type: "Laboratoire",
+ href: null,
+ })),
+ ].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
  if (isLoading) {
  return (
@@ -265,24 +284,20 @@ export default function PatientDetailPage() {
 
  {/* Right Column: Vitals & Documents */}
  <div className="space-y-6">
- {/* AI Smart Insights */}
+ {/* Clinical Summary */}
  <div className="bg-blue-600 text-white p-6 rounded-3xl border border-white/10 shadow-xl relative overflow-hidden group">
  <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
  <Sparkles className="w-12 h-12" />
  </div>
  <h3 className="font-black uppercase text-[10px] tracking-widest text-blue-400 mb-4 flex items-center gap-2">
- <Sparkles className="w-3 h-3" /> Akwaba AI Insights
+ <Sparkles className="w-3 h-3" /> Resume Clinique
  </h3>
  <div className="space-y-3 relative z-10">
  <p className="text-xs leading-relaxed text-slate-300">
- Basé sur l&apos;historique, ce patient présente une <span className="text-blue-400 font-bold">stabilité clinique</span>. 
- Dernière tension normale. Prévoir un rappel pour le suivi {patient.blood_group === 'O+' ? 'don de sang' : 'biologique'}.
+ {latestConsultation
+ ? `Derniere consultation: ${latestConsultation.diagnosis || "diagnostic non renseigne"}.`
+ : "Aucune consultation enregistree pour ce patient."}
  </p>
- <div className="pt-2">
- <button className="text-[10px] font-black uppercase text-blue-400 hover:underline flex items-center gap-1">
- Générer rapport IA <ChevronRight className="w-3 h-3" />
- </button>
- </div>
  </div>
  </div>
 
@@ -294,15 +309,15 @@ export default function PatientDetailPage() {
  <div className="p-4 bg-white border-blue-100 shadow-sm rounded-2xl border border-blue-50 ">
  <p className="text-[10px] font-black text-slate-600 uppercase tracking-widest mb-1">Tension</p>
  <p className="text-lg font-black text-slate-900 ">
- {history.consultations[0]?.vital_signs?.bp_systolic || "12"}/{history.consultations[0]?.vital_signs?.bp_diastolic || "8"} 
- <span className="text-[10px] font-bold text-slate-600 ml-1">mmHg</span>
+ {hasBloodPressure ? `${latestVitals.bp_systolic}/${latestVitals.bp_diastolic}` : "Non renseigne"}
+ {hasBloodPressure && <span className="text-[10px] font-bold text-slate-600 ml-1">mmHg</span>}
  </p>
  </div>
  <div className="p-4 bg-white border-blue-100 shadow-sm rounded-2xl border border-blue-50 ">
  <p className="text-[10px] font-black text-slate-600 uppercase tracking-widest mb-1">Temp.</p>
  <p className="text-lg font-black text-slate-900 ">
- {history.consultations[0]?.vital_signs?.temp || "37.2"} 
- <span className="text-[10px] font-bold text-slate-600 ml-1">°C</span>
+ {latestVitals.temp || "Non renseigne"}
+ {latestVitals.temp && <span className="text-[10px] font-bold text-slate-600 ml-1">°C</span>}
  </p>
  </div>
  </div>
@@ -315,21 +330,23 @@ export default function PatientDetailPage() {
  </h3>
  </div>
  
- {/* Dropzone Integration */}
- <div className="mb-6 p-4 border-2 border-dashed border-slate-200 rounded-2xl text-center hover:border-blue-500 transition-all cursor-pointer group">
- <Upload className="w-6 h-6 text-slate-300 mx-auto mb-2 group-hover:text-blue-500" />
- <p className="text-[10px] font-bold text-slate-600">Glissez ou cliquez pour uploader (PDF, JPG)</p>
- </div>
-
  <div className="space-y-3">
- <div className="p-3 border border-blue-50 rounded-xl flex items-center gap-3 hover:bg-white border-blue-100 shadow-sm transition-all cursor-pointer group">
- <div className="w-10 h-10 bg-blue-50 text-blue-500 rounded-lg flex items-center justify-center font-bold text-[10px]">IMG</div>
+ {medicalDocuments.length > 0 ? medicalDocuments.slice(0, 5).map((doc: any) => (
+ <button
+ key={doc.id}
+ onClick={() => doc.href && window.open(doc.href, "_blank")}
+ className="w-full p-3 border border-blue-50 rounded-xl flex items-center gap-3 hover:bg-white border-blue-100 shadow-sm transition-all cursor-pointer group text-left"
+ >
+ <div className="w-10 h-10 bg-blue-50 text-blue-500 rounded-lg flex items-center justify-center font-bold text-[10px]">{doc.type.slice(0, 3).toUpperCase()}</div>
  <div className="flex-1 min-w-0">
- <p className="text-xs font-bold truncate">Radio_Thorax_01.jpg</p>
- <p className="text-[10px] text-slate-600">Il y a 2 jours • 1.2 MB</p>
+ <p className="text-xs font-bold truncate">{doc.label}</p>
+ <p className="text-[10px] text-slate-600">{new Date(doc.date).toLocaleDateString("fr-FR")}</p>
  </div>
  <Download className="w-4 h-4 text-slate-300 group-hover:text-blue-500 transition-colors" />
- </div>
+ </button>
+ )) : (
+ <p className="text-sm text-slate-600 text-center py-4">Aucun document issu de la base</p>
+ )}
  </div>
  </div>
  </div>
@@ -371,7 +388,116 @@ export default function PatientDetailPage() {
  </div>
  )}
 
- {/* Other tabs can be implemented similarly... */}
+ {activeTab === "appointments" && (
+ <div className="bg-white rounded-3xl shadow-sm overflow-hidden">
+ <table className="w-full text-left border-collapse">
+ <thead>
+ <tr className="bg-white border-blue-100 shadow-sm /50 border-b border-slate-100">
+ <th className="px-6 py-4 text-[10px] font-black text-slate-600 uppercase tracking-widest">Date</th>
+ <th className="px-6 py-4 text-[10px] font-black text-slate-600 uppercase tracking-widest">Medecin</th>
+ <th className="px-6 py-4 text-[10px] font-black text-slate-600 uppercase tracking-widest">Motif</th>
+ <th className="px-6 py-4 text-[10px] font-black text-slate-600 uppercase tracking-widest">Statut</th>
+ </tr>
+ </thead>
+ <tbody className="divide-y divide-slate-100">
+ {history.appointments.map((a: any) => (
+ <tr key={a.id} className="hover:bg-white border-blue-100 shadow-sm/50 transition-colors">
+ <td className="px-6 py-4 text-sm font-medium">{new Date(a.start_time || a.appointment_date).toLocaleString("fr-FR")}</td>
+ <td className="px-6 py-4 text-sm font-bold">Dr. {a.profiles?.first_name} {a.profiles?.last_name}</td>
+ <td className="px-6 py-4 text-sm text-slate-600">{a.reason || "Non renseigne"}</td>
+ <td className="px-6 py-4 text-sm font-black text-blue-600">{a.status}</td>
+ </tr>
+ ))}
+ {history.appointments.length === 0 && <tr><td colSpan={4} className="text-center py-10 text-slate-600">Aucun rendez-vous</td></tr>}
+ </tbody>
+ </table>
+ </div>
+ )}
+
+ {activeTab === "lab" && (
+ <div className="bg-white rounded-3xl shadow-sm overflow-hidden">
+ <table className="w-full text-left border-collapse">
+ <thead>
+ <tr className="bg-white border-blue-100 shadow-sm /50 border-b border-slate-100">
+ <th className="px-6 py-4 text-[10px] font-black text-slate-600 uppercase tracking-widest">Date</th>
+ <th className="px-6 py-4 text-[10px] font-black text-slate-600 uppercase tracking-widest">Examen</th>
+ <th className="px-6 py-4 text-[10px] font-black text-slate-600 uppercase tracking-widest">Statut</th>
+ <th className="px-6 py-4 text-[10px] font-black text-slate-600 uppercase tracking-widest">Resultat</th>
+ </tr>
+ </thead>
+ <tbody className="divide-y divide-slate-100">
+ {history.labTests.map((lab: any) => (
+ <tr key={lab.id} className="hover:bg-white border-blue-100 shadow-sm/50 transition-colors">
+ <td className="px-6 py-4 text-sm font-medium">{new Date(lab.completed_at || lab.created_at).toLocaleDateString("fr-FR")}</td>
+ <td className="px-6 py-4 text-sm font-bold">{lab.test_type}</td>
+ <td className="px-6 py-4 text-sm font-black text-blue-600">{lab.status}</td>
+ <td className="px-6 py-4 text-sm text-slate-600">{lab.results_data?.text || lab.observations || "Non renseigne"}</td>
+ </tr>
+ ))}
+ {history.labTests.length === 0 && <tr><td colSpan={4} className="text-center py-10 text-slate-600">Aucun examen laboratoire</td></tr>}
+ </tbody>
+ </table>
+ </div>
+ )}
+
+ {activeTab === "hospitalization" && (
+ <div className="bg-white rounded-3xl shadow-sm overflow-hidden">
+ <table className="w-full text-left border-collapse">
+ <thead>
+ <tr className="bg-white border-blue-100 shadow-sm /50 border-b border-slate-100">
+ <th className="px-6 py-4 text-[10px] font-black text-slate-600 uppercase tracking-widest">Admission</th>
+ <th className="px-6 py-4 text-[10px] font-black text-slate-600 uppercase tracking-widest">Chambre</th>
+ <th className="px-6 py-4 text-[10px] font-black text-slate-600 uppercase tracking-widest">Sortie</th>
+ <th className="px-6 py-4 text-[10px] font-black text-slate-600 uppercase tracking-widest">Statut</th>
+ </tr>
+ </thead>
+ <tbody className="divide-y divide-slate-100">
+ {history.admissions.map((adm: any) => (
+ <tr key={adm.id} className="hover:bg-white border-blue-100 shadow-sm/50 transition-colors">
+ <td className="px-6 py-4 text-sm font-medium">{new Date(adm.admission_date).toLocaleDateString("fr-FR")}</td>
+ <td className="px-6 py-4 text-sm font-bold">{adm.rooms?.room_number || "Non assignee"}</td>
+ <td className="px-6 py-4 text-sm text-slate-600">{adm.discharge_date ? new Date(adm.discharge_date).toLocaleDateString("fr-FR") : "En cours"}</td>
+ <td className="px-6 py-4 text-sm font-black text-blue-600">{adm.status}</td>
+ </tr>
+ ))}
+ {history.admissions.length === 0 && <tr><td colSpan={4} className="text-center py-10 text-slate-600">Aucune hospitalisation</td></tr>}
+ </tbody>
+ </table>
+ </div>
+ )}
+
+ {activeTab === "finance" && (
+ <div className="bg-white rounded-3xl shadow-sm overflow-hidden">
+ <table className="w-full text-left border-collapse">
+ <thead>
+ <tr className="bg-white border-blue-100 shadow-sm /50 border-b border-slate-100">
+ <th className="px-6 py-4 text-[10px] font-black text-slate-600 uppercase tracking-widest">Facture</th>
+ <th className="px-6 py-4 text-[10px] font-black text-slate-600 uppercase tracking-widest">Total</th>
+ <th className="px-6 py-4 text-[10px] font-black text-slate-600 uppercase tracking-widest">Paye</th>
+ <th className="px-6 py-4 text-[10px] font-black text-slate-600 uppercase tracking-widest">Actions</th>
+ </tr>
+ </thead>
+ <tbody className="divide-y divide-slate-100">
+ {history.invoices.map((invoice: any) => (
+ <tr key={invoice.id} className="hover:bg-white border-blue-100 shadow-sm/50 transition-colors">
+ <td className="px-6 py-4 text-sm font-black text-blue-600">#{invoice.id.slice(0, 8).toUpperCase()}</td>
+ <td className="px-6 py-4 text-sm font-bold">{Number(invoice.total_amount).toLocaleString()} CFA</td>
+ <td className="px-6 py-4 text-sm text-slate-600">{Number(invoice.paid_amount || 0).toLocaleString()} CFA</td>
+ <td className="px-6 py-4">
+ <button
+ onClick={() => window.open(`/dashboard/print/invoice/${invoice.id}`, "_blank")}
+ className="p-1.5 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors"
+ >
+ <Printer className="w-4 h-4" />
+ </button>
+ </td>
+ </tr>
+ ))}
+ {history.invoices.length === 0 && <tr><td colSpan={4} className="text-center py-10 text-slate-600">Aucune facture</td></tr>}
+ </tbody>
+ </table>
+ </div>
+ )}
  </motion.div>
  </AnimatePresence>
 

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
  Smartphone, 
@@ -11,6 +11,7 @@ import {
  DollarSign
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { supabase } from "@/lib/supabase";
 
 interface PaymentModalProps {
  isOpen: boolean;
@@ -24,12 +25,63 @@ export default function PaymentModal({ isOpen, onClose, onSuccess, invoice }: Pa
  const [step, setStep] = useState<"SELECTION" | "PROCESSING" | "SUCCESS">("SELECTION");
  const [phoneNumber, setPhoneNumber] = useState("");
 
- const handlePayment = () => {
+ useEffect(() => {
+ if (isOpen) {
+ setStep("SELECTION");
+ setPhoneNumber("");
+ setMethod("WAVE");
+ }
+ }, [isOpen, invoice?.id]);
+
+ const handlePayment = async () => {
  if (method !== "CASH" && !phoneNumber) return;
+ const remaining = Math.max(0, Number(invoice?.total_amount || 0) - Number(invoice?.paid_amount || 0));
+ if (remaining <= 0) return;
+
  setStep("PROCESSING");
- setTimeout(() => {
+ try {
+ const { data: { user } } = await supabase.auth.getUser();
+ if (!user) throw new Error("Non authentifie");
+
+ const { data: profile } = await supabase
+ .from("profiles")
+ .select("hospital_id")
+ .eq("id", user.id)
+ .maybeSingle();
+
+ if (!profile?.hospital_id) throw new Error("Profil hospitalier non trouve");
+
+ const { error: paymentError } = await supabase.from("payments").insert([
+ {
+ hospital_id: profile.hospital_id,
+ invoice_id: invoice.id,
+ amount: remaining,
+ method,
+ transaction_ref: method === "CASH" ? null : phoneNumber,
+ },
+ ]);
+
+ if (paymentError) throw paymentError;
+
+ const newPaidAmount = Number(invoice?.paid_amount || 0) + remaining;
+ const newStatus = newPaidAmount >= Number(invoice?.total_amount || 0) ? "PAID" : "PARTIAL";
+
+ const { error: invoiceError } = await supabase
+ .from("invoices")
+ .update({
+ paid_amount: newPaidAmount,
+ status: newStatus,
+ payment_method: method,
+ })
+ .eq("id", invoice.id)
+ .eq("hospital_id", profile.hospital_id);
+
+ if (invoiceError) throw invoiceError;
  setStep("SUCCESS");
- }, 2500);
+ } catch (error: any) {
+ alert("Erreur paiement: " + error.message);
+ setStep("SELECTION");
+ }
  };
 
  const methods = [

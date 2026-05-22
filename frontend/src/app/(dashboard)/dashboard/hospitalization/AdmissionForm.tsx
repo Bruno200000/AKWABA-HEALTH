@@ -29,10 +29,12 @@ export default function AdmissionForm({ onSuccess, onCancel }: AdmissionFormProp
  if (!profile?.hospital_id) return;
 
  const { data: pData } = await supabase.from('patients').select('id, first_name, last_name').eq('hospital_id', profile.hospital_id);
- const { data: rData } = await supabase.from('rooms').select('id, room_number, type').eq('hospital_id', profile.hospital_id);
+ const { data: rData } = await supabase.from('rooms').select('id, room_number, type, total_beds, occupied_beds, admissions(status)').eq('hospital_id', profile.hospital_id);
  
  if (pData) setPatients(pData);
- if (rData) setRooms(rData);
+ if (rData) {
+ setRooms(rData.filter((room: any) => !room.admissions?.some((adm: any) => adm.status === "ADMITTED")));
+ }
  };
  fetchData();
  }, []);
@@ -57,6 +59,17 @@ export default function AdmissionForm({ onSuccess, onCancel }: AdmissionFormProp
  ]);
 
  if (error) throw error;
+
+ const selectedRoom = rooms.find((room) => room.id === formData.room_id);
+ if (selectedRoom) {
+ await supabase
+ .from("rooms")
+ .update({
+ occupied_beds: Math.min(Number(selectedRoom.total_beds || 1), Number(selectedRoom.occupied_beds || 0) + 1),
+ })
+ .eq("id", selectedRoom.id);
+ }
+
  onSuccess();
  } catch (error: any) {
  alert("Erreur: " + error.message);

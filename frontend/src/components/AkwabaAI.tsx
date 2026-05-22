@@ -4,7 +4,6 @@ import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Sparkles, X, Send, User, Bot, Zap, Brain } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { DEMO_DASHBOARD, isDemoSession } from "@/lib/demo-mode";
 import { isSupabaseConfigured, supabase } from "@/lib/supabase";
 
 export default function AkwabaAI() {
@@ -28,27 +27,9 @@ export default function AkwabaAI() {
         "Je suis Akwaba AI. Posez une question sur les patients, consultations, pharmacie ou finances.";
       const query = input.toLowerCase();
 
-      if (isDemoSession()) {
-        const d = DEMO_DASHBOARD;
-        if (query.includes("patient") || query.includes("malade")) {
-          aiResponse = `En démo : vous avez environ ${d.patients.toLocaleString()} patients en exemple.`;
-        } else if (query.includes("consultation") || query.includes("visite")) {
-          aiResponse = `En démo : ${d.consultations.toLocaleString()} consultations (données factices).`;
-        } else if (query.includes("stock") || query.includes("pharmacie") || query.includes("médicament")) {
-          aiResponse =
-            "En mode démo, la pharmacie n’est pas reliée à la base : connectez Supabase pour des alertes stock réelles.";
-        } else if (query.includes("argent") || query.includes("revenu") || query.includes("finance") || query.includes("chiffre")) {
-          aiResponse = `En démo : revenus affichés d’exemple ~ ${d.revenue.toLocaleString()} CFA.`;
-        } else if (query.includes("médecin") || query.includes("staff") || query.includes("docteur") || query.includes("équipe")) {
-          aiResponse = `En démo : ${d.staffPerformance.length} praticiens exemple dans le tableau de bord.`;
-        }
-        setMessages((prev) => [...prev, { role: "assistant", content: aiResponse }]);
-        return;
-      }
-
       if (!isSupabaseConfigured) {
         aiResponse =
-          "Supabase n’est pas configuré. Ajoutez les clés NEXT_PUBLIC_* ou utilisez le mode démo depuis la page de connexion.";
+          "Supabase n’est pas configuré. Ajoutez les clés NEXT_PUBLIC_SUPABASE_URL et NEXT_PUBLIC_SUPABASE_ANON_KEY pour interroger la base.";
         setMessages((prev) => [...prev, { role: "assistant", content: aiResponse }]);
         return;
       }

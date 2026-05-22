@@ -3,14 +3,11 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
- Settings, 
  Building2, 
  ShieldCheck, 
  Bell, 
  Globe, 
- Lock, 
  Save,
- Activity,
  CreditCard,
  User,
  Camera,
@@ -33,21 +30,89 @@ const tabs = [
   { id: "billing", label: "Abonnement", icon: CreditCard, desc: "Plans et facturation" },
 ];
 
+const defaultIntegrations = {
+  openai: "",
+  anthropic: "",
+  gemini: "",
+  mistral: "",
+  whatsapp_token: "",
+  whatsapp_phone: "",
+  pharmacy_webhook: "",
+};
+
+const defaultAiSettings = {
+  diagnostic_assistant: false,
+  voice_transcription: false,
+  predictive_analysis: false,
+};
+
+const defaultSecuritySettings = {
+  two_factor_enabled: false,
+  login_alerts: true,
+  role_based_access: true,
+};
+
+const defaultNotificationSettings = {
+  sms_appointment_reminders: false,
+  email_invoices: false,
+  whatsapp_prescriptions: false,
+};
+
+const defaultBillingSettings = {
+  plan: "free",
+  monthly_amount: 0,
+  currency: "CFA",
+};
+
+function ToggleRow({
+  title,
+  description,
+  enabled,
+  onToggle,
+}: {
+  title: string;
+  description: string;
+  enabled: boolean;
+  onToggle: () => void;
+}) {
+  return (
+    <div className="flex justify-between items-center p-6 bg-blue-50/50 rounded-2xl border border-blue-100 gap-6">
+      <div>
+        <p className="font-black text-slate-900">{title}</p>
+        <p className="text-xs text-slate-500">{description}</p>
+      </div>
+      <button
+        type="button"
+        onClick={onToggle}
+        className={cn(
+          "w-12 h-6 rounded-full relative transition-colors shrink-0",
+          enabled ? "bg-blue-600" : "bg-slate-200"
+        )}
+      >
+        <span
+          className={cn(
+            "absolute top-1 w-4 h-4 bg-white rounded-full transition-all",
+            enabled ? "right-1" : "left-1"
+          )}
+        />
+      </button>
+    </div>
+  );
+}
+
 export default function SettingsPage() {
   const [activeTab, setActiveTab] = useState("profile");
   const [isSaving, setIsSaving] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [hospital, setHospital] = useState<any>(null);
   const [userProfile, setUserProfile] = useState<any>(null);
-  const [integrations, setIntegrations] = useState({
-    openai: "",
-    anthropic: "",
-    gemini: "",
-    mistral: "",
-    whatsapp_token: "",
-    whatsapp_phone: "",
-    pharmacy_webhook: "https://api.mapharmacie.ci/webhook"
-  });
+  const [integrations, setIntegrations] = useState(defaultIntegrations);
+  const [branding, setBranding] = useState({ logo_url: "", primary_color: "#2563eb" });
+  const [aiSettings, setAiSettings] = useState(defaultAiSettings);
+  const [securitySettings, setSecuritySettings] = useState(defaultSecuritySettings);
+  const [notificationSettings, setNotificationSettings] = useState(defaultNotificationSettings);
+  const [billingSettings, setBillingSettings] = useState(defaultBillingSettings);
+  const [statusMessage, setStatusMessage] = useState<string | null>(null);
 
   useEffect(() => {
     fetchData();
@@ -61,44 +126,91 @@ export default function SettingsPage() {
     if (profile) {
       setUserProfile(profile);
       if (profile.hospitals) {
+        const settings = profile.hospitals.settings || {};
         setHospital(profile.hospitals);
-        if (profile.hospitals.settings?.integrations) {
-          setIntegrations(prev => ({ ...prev, ...profile.hospitals.settings.integrations }));
-        }
+        setBranding({
+          logo_url: profile.hospitals.logo_url || "",
+          primary_color: profile.hospitals.primary_color || "#2563eb",
+        });
+        setIntegrations({ ...defaultIntegrations, ...(settings.integrations || {}) });
+        setAiSettings({ ...defaultAiSettings, ...(settings.ai || {}) });
+        setSecuritySettings({ ...defaultSecuritySettings, ...(settings.security || {}) });
+        setNotificationSettings({ ...defaultNotificationSettings, ...(settings.notifications || {}) });
+        setBillingSettings({
+          ...defaultBillingSettings,
+          ...(settings.billing || {}),
+          plan: profile.hospitals.subscription_plan || settings.billing?.plan || "free",
+        });
       }
     }
     setIsLoading(false);
   };
 
+  const saveHospitalSettings = async (section: string, value: any, extraHospitalFields: Record<string, any> = {}) => {
+    if (!hospital) return;
+    const updatedSettings = {
+      ...(hospital.settings || {}),
+      [section]: value,
+    };
+    const { error } = await supabase
+      .from("hospitals")
+      .update({ ...extraHospitalFields, settings: updatedSettings })
+      .eq("id", hospital.id);
+
+    if (error) throw error;
+    setHospital({ ...hospital, ...extraHospitalFields, settings: updatedSettings });
+  };
+
   const handleSave = async () => {
     setIsSaving(true);
-    
-    if (activeTab === "hospital" && hospital) {
-      await supabase.from('hospitals').update({
-        name: hospital.name,
-        email: hospital.email,
-        phone: hospital.phone,
-        address: hospital.address
-      }).eq('id', hospital.id);
-    } else if (activeTab === "profile" && userProfile) {
-      await supabase.from('profiles').update({
-        first_name: userProfile.first_name,
-        last_name: userProfile.last_name,
-        phone: userProfile.phone
-      }).eq('id', userProfile.id);
-    } else if (activeTab === "integrations" && hospital) {
-      const updatedSettings = {
-        ...(hospital.settings || {}),
-        integrations: integrations
-      };
-      await supabase.from('hospitals').update({
-        settings: updatedSettings
-      }).eq('id', hospital.id);
-      setHospital({ ...hospital, settings: updatedSettings });
-    }
+    setStatusMessage(null);
 
-    setTimeout(() => setIsSaving(false), 1000);
+    try {
+      if (activeTab === "hospital" && hospital) {
+        const { error } = await supabase.from('hospitals').update({
+          name: hospital.name,
+          email: hospital.email,
+          phone: hospital.phone,
+          address: hospital.address
+        }).eq('id', hospital.id);
+        if (error) throw error;
+      } else if (activeTab === "profile" && userProfile) {
+        const { error } = await supabase.from('profiles').update({
+          first_name: userProfile.first_name,
+          last_name: userProfile.last_name,
+          phone: userProfile.phone
+        }).eq('id', userProfile.id);
+        if (error) throw error;
+      } else if (activeTab === "branding" && hospital) {
+        const { error } = await supabase.from("hospitals").update({
+          logo_url: branding.logo_url || null,
+          primary_color: branding.primary_color,
+        }).eq("id", hospital.id);
+        if (error) throw error;
+        setHospital({ ...hospital, logo_url: branding.logo_url || null, primary_color: branding.primary_color });
+      } else if (activeTab === "integrations") {
+        await saveHospitalSettings("integrations", integrations);
+      } else if (activeTab === "ai") {
+        await saveHospitalSettings("ai", aiSettings);
+      } else if (activeTab === "security") {
+        await saveHospitalSettings("security", securitySettings);
+      } else if (activeTab === "notifications") {
+        await saveHospitalSettings("notifications", notificationSettings);
+      } else if (activeTab === "billing") {
+        await saveHospitalSettings("billing", billingSettings, { subscription_plan: billingSettings.plan });
+      }
+
+      setStatusMessage("Parametres enregistres.");
+    } catch (error: any) {
+      setStatusMessage(error.message || "Erreur lors de l'enregistrement.");
+    } finally {
+      setIsSaving(false);
+    }
   };
+
+  if (isLoading) {
+    return <div className="py-20 text-center text-sm font-bold text-slate-600">Chargement des parametres...</div>;
+  }
 
  return (
  <div className="space-y-8 pb-20">
@@ -106,6 +218,11 @@ export default function SettingsPage() {
  <div>
  <h1 className="text-3xl font-black text-slate-900 tracking-tight">Configuration</h1>
  <p className="text-slate-600 font-medium">Personnalisez votre plateforme AKWABA HEALTH.</p>
+ {statusMessage && (
+ <p className="mt-3 inline-flex rounded-xl bg-blue-50 px-4 py-2 text-xs font-black uppercase tracking-widest text-blue-700">
+ {statusMessage}
+ </p>
+ )}
  </div>
 
  <div className="flex flex-col lg:flex-row gap-12">
@@ -238,8 +355,8 @@ export default function SettingsPage() {
  <h3 className="text-2xl font-black tracking-tight">Profil de l&apos;Établissement</h3>
  <p className="text-slate-600 font-medium mt-1">Ces informations apparaîtront sur vos factures et comptes-rendus.</p>
  <div className="flex gap-4 mt-6">
- <span className="px-3 py-1 bg-blue-50 text-blue-600 rounded-xl text-[10px] font-black uppercase tracking-widest">Plan Premium</span>
- <span className="px-3 py-1 bg-emerald-50 text-emerald-600 rounded-xl text-[10px] font-black uppercase tracking-widest">Compte Vérifié</span>
+ <span className="px-3 py-1 bg-blue-50 text-blue-600 rounded-xl text-[10px] font-black uppercase tracking-widest">Plan {hospital?.subscription_plan || "free"}</span>
+ <span className="px-3 py-1 bg-emerald-50 text-emerald-600 rounded-xl text-[10px] font-black uppercase tracking-widest">{hospital?.is_active ? "Compte actif" : "Compte inactif"}</span>
  </div>
  </div>
  </div>
@@ -292,21 +409,43 @@ export default function SettingsPage() {
  >
  <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
  <div className="space-y-6">
- <h4 className="text-lg font-black tracking-tight">Identité Visuelle</h4>
+ <h4 className="text-lg font-black tracking-tight">Identite Visuelle</h4>
  <div className="p-8 border-2 border-dashed border-blue-100 rounded-[32px] flex flex-col items-center gap-4 bg-blue-50/20">
+ {branding.logo_url ? (
+ <img src={branding.logo_url} alt="Logo etablissement" className="w-24 h-24 object-contain rounded-2xl bg-white p-2" />
+ ) : (
  <Building2 className="w-12 h-12 text-blue-300" />
- <p className="text-[10px] font-black uppercase text-slate-500">Téléverser votre Logo</p>
- <button className="px-6 py-2 bg-blue-600 text-white rounded-xl text-[10px] font-black uppercase">Parcourir</button>
+ )}
+ <input
+ type="url"
+ value={branding.logo_url}
+ onChange={(e) => setBranding({ ...branding, logo_url: e.target.value })}
+ placeholder="URL du logo enregistre"
+ className="w-full px-4 py-3 bg-white border border-blue-100 rounded-2xl text-sm"
+ />
  </div>
  </div>
  <div className="space-y-6">
  <h4 className="text-lg font-black tracking-tight">Couleurs de l'Interface</h4>
  <div className="grid grid-cols-4 gap-4">
  {['#2563eb', '#10b981', '#f59e0b', '#ef4444'].map(color => (
- <button key={color} className="w-full h-12 rounded-2xl border border-blue-50 shadow-sm transition-transform hover:scale-110" style={{ backgroundColor: color }} />
+ <button
+ key={color}
+ onClick={() => setBranding({ ...branding, primary_color: color })}
+ className={cn("w-full h-12 rounded-2xl border shadow-sm transition-transform hover:scale-110", branding.primary_color === color ? "ring-4 ring-blue-200 border-blue-600" : "border-blue-50")}
+ style={{ backgroundColor: color }}
+ />
  ))}
  </div>
- <p className="text-xs text-slate-500 font-medium italic">Sélectionnez la couleur dominante de votre ERP.</p>
+ <input
+ type="color"
+ value={branding.primary_color}
+ onChange={(e) => setBranding({ ...branding, primary_color: e.target.value })}
+ className="w-full h-12 rounded-2xl border border-blue-100 bg-white"
+ />
+ <button onClick={handleSave} disabled={isSaving} className="flex items-center gap-2 px-10 py-4 bg-blue-600 text-white rounded-3xl font-black text-xs uppercase tracking-widest shadow-xl shadow-blue-200 hover:bg-blue-700 transition-all">
+ {isSaving ? "Enregistrement..." : <><Save className="w-4 h-4" /> Sauvegarder</>}
+ </button>
  </div>
  </div>
  </motion.div>
@@ -331,20 +470,27 @@ export default function SettingsPage() {
  </div>
 
  <div className="space-y-8">
- <div className="flex justify-between items-center p-6 bg-blue-50/50 rounded-2xl border border-blue-100">
- <div>
- <p className="font-black text-slate-900">Assistance au Diagnostic</p>
- <p className="text-xs text-slate-500">Proposer des diagnostics basés sur les symptômes.</p>
- </div>
- <div className="w-12 h-6 bg-blue-600 rounded-full relative"><div className="absolute right-1 top-1 w-4 h-4 bg-white rounded-full" /></div>
- </div>
- <div className="flex justify-between items-center p-6 bg-blue-50/50 rounded-2xl border border-blue-100">
- <div>
- <p className="font-black text-slate-900">Transcription Vocale</p>
- <p className="text-xs text-slate-500">Saisie des notes médicales par la voix.</p>
- </div>
- <div className="w-12 h-6 bg-blue-600 rounded-full relative"><div className="absolute right-1 top-1 w-4 h-4 bg-white rounded-full" /></div>
- </div>
+ <ToggleRow
+ title="Assistance au Diagnostic"
+ description="Active le module d'aide au diagnostic dans les workflows cliniques."
+ enabled={aiSettings.diagnostic_assistant}
+ onToggle={() => setAiSettings({ ...aiSettings, diagnostic_assistant: !aiSettings.diagnostic_assistant })}
+ />
+ <ToggleRow
+ title="Transcription Vocale"
+ description="Autorise la saisie vocale des notes medicales."
+ enabled={aiSettings.voice_transcription}
+ onToggle={() => setAiSettings({ ...aiSettings, voice_transcription: !aiSettings.voice_transcription })}
+ />
+ <ToggleRow
+ title="Analyse Predictive"
+ description="Active les indicateurs predictifs bases sur les donnees enregistrees."
+ enabled={aiSettings.predictive_analysis}
+ onToggle={() => setAiSettings({ ...aiSettings, predictive_analysis: !aiSettings.predictive_analysis })}
+ />
+ <button onClick={handleSave} disabled={isSaving} className="flex items-center gap-2 px-10 py-4 bg-blue-600 text-white rounded-3xl font-black text-xs uppercase tracking-widest shadow-xl shadow-blue-200 hover:bg-blue-700 transition-all">
+ {isSaving ? "Enregistrement..." : <><Save className="w-4 h-4" /> Sauvegarder</>}
+ </button>
  </div>
  </motion.div>
  )}
@@ -465,31 +611,27 @@ export default function SettingsPage() {
  </div>
  
  <div className="space-y-6">
- <div className="p-8 bg-white border-blue-100 shadow-sm /50 rounded-[32px] border border-blue-50 flex justify-between items-center">
- <div className="flex gap-6 items-center">
- <div className="w-14 h-14 bg-amber-100 text-amber-600 rounded-[20px] flex items-center justify-center">
- <Lock className="w-7 h-7" />
- </div>
- <div>
- <p className="font-black text-slate-900 tracking-tight">Authentification à deux facteurs</p>
- <p className="text-xs text-slate-600 font-medium">Ajoute une étape de validation via mobile.</p>
- </div>
- </div>
- <button className="px-6 py-2 bg-blue-600 text-white rounded-xl text-[10px] font-black uppercase tracking-widest">Activer</button>
- </div>
-
- <div className="p-8 bg-white border-blue-100 shadow-sm /50 rounded-[32px] border border-blue-50 flex justify-between items-center">
- <div className="flex gap-6 items-center">
- <div className="w-14 h-14 bg-blue-100 text-blue-600 rounded-[20px] flex items-center justify-center">
- <ShieldCheck className="w-7 h-7" />
- </div>
- <div>
- <p className="font-black text-slate-900 tracking-tight">Journal des Accès</p>
- <p className="text-xs text-slate-600 font-medium">Consulter l&apos;historique des connexions.</p>
- </div>
- </div>
- <button className="px-6 py-2 bg-white rounded-xl text-[10px] font-black uppercase tracking-widest shadow-sm">Consulter</button>
- </div>
+ <ToggleRow
+ title="Authentification a deux facteurs"
+ description="Enregistre la preference de validation supplementaire pour cet etablissement."
+ enabled={securitySettings.two_factor_enabled}
+ onToggle={() => setSecuritySettings({ ...securitySettings, two_factor_enabled: !securitySettings.two_factor_enabled })}
+ />
+ <ToggleRow
+ title="Alertes de connexion"
+ description="Active les notifications internes lors des connexions sensibles."
+ enabled={securitySettings.login_alerts}
+ onToggle={() => setSecuritySettings({ ...securitySettings, login_alerts: !securitySettings.login_alerts })}
+ />
+ <ToggleRow
+ title="Acces par roles"
+ description="Conserve les restrictions par profil et service dans l'application."
+ enabled={securitySettings.role_based_access}
+ onToggle={() => setSecuritySettings({ ...securitySettings, role_based_access: !securitySettings.role_based_access })}
+ />
+ <button onClick={handleSave} disabled={isSaving} className="flex items-center gap-2 px-10 py-4 bg-blue-600 text-white rounded-3xl font-black text-xs uppercase tracking-widest shadow-xl shadow-blue-200 hover:bg-blue-700 transition-all">
+ {isSaving ? "Enregistrement..." : <><Save className="w-4 h-4" /> Sauvegarder</>}
+ </button>
  </div>
  </motion.div>
  )}
@@ -507,14 +649,27 @@ export default function SettingsPage() {
  <p className="text-slate-600 font-medium">Gérez les alertes SMS et Email envoyées aux patients.</p>
  </div>
  <div className="space-y-6">
- <div className="p-8 bg-white border-blue-100 shadow-sm /50 rounded-[32px] border border-blue-50 flex justify-between items-center">
- <p className="font-black">Rappels de Rendez-vous SMS</p>
- <div className="w-12 h-6 bg-blue-600 rounded-full relative"><div className="absolute right-1 top-1 w-4 h-4 bg-white rounded-full" /></div>
- </div>
- <div className="p-8 bg-white border-blue-100 shadow-sm /50 rounded-[32px] border border-blue-50 flex justify-between items-center">
- <p className="font-black">Envoi Factures par Email</p>
- <div className="w-12 h-6 bg-slate-200 rounded-full relative"><div className="absolute left-1 top-1 w-4 h-4 bg-white rounded-full" /></div>
- </div>
+ <ToggleRow
+ title="Rappels de Rendez-vous SMS"
+ description="Autorise l'envoi de rappels SMS pour les rendez-vous."
+ enabled={notificationSettings.sms_appointment_reminders}
+ onToggle={() => setNotificationSettings({ ...notificationSettings, sms_appointment_reminders: !notificationSettings.sms_appointment_reminders })}
+ />
+ <ToggleRow
+ title="Envoi Factures par Email"
+ description="Autorise l'envoi des factures aux patients par email."
+ enabled={notificationSettings.email_invoices}
+ onToggle={() => setNotificationSettings({ ...notificationSettings, email_invoices: !notificationSettings.email_invoices })}
+ />
+ <ToggleRow
+ title="Ordonnances WhatsApp"
+ description="Autorise l'envoi des ordonnances via l'integration WhatsApp configuree."
+ enabled={notificationSettings.whatsapp_prescriptions}
+ onToggle={() => setNotificationSettings({ ...notificationSettings, whatsapp_prescriptions: !notificationSettings.whatsapp_prescriptions })}
+ />
+ <button onClick={handleSave} disabled={isSaving} className="flex items-center gap-2 px-10 py-4 bg-blue-600 text-white rounded-3xl font-black text-xs uppercase tracking-widest shadow-xl shadow-blue-200 hover:bg-blue-700 transition-all">
+ {isSaving ? "Enregistrement..." : <><Save className="w-4 h-4" /> Sauvegarder</>}
+ </button>
  </div>
  </motion.div>
  )}
@@ -528,13 +683,33 @@ export default function SettingsPage() {
  className="bg-white rounded-[40px] shadow-sm p-10 space-y-12"
  >
  <div className="p-10 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-[40px] text-white">
- <h3 className="text-3xl font-black mb-2">Plan Enterprise</h3>
- <p className="opacity-80">Votre prochain prélèvement est prévu le 01 Juin 2026.</p>
- <div className="mt-10 pt-10 border-t border-white/10 flex justify-between items-end">
- <div>
- <p className="text-4xl font-black">150.000 CFA <span className="text-sm font-medium opacity-60">/ mois</span></p>
+ <h3 className="text-3xl font-black mb-2">Plan {billingSettings.plan}</h3>
+ <p className="opacity-80">Les informations d'abonnement sont lues et sauvegardees dans la base.</p>
+ <div className="mt-10 pt-10 border-t border-white/10 grid grid-cols-1 md:grid-cols-3 gap-6 items-end">
+ <div className="space-y-2">
+ <label className="text-[10px] font-black uppercase tracking-widest opacity-70">Plan</label>
+ <select
+ value={billingSettings.plan}
+ onChange={(e) => setBillingSettings({ ...billingSettings, plan: e.target.value })}
+ className="w-full px-4 py-3 rounded-2xl text-slate-900 font-bold"
+ >
+ <option value="free">Free</option>
+ <option value="pro">Pro</option>
+ <option value="enterprise">Enterprise</option>
+ </select>
  </div>
- <button className="px-8 py-4 bg-white text-blue-600 rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl">Gérer l&apos;Abonnement</button>
+ <div className="space-y-2">
+ <label className="text-[10px] font-black uppercase tracking-widest opacity-70">Montant mensuel</label>
+ <input
+ type="number"
+ value={billingSettings.monthly_amount}
+ onChange={(e) => setBillingSettings({ ...billingSettings, monthly_amount: Number(e.target.value) })}
+ className="w-full px-4 py-3 rounded-2xl text-slate-900 font-bold"
+ />
+ </div>
+ <button onClick={handleSave} disabled={isSaving} className="px-8 py-4 bg-white text-blue-600 rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl">
+ {isSaving ? "Enregistrement..." : "Sauvegarder"}
+ </button>
  </div>
  </div>
  </motion.div>

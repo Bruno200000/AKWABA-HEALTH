@@ -38,7 +38,7 @@ export default function PatientForm({ onSuccess, onCancel }: PatientFormProps) {
  const { data: profile } = await supabase.from('profiles').select('hospital_id').eq('id', user.id).single();
  if (!profile?.hospital_id) throw new Error("Profil hospitalier non trouvé");
  
- const fileNumber = `PAT-${Date.now().toString(36).toUpperCase()}-${Math.floor(Math.random() * 999)}`;
+ const fileNumber = `PAT-${Date.now().toString(36).toUpperCase()}-${crypto.randomUUID().slice(0, 8).toUpperCase()}`;
 
  const { error } = await supabase.from("patients").insert([
  {

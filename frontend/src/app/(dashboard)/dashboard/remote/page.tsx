@@ -28,14 +28,11 @@ export default function RemotePage() {
  activePatients: 0,
  dailyRevenue: 0,
  staffOnline: 0,
- criticalAlerts: 2,
- systemLoad: 12
+ criticalAlerts: 0,
+ systemLoad: 0
  });
 
- const [notifications, setNotifications] = useState([
- { id: 1, text: "Nouveau patient admis en urgence", type: "urgent" },
- { id: 2, text: "Stock de Paracétamol critique", type: "warning" }
- ]);
+ const [notifications, setNotifications] = useState<any[]>([]);
 
  useEffect(() => {
  fetchRealStats();
@@ -57,23 +54,42 @@ export default function RemotePage() {
  { count: patientCount },
  { count: staffCount },
  { data: todayInvoices },
- { count: criticalCount }
+ { count: criticalCount },
+ { data: rooms },
+ { data: lowStock },
+ { data: unpaidInvoices }
  ] = await Promise.all([
  supabase.from('patients').select('*', { count: 'exact', head: true }).eq('hospital_id', hospitalId),
  supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('hospital_id', hospitalId),
  supabase.from('invoices').select('paid_amount').eq('hospital_id', hospitalId).gte('created_at', today.toISOString()),
- supabase.from('patients').select('*', { count: 'exact', head: true }).eq('hospital_id', hospitalId).eq('status', 'CRITICAL')
+ supabase.from('patients').select('*', { count: 'exact', head: true }).eq('hospital_id', hospitalId).eq('status', 'CRITICAL'),
+ supabase.from('rooms').select('id, admissions(status)').eq('hospital_id', hospitalId),
+ supabase.from('medicines').select('name, stock_quantity, min_stock_alert').eq('hospital_id', hospitalId).limit(10),
+ supabase.from('invoices').select('id, total_amount, paid_amount').eq('hospital_id', hospitalId).neq('status', 'PAID').limit(10)
  ]);
- 
+  
  const revenue = todayInvoices?.reduce((acc, inv) => acc + (Number(inv.paid_amount) || 0), 0) || 0;
+ const occupiedRooms = (rooms || []).filter((room: any) => room.admissions?.some((adm: any) => adm.status === "ADMITTED")).length;
+ const occupancyRate = rooms?.length ? Math.round((occupiedRooms / rooms.length) * 100) : 0;
+ const stockAlerts = (lowStock || []).filter((item: any) => Number(item.stock_quantity) <= Number(item.min_stock_alert || 10));
 
  setStats({
  activePatients: patientCount || 0,
  staffOnline: staffCount || 0,
  dailyRevenue: revenue,
  criticalAlerts: criticalCount || 0,
- systemLoad: 12 // Hardcoded load is fine as it's a "system" stat
+ systemLoad: occupancyRate
  });
+
+ setNotifications([
+ ...(criticalCount ? [{ id: "critical", text: `${criticalCount} patient(s) en statut critique`, type: "urgent" }] : []),
+ ...stockAlerts.slice(0, 3).map((item: any) => ({
+ id: `stock-${item.name}`,
+ text: `${item.name} sous le seuil de stock (${item.stock_quantity})`,
+ type: "warning",
+ })),
+ ...(unpaidInvoices?.length ? [{ id: "unpaid", text: `${unpaidInvoices.length} facture(s) non soldee(s)`, type: "warning" }] : []),
+ ]);
  };
 
  return (
@@ -113,9 +129,9 @@ export default function RemotePage() {
  <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
  <div className="lg:col-span-3 grid grid-cols-1 md:grid-cols-3 gap-6">
  {[
- { label: "Flux Patients", value: stats.activePatients, icon: Users, color: "text-blue-600", trend: "+12%" },
- { label: "Charge Système", value: `${stats.systemLoad}%`, icon: Activity, color: "text-emerald-600", trend: "Stable" },
- { label: "Revenu Live", value: stats.dailyRevenue.toLocaleString(), icon: TrendingUp, color: "text-amber-600", trend: "+5k" },
+ { label: "Flux Patients", value: stats.activePatients, icon: Users, color: "text-blue-600", trend: "Base" },
+ { label: "Occupation Lits", value: `${stats.systemLoad}%`, icon: Activity, color: "text-emerald-600", trend: "Live" },
+ { label: "Revenu Jour", value: stats.dailyRevenue.toLocaleString(), icon: TrendingUp, color: "text-amber-600", trend: "CFA" },
  ].map((stat, i) => (
  <motion.div
  key={stat.label}
@@ -159,7 +175,7 @@ export default function RemotePage() {
  {[
  { label: "Diffusion Alerte", sub: "Notification push à tout le staff", icon: Bell, color: "bg-blue-600" },
  { label: "Verrouillage Cyber", sub: "Protocole de sécurité AES-256", icon: ShieldCheck, color: "bg-blue-700" },
- { label: "Backup Cloud", sub: "Dernière synchro il y a 2 min", icon: Globe, color: "bg-emerald-600" },
+ { label: "Backup Cloud", sub: "Etat base de donnees connecte", icon: Globe, color: "bg-emerald-600" },
  ].map((action, i) => (
  <motion.button
  key={action.label}
@@ -186,15 +202,17 @@ export default function RemotePage() {
  <h3 className="text-xs font-black uppercase tracking-[0.3em] text-slate-600 ml-2">Log Système Live</h3>
  <div className="bg-white border border-blue-100 rounded-[40px] p-8 h-[340px] overflow-hidden relative shadow-sm">
  <div className="space-y-6">
- {notifications.map((n) => (
+ {notifications.length > 0 ? notifications.map((n) => (
  <div key={n.id} className="flex gap-4">
  <div className={cn("w-2 h-2 rounded-full mt-1.5 shrink-0", n.type === 'urgent' ? 'bg-red-500' : 'bg-amber-500')} />
  <div>
  <p className="text-sm font-bold leading-tight">{n.text}</p>
- <p className="text-[10px] font-medium text-slate-600 mt-1">Maintenant • Terminal 04</p>
+ <p className="text-[10px] font-medium text-slate-600 mt-1">Base Supabase</p>
  </div>
  </div>
- ))}
+ )) : (
+ <p className="text-sm font-bold text-slate-600">Aucune alerte issue de la base.</p>
+ )}
  </div>
  {/* Terminal Overlay */}
  <div className="absolute bottom-0 left-0 right-0 p-8 bg-gradient-to-t from-white to-transparent pt-20">

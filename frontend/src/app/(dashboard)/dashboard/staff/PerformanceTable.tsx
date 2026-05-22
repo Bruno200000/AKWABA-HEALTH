@@ -54,8 +54,8 @@ export default function PerformanceTable() {
  name: `${s.first_name} ${s.last_name}`,
  role: s.role === 'DOCTOR' ? 'Médecin' : s.role === 'NURSE' ? 'Infirmier(e)' : 'Personnel',
  consultations: totalAct,
- satisfaction: 90 + Math.floor(Math.random() * 10),
- punctuality: 85 + Math.floor(Math.random() * 15),
+ satisfaction: Math.min(100, totalAct * 10),
+ punctuality: Math.min(100, totalAct * 10),
  status: totalAct > 10 ? "Excellent" : totalAct > 5 ? "Régulier" : "Actif",
  image: `${s.first_name?.[0]}${s.last_name?.[0]}`
  };
@@ -69,7 +69,7 @@ export default function PerformanceTable() {
  <div className="p-8 border-b border-blue-50 flex justify-between items-center">
  <div>
  <h3 className="text-xl font-black tracking-tight">Performance du Personnel</h3>
- <p className="text-xs text-slate-600 font-bold uppercase tracking-widest mt-1">Évaluation mensuelle (Mai 2026)</p>
+ <p className="text-xs text-slate-600 font-bold uppercase tracking-widest mt-1">Evaluation mensuelle ({new Date().toLocaleDateString("fr-FR", { month: "long", year: "numeric" })})</p>
  </div>
  <button className="px-4 py-2 bg-white border-blue-100 shadow-sm rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-blue-50 hover:text-blue-600 transition-all">
  Voir les détails
@@ -123,7 +123,7 @@ export default function PerformanceTable() {
  key={star} 
  className={cn(
  "w-3 h-3", 
- star <= 4 ? "text-amber-400 fill-amber-400" : "text-slate-200"
+ star <= Math.ceil(staff.satisfaction / 20) ? "text-amber-400 fill-amber-400" : "text-slate-200"
  )} 
  />
  ))}

@@ -23,7 +23,6 @@ import {
  Pill
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { DEMO_DASHBOARD, DEMO_PROFILE, isDemoSession } from "@/lib/demo-mode";
 import { supabase } from "@/lib/supabase";
 import { getAppointmentStart } from "@/lib/appointment-utils";
 import Link from "next/link";
@@ -45,22 +44,6 @@ export default function DashboardHome() {
  useEffect(() => {
  const fetchStats = async () => {
  try {
- if (isDemoSession()) {
- setProfile(DEMO_PROFILE);
- const d = DEMO_DASHBOARD;
- setData({
- patients: d.patients,
- consultations: d.consultations,
- appointments: d.appointments,
- revenue: d.revenue,
- roomOccupancy: d.roomOccupancy,
- });
- setActivityData(d.activityData);
- setStaffPerformance(d.staffPerformance);
- setRecentApps(d.recentAppointments);
- return;
- }
-
  const { data: { user } } = await supabase.auth.getUser();
  if (!user) {
  return;
@@ -175,11 +158,6 @@ export default function DashboardHome() {
  Voici le rapport d&apos;activité de{" "}
  <span className="text-blue-600 font-bold uppercase">{profile?.hospitals?.name || "Votre Établissement"}</span>{" "}
  pour aujourd&apos;hui.
- {isDemoSession() && (
- <span className="ml-2 text-xs font-bold text-blue-500 normal-case tracking-normal">
- (mode démo — données exemple)
- </span>
- )}
  </p>
  </div>
  <div className="flex gap-3">

@@ -64,7 +64,11 @@ export default function RegisterPage() {
       // 2. Create Hospital
       const { data: hospital, error: hError } = await supabase
         .from("hospitals")
-        .insert([{ name: formData.hospitalName }])
+        .insert([{
+          name: formData.hospitalName,
+          email: formData.email,
+          phone: formData.phone,
+        }])
         .select()
         .single();
 
@@ -89,8 +93,8 @@ export default function RegisterPage() {
 
       setSuccess(true);
       setTimeout(() => router.push("/login"), 3000);
-    } catch (err: any) {
-      setError(err.message || "Une erreur est survenue.");
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "Une erreur est survenue.");
     } finally {
       setIsLoading(false);
     }

@@ -14,8 +14,7 @@ import {
  Cloud,
  Zap,
  Mail,
- Phone,
- Plus
+ Phone
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { isSupabaseConfigured, supabase } from "@/lib/supabase";
@@ -100,12 +99,25 @@ const profileFields: Array<{ key: ProfileFieldKey; label: string; icon: typeof U
   { key: "phone", label: "Telephone", icon: Phone, type: "tel" },
 ];
 
-const hospitalFields: Array<{ key: HospitalFieldKey; label: string; icon: typeof User }> = [
+const rawHospitalFields: Array<{ key: HospitalFieldKey; label: string; icon: typeof User }> = [
   { key: "name", label: "Nom de l'HÃ´pital", icon: Building2 },
-  { key: "email", label: "Email Professionnel", icon: Mail },
+  { key: "email", label: "Email professionnel", icon: Mail },
   { key: "phone", label: "NumÃ©ro de TÃ©lÃ©phone", icon: Zap },
   { key: "address", label: "Adresse GÃ©o", icon: Globe },
 ];
+
+const hospitalFields: Array<{ key: HospitalFieldKey; label: string; icon: typeof User; type?: string }> =
+  rawHospitalFields.map((field) => ({
+    ...field,
+    label: {
+      name: "Nom de l'etablissement",
+      email: "Email professionnel",
+      phone: "Telephone",
+      address: "Adresse",
+    }[field.key],
+    icon: field.key === "phone" ? Phone : field.icon,
+    type: field.key === "email" ? "email" : field.key === "phone" ? "tel" : "text",
+  }));
 
 const getErrorMessage = (error: unknown, fallback: string) => {
   return error instanceof Error ? error.message : fallback;
@@ -186,10 +198,12 @@ export default function SettingsPage() {
   const [billingSettings, setBillingSettings] = useState(defaultBillingSettings);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
+  const [hospitalNotice, setHospitalNotice] = useState<string | null>(null);
 
   const fetchData = useCallback(async () => {
     await Promise.resolve();
     setLoadError(null);
+    setHospitalNotice(null);
 
     if (!isSupabaseConfigured) {
       setLoadError("Supabase n'est pas configure. Impossible de charger l'utilisateur connecte.");
@@ -232,7 +246,11 @@ export default function SettingsPage() {
 
       setUserProfile(currentProfile);
 
-      if (!currentProfile.hospital_id) return;
+      if (!currentProfile.hospital_id) {
+        setHospital(null);
+        setHospitalNotice("Aucun etablissement n'est encore lie a ce compte.");
+        return;
+      }
 
       const { data: hospitalData, error: hospitalError } = await supabase
         .from("hospitals")
@@ -242,7 +260,11 @@ export default function SettingsPage() {
 
       if (hospitalError) throw hospitalError;
 
-      if (!hospitalData) return;
+      if (!hospitalData) {
+        setHospital(null);
+        setHospitalNotice("L'etablissement associe a ce compte est introuvable.");
+        return;
+      }
 
       const settings = hospitalData.settings || {};
       setHospital(hospitalData);
@@ -303,6 +325,8 @@ export default function SettingsPage() {
           address: hospital.address
         }).eq('id', hospital.id);
         if (error) throw error;
+      } else if (activeTab === "hospital" && !hospital) {
+        throw new Error("Impossible d'enregistrer : aucun etablissement n'est charge.");
       } else if (activeTab === "profile" && userProfile) {
         const { error } = await supabase.from('profiles').upsert({
           id: userProfile.id,
@@ -466,26 +490,30 @@ export default function SettingsPage() {
  className="bg-white rounded-[40px] shadow-sm p-10 space-y-12"
  >
  <div className="flex flex-col md:flex-row items-center gap-10">
- <div className="relative group">
+ <div className="relative">
  <div className="w-32 h-32 bg-white border-blue-100 shadow-sm rounded-[40px] border-2 border-dashed border-slate-200 flex items-center justify-center text-blue-600 overflow-hidden shadow-inner">
+ {hospital?.logo_url ? (
+ <img src={hospital.logo_url} alt="Logo etablissement" className="h-full w-full object-contain p-4" />
+ ) : (
  <Building2 className="w-12 h-12 opacity-20" />
- <div className="absolute inset-0 bg-blue-600/60 opacity-0 group-hover:opacity-100 transition-all flex items-center justify-center backdrop-blur-sm">
- <Camera className="w-8 h-8 text-white" />
+ )}
  </div>
- </div>
- <button className="absolute -bottom-2 -right-2 w-10 h-10 bg-white rounded-2xl shadow-xl border border-blue-50 flex items-center justify-center text-slate-600 hover:scale-110 transition-transform">
- <Plus className="w-5 h-5" />
- </button>
  </div>
  <div>
- <h3 className="text-2xl font-black tracking-tight">Profil de l&apos;Établissement</h3>
- <p className="text-slate-600 font-medium mt-1">Ces informations apparaîtront sur vos factures et comptes-rendus.</p>
+ <h3 className="text-2xl font-black tracking-tight">{hospital?.name || "Profil de l'etablissement"}</h3>
+ <p className="text-slate-600 font-medium mt-1">Consultez et mettez a jour les informations officielles de votre structure.</p>
  <div className="flex gap-4 mt-6">
  <span className="px-3 py-1 bg-blue-50 text-blue-600 rounded-xl text-[10px] font-black uppercase tracking-widest">Plan {hospital?.subscription_plan || "free"}</span>
  <span className="px-3 py-1 bg-emerald-50 text-emerald-600 rounded-xl text-[10px] font-black uppercase tracking-widest">{hospital?.is_active ? "Compte actif" : "Compte inactif"}</span>
  </div>
  </div>
  </div>
+
+ {hospitalNotice && (
+ <div className="rounded-2xl border border-amber-100 bg-amber-50 px-5 py-4 text-sm font-bold text-amber-800">
+ {hospitalNotice}
+ </div>
+ )}
 
  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
  {hospitalFields.map((field) => (
@@ -494,10 +522,14 @@ export default function SettingsPage() {
  <div className="relative">
  <field.icon className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-300" />
  <input 
- type="text" 
+ type={field.type || "text"}
+ disabled={!hospital}
  value={hospital?.[field.key] || ""}
  onChange={(e) => setHospital((current) => current ? { ...current, [field.key]: e.target.value } : current)}
- className="w-full pl-14 pr-6 py-4 bg-white border-blue-100 shadow-sm border-none rounded-2xl text-sm font-medium focus:ring-4 focus:ring-blue-500/10 transition-all shadow-inner"
+ className={cn(
+ "w-full pl-14 pr-6 py-4 bg-white border-blue-100 shadow-sm border-none rounded-2xl text-sm font-medium focus:ring-4 focus:ring-blue-500/10 transition-all shadow-inner",
+ !hospital && "bg-slate-50 text-slate-400 cursor-not-allowed"
+ )}
  />
  </div>
  </div>
@@ -507,12 +539,15 @@ export default function SettingsPage() {
  <div className="pt-10 border-t border-slate-50 flex justify-between items-center">
  <div className="flex items-center gap-3 text-slate-600">
  <Cloud className="w-5 h-5" />
- <p className="text-[10px] font-black uppercase tracking-widest">Dernière sauvegarde: Automatique</p>
+ <p className="text-[10px] font-black uppercase tracking-widest">Les informations sont chargees depuis le profil etablissement</p>
  </div>
  <button 
  onClick={handleSave}
- disabled={isSaving}
- className="flex items-center gap-2 px-10 py-4 bg-blue-600 text-white rounded-3xl font-black text-xs uppercase tracking-widest shadow-xl shadow-blue-200 hover:bg-blue-700 transition-all hover:-translate-y-1"
+ disabled={isSaving || !hospital}
+ className={cn(
+ "flex items-center gap-2 px-10 py-4 bg-blue-600 text-white rounded-3xl font-black text-xs uppercase tracking-widest shadow-xl shadow-blue-200 hover:bg-blue-700 transition-all hover:-translate-y-1",
+ (!hospital || isSaving) && "opacity-60 cursor-not-allowed hover:translate-y-0"
+ )}
  >
  {isSaving ? "Enregistrement..." : <><Save className="w-4 h-4" /> Sauvegarder</>}
  </button>

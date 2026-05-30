@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
  Building2, 
@@ -17,7 +17,7 @@ import {
  Plus
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { supabase } from "@/lib/supabase";
+import { isSupabaseConfigured, supabase } from "@/lib/supabase";
 
 const tabs = [
   { id: "profile", label: "Mon Profil", icon: User, desc: "Informations personnelles" },
@@ -64,6 +64,57 @@ const defaultBillingSettings = {
   currency: "CFA",
 };
 
+type JsonObject = Record<string, unknown>;
+
+type Hospital = {
+  id: string;
+  name?: string | null;
+  email?: string | null;
+  phone?: string | null;
+  address?: string | null;
+  logo_url?: string | null;
+  primary_color?: string | null;
+  subscription_plan?: string | null;
+  is_active?: boolean | null;
+  settings?: JsonObject | null;
+};
+
+type UserProfile = {
+  id: string;
+  hospital_id?: string | null;
+  role?: string | null;
+  first_name?: string | null;
+  last_name?: string | null;
+  phone?: string | null;
+  email?: string | null;
+};
+
+type ProfileFieldKey = "first_name" | "last_name" | "email" | "phone";
+type HospitalFieldKey = "name" | "email" | "phone" | "address";
+
+const profileFields: Array<{ key: ProfileFieldKey; label: string; icon: typeof User; disabled?: boolean }> = [
+  { key: "first_name", label: "PrÃ©nom", icon: User },
+  { key: "last_name", label: "Nom de Famille", icon: User },
+  { key: "email", label: "Email (Lecture seule)", icon: Mail, disabled: true },
+  { key: "phone", label: "NumÃ©ro de Mobile", icon: Zap },
+];
+
+const hospitalFields: Array<{ key: HospitalFieldKey; label: string; icon: typeof User }> = [
+  { key: "name", label: "Nom de l'HÃ´pital", icon: Building2 },
+  { key: "email", label: "Email Professionnel", icon: Mail },
+  { key: "phone", label: "NumÃ©ro de TÃ©lÃ©phone", icon: Zap },
+  { key: "address", label: "Adresse GÃ©o", icon: Globe },
+];
+
+const getErrorMessage = (error: unknown, fallback: string) => {
+  return error instanceof Error ? error.message : fallback;
+};
+
+const getSettingsSection = <T extends object>(settings: JsonObject, section: string): Partial<T> => {
+  const value = settings[section];
+  return value && typeof value === "object" && !Array.isArray(value) ? (value as Partial<T>) : {};
+};
+
 function ToggleRow({
   title,
   description,
@@ -104,8 +155,8 @@ export default function SettingsPage() {
   const [activeTab, setActiveTab] = useState("profile");
   const [isSaving, setIsSaving] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [hospital, setHospital] = useState<any>(null);
-  const [userProfile, setUserProfile] = useState<any>(null);
+  const [hospital, setHospital] = useState<Hospital | null>(null);
+  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [integrations, setIntegrations] = useState(defaultIntegrations);
   const [branding, setBranding] = useState({ logo_url: "", primary_color: "#2563eb" });
   const [aiSettings, setAiSettings] = useState(defaultAiSettings);
@@ -113,40 +164,103 @@ export default function SettingsPage() {
   const [notificationSettings, setNotificationSettings] = useState(defaultNotificationSettings);
   const [billingSettings, setBillingSettings] = useState(defaultBillingSettings);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
+  const [loadError, setLoadError] = useState<string | null>(null);
 
-  useEffect(() => {
-    fetchData();
+  const fetchData = useCallback(async () => {
+    await Promise.resolve();
+    setLoadError(null);
+
+    if (!isSupabaseConfigured) {
+      setLoadError("Supabase n'est pas configure. Impossible de charger l'utilisateur connecte.");
+      setIsLoading(false);
+      return;
+    }
+
+    try {
+      const { data: { user }, error: userError } = await supabase.auth.getUser();
+      if (userError) throw userError;
+      if (!user) {
+        setLoadError("Aucune session active. Reconnectez-vous pour charger votre profil.");
+        return;
+      }
+
+      const fallbackProfile: UserProfile = {
+        id: user.id,
+        email: user.email || "",
+        first_name: user.user_metadata?.first_name || "",
+        last_name: user.user_metadata?.last_name || "",
+        phone: user.phone || user.user_metadata?.phone || "",
+        role: user.user_metadata?.role || "Utilisateur",
+        hospital_id: null,
+      };
+
+      const { data: profile, error: profileError } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("id", user.id)
+        .maybeSingle();
+
+      if (profileError) throw profileError;
+
+      const currentProfile = {
+        ...fallbackProfile,
+        ...(profile || {}),
+        email: profile?.email || user.email || "",
+        phone: profile?.phone || fallbackProfile.phone,
+      };
+
+      setUserProfile(currentProfile);
+
+      if (!currentProfile.hospital_id) {
+        setLoadError("Profil charge, mais aucun etablissement n'est lie a cet utilisateur.");
+        return;
+      }
+
+      const { data: hospitalData, error: hospitalError } = await supabase
+        .from("hospitals")
+        .select("*")
+        .eq("id", currentProfile.hospital_id)
+        .maybeSingle();
+
+      if (hospitalError) throw hospitalError;
+
+      if (!hospitalData) {
+        setLoadError("Profil charge, mais l'etablissement associe est introuvable.");
+        return;
+      }
+
+      const settings = hospitalData.settings || {};
+      setHospital(hospitalData);
+      setBranding({
+        logo_url: hospitalData.logo_url || "",
+        primary_color: hospitalData.primary_color || "#2563eb",
+      });
+      setIntegrations({ ...defaultIntegrations, ...getSettingsSection<typeof defaultIntegrations>(settings, "integrations") });
+      setAiSettings({ ...defaultAiSettings, ...getSettingsSection<typeof defaultAiSettings>(settings, "ai") });
+      setSecuritySettings({ ...defaultSecuritySettings, ...getSettingsSection<typeof defaultSecuritySettings>(settings, "security") });
+      setNotificationSettings({ ...defaultNotificationSettings, ...getSettingsSection<typeof defaultNotificationSettings>(settings, "notifications") });
+      const billing = getSettingsSection<typeof defaultBillingSettings>(settings, "billing");
+      setBillingSettings({
+        ...defaultBillingSettings,
+        ...billing,
+        plan: hospitalData.subscription_plan || billing.plan || "free",
+      });
+    } catch (error: unknown) {
+      setLoadError(getErrorMessage(error, "Impossible de charger les informations de l'utilisateur connecte."));
+    } finally {
+      setIsLoading(false);
+    }
   }, []);
 
-  const fetchData = async () => {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return;
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      void fetchData();
+    }, 0);
 
-    const { data: profile } = await supabase.from('profiles').select('*, hospitals(*)').eq('id', user.id).single();
-    if (profile) {
-      setUserProfile(profile);
-      if (profile.hospitals) {
-        const settings = profile.hospitals.settings || {};
-        setHospital(profile.hospitals);
-        setBranding({
-          logo_url: profile.hospitals.logo_url || "",
-          primary_color: profile.hospitals.primary_color || "#2563eb",
-        });
-        setIntegrations({ ...defaultIntegrations, ...(settings.integrations || {}) });
-        setAiSettings({ ...defaultAiSettings, ...(settings.ai || {}) });
-        setSecuritySettings({ ...defaultSecuritySettings, ...(settings.security || {}) });
-        setNotificationSettings({ ...defaultNotificationSettings, ...(settings.notifications || {}) });
-        setBillingSettings({
-          ...defaultBillingSettings,
-          ...(settings.billing || {}),
-          plan: profile.hospitals.subscription_plan || settings.billing?.plan || "free",
-        });
-      }
-    }
-    setIsLoading(false);
-  };
+    return () => window.clearTimeout(timer);
+  }, [fetchData]);
 
-  const saveHospitalSettings = async (section: string, value: any, extraHospitalFields: Record<string, any> = {}) => {
+  const saveHospitalSettings = async (section: string, value: JsonObject, extraHospitalFields: Partial<Hospital> = {}) => {
     if (!hospital) return;
     const updatedSettings = {
       ...(hospital.settings || {}),
@@ -175,11 +289,14 @@ export default function SettingsPage() {
         }).eq('id', hospital.id);
         if (error) throw error;
       } else if (activeTab === "profile" && userProfile) {
-        const { error } = await supabase.from('profiles').update({
+        const { error } = await supabase.from('profiles').upsert({
+          id: userProfile.id,
+          hospital_id: userProfile.hospital_id || null,
+          email: userProfile.email,
           first_name: userProfile.first_name,
           last_name: userProfile.last_name,
           phone: userProfile.phone
-        }).eq('id', userProfile.id);
+        }, { onConflict: "id" });
         if (error) throw error;
       } else if (activeTab === "branding" && hospital) {
         const { error } = await supabase.from("hospitals").update({
@@ -201,8 +318,8 @@ export default function SettingsPage() {
       }
 
       setStatusMessage("Parametres enregistres.");
-    } catch (error: any) {
-      setStatusMessage(error.message || "Erreur lors de l'enregistrement.");
+    } catch (error: unknown) {
+      setStatusMessage(getErrorMessage(error, "Erreur lors de l'enregistrement."));
     } finally {
       setIsSaving(false);
     }
@@ -218,6 +335,11 @@ export default function SettingsPage() {
  <div>
  <h1 className="text-3xl font-black text-slate-900 tracking-tight">Configuration</h1>
  <p className="text-slate-600 font-medium">Personnalisez votre plateforme AKWABA HEALTH.</p>
+ {loadError && (
+ <p className="mt-3 rounded-2xl border border-amber-100 bg-amber-50 px-4 py-3 text-sm font-bold text-amber-800">
+ {loadError}
+ </p>
+ )}
  {statusMessage && (
  <p className="mt-3 inline-flex rounded-xl bg-blue-50 px-4 py-2 text-xs font-black uppercase tracking-widest text-blue-700">
  {statusMessage}
@@ -290,12 +412,7 @@ export default function SettingsPage() {
  </div>
 
  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
- {[
- { key: "first_name", label: "Prénom", icon: User },
- { key: "last_name", label: "Nom de Famille", icon: User },
- { key: "email", label: "Email (Lecture seule)", icon: Mail, disabled: true },
- { key: "phone", label: "Numéro de Mobile", icon: Zap },
- ].map((field) => (
+ {profileFields.map((field) => (
  <div key={field.key} className="space-y-3">
  <label className="text-[10px] font-black text-slate-600 uppercase tracking-widest ml-4">{field.label}</label>
  <div className="relative">
@@ -304,7 +421,7 @@ export default function SettingsPage() {
  type="text" 
  disabled={field.disabled}
  value={userProfile?.[field.key] || ""}
- onChange={(e) => setUserProfile({ ...userProfile, [field.key]: e.target.value })}
+ onChange={(e) => setUserProfile((current) => current ? { ...current, [field.key]: e.target.value } : current)}
  className={cn(
  "w-full pl-14 pr-6 py-4 bg-white border-blue-100 shadow-sm border-none rounded-2xl text-sm font-medium focus:ring-4 focus:ring-blue-500/10 transition-all shadow-inner",
  field.disabled && "opacity-50 cursor-not-allowed"
@@ -362,12 +479,7 @@ export default function SettingsPage() {
  </div>
 
  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
- {[
- { key: "name", label: "Nom de l'Hôpital", icon: Building2 },
- { key: "email", label: "Email Professionnel", icon: Mail },
- { key: "phone", label: "Numéro de Téléphone", icon: Zap },
- { key: "address", label: "Adresse Géo", icon: Globe },
- ].map((field) => (
+ {hospitalFields.map((field) => (
  <div key={field.key} className="space-y-3">
  <label className="text-[10px] font-black text-slate-600 uppercase tracking-widest ml-4">{field.label}</label>
  <div className="relative">
@@ -375,7 +487,7 @@ export default function SettingsPage() {
  <input 
  type="text" 
  value={hospital?.[field.key] || ""}
- onChange={(e) => setHospital({ ...hospital, [field.key]: e.target.value })}
+ onChange={(e) => setHospital((current) => current ? { ...current, [field.key]: e.target.value } : current)}
  className="w-full pl-14 pr-6 py-4 bg-white border-blue-100 shadow-sm border-none rounded-2xl text-sm font-medium focus:ring-4 focus:ring-blue-500/10 transition-all shadow-inner"
  />
  </div>
@@ -426,7 +538,7 @@ export default function SettingsPage() {
  </div>
  </div>
  <div className="space-y-6">
- <h4 className="text-lg font-black tracking-tight">Couleurs de l'Interface</h4>
+ <h4 className="text-lg font-black tracking-tight">Couleurs de l&apos;Interface</h4>
  <div className="grid grid-cols-4 gap-4">
  {['#2563eb', '#10b981', '#f59e0b', '#ef4444'].map(color => (
  <button
@@ -465,7 +577,7 @@ export default function SettingsPage() {
  </div>
  <div>
  <h3 className="text-2xl font-black">Akwaba AI Core</h3>
- <p className="opacity-80 text-sm">Moteur d'assistance au diagnostic et analyse prédictive.</p>
+ <p className="opacity-80 text-sm">Moteur d&apos;assistance au diagnostic et analyse prédictive.</p>
  </div>
  </div>
 
@@ -505,7 +617,7 @@ export default function SettingsPage() {
  >
  <div>
  <h3 className="text-2xl font-black tracking-tight mb-2">Intégrations & Logiciels Tiers</h3>
- <p className="text-slate-600 font-medium">Connectez AKWABA HEALTH à WhatsApp, vos IAs préférées et d'autres outils externes.</p>
+ <p className="text-slate-600 font-medium">Connectez AKWABA HEALTH à WhatsApp, vos IAs préférées et d&apos;autres outils externes.</p>
  </div>
  
  <div className="space-y-6">
@@ -542,7 +654,7 @@ export default function SettingsPage() {
     </div>
     <div className="flex-1">
       <p className="font-black text-slate-900 tracking-tight">Intelligence Artificielle (Modèles)</p>
-      <p className="text-xs text-slate-600 font-medium">Configurez jusqu'à quatre fournisseurs d'IA pour les diagnostics et analyses médicales.</p>
+      <p className="text-xs text-slate-600 font-medium">Configurez jusqu&apos;à quatre fournisseurs d&apos;IA pour les diagnostics et analyses médicales.</p>
     </div>
     </div>
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -684,7 +796,7 @@ export default function SettingsPage() {
  >
  <div className="p-10 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-[40px] text-white">
  <h3 className="text-3xl font-black mb-2">Plan {billingSettings.plan}</h3>
- <p className="opacity-80">Les informations d'abonnement sont lues et sauvegardees dans la base.</p>
+ <p className="opacity-80">Les informations d&apos;abonnement sont lues et sauvegardees dans la base.</p>
  <div className="mt-10 pt-10 border-t border-white/10 grid grid-cols-1 md:grid-cols-3 gap-6 items-end">
  <div className="space-y-2">
  <label className="text-[10px] font-black uppercase tracking-widest opacity-70">Plan</label>

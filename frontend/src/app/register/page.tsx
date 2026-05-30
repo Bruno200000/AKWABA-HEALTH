@@ -48,6 +48,14 @@ export default function RegisterPage() {
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email: formData.email,
         password: formData.password,
+        options: {
+          data: {
+            first_name: formData.adminName.split(" ")[0],
+            last_name: formData.adminName.split(" ").slice(1).join(" ") || "Admin",
+            phone: formData.phone,
+            role: "ADMIN",
+          },
+        },
       });
 
       if (authError) throw authError;
@@ -73,6 +81,7 @@ export default function RegisterPage() {
             last_name: formData.adminName.split(" ").slice(1).join(" ") || "Admin",
             role: "ADMIN",
             email: formData.email,
+            phone: formData.phone,
           },
         ]);
 

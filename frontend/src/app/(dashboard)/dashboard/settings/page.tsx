@@ -14,6 +14,7 @@ import {
  Cloud,
  Zap,
  Mail,
+ Phone,
  Plus
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -92,11 +93,11 @@ type UserProfile = {
 type ProfileFieldKey = "first_name" | "last_name" | "email" | "phone";
 type HospitalFieldKey = "name" | "email" | "phone" | "address";
 
-const profileFields: Array<{ key: ProfileFieldKey; label: string; icon: typeof User; disabled?: boolean }> = [
-  { key: "first_name", label: "PrÃ©nom", icon: User },
-  { key: "last_name", label: "Nom de Famille", icon: User },
-  { key: "email", label: "Email (Lecture seule)", icon: Mail, disabled: true },
-  { key: "phone", label: "NumÃ©ro de Mobile", icon: Zap },
+const profileFields: Array<{ key: ProfileFieldKey; label: string; icon: typeof User; readOnly?: boolean; type?: string }> = [
+  { key: "first_name", label: "Prenom", icon: User },
+  { key: "last_name", label: "Nom de famille", icon: User },
+  { key: "email", label: "Email", icon: Mail, readOnly: true, type: "email" },
+  { key: "phone", label: "Telephone", icon: Phone, type: "tel" },
 ];
 
 const hospitalFields: Array<{ key: HospitalFieldKey; label: string; icon: typeof User }> = [
@@ -404,16 +405,10 @@ export default function SettingsPage() {
  className="bg-white rounded-[40px] shadow-sm p-10 space-y-12"
  >
  <div className="flex flex-col md:flex-row items-center gap-10">
- <div className="relative group">
+ <div className="relative">
  <div className="w-32 h-32 bg-blue-600 rounded-[40px] flex items-center justify-center text-white text-4xl font-black shadow-xl shadow-blue-500/20 overflow-hidden">
  {userProfile ? getProfileInitials(userProfile) : <User className="w-12 h-12" />}
- <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-all flex items-center justify-center backdrop-blur-sm">
- <Camera className="w-8 h-8 text-white" />
  </div>
- </div>
- <button className="absolute -bottom-2 -right-2 w-10 h-10 bg-white rounded-2xl shadow-xl border border-blue-50 flex items-center justify-center text-slate-600 hover:scale-110 transition-transform">
- <Plus className="w-5 h-5" />
- </button>
  </div>
  <div>
  <h3 className="text-2xl font-black tracking-tight">{getProfileDisplayName(userProfile)}</h3>
@@ -432,13 +427,13 @@ export default function SettingsPage() {
  <div className="relative">
  <field.icon className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-300" />
  <input 
- type="text" 
- disabled={field.disabled}
+ type={field.type || "text"}
+ readOnly={field.readOnly}
  value={userProfile?.[field.key] || ""}
  onChange={(e) => setUserProfile((current) => current ? { ...current, [field.key]: e.target.value } : current)}
  className={cn(
  "w-full pl-14 pr-6 py-4 bg-white border-blue-100 shadow-sm border-none rounded-2xl text-sm font-medium focus:ring-4 focus:ring-blue-500/10 transition-all shadow-inner",
- field.disabled && "opacity-50 cursor-not-allowed"
+ field.readOnly && "bg-slate-50 text-slate-500 cursor-not-allowed"
  )}
  />
  </div>
@@ -449,7 +444,7 @@ export default function SettingsPage() {
  <div className="pt-10 border-t border-slate-50 flex justify-between items-center">
  <div className="flex items-center gap-3 text-slate-600">
  <Cloud className="w-5 h-5" />
- <p className="text-[10px] font-black uppercase tracking-widest">Dernière sauvegarde: Automatique</p>
+ <p className="text-[10px] font-black uppercase tracking-widest">Cliquez sur sauvegarder pour appliquer les modifications</p>
  </div>
  <button 
  onClick={handleSave}

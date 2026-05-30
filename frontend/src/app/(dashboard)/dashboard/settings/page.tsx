@@ -115,6 +115,26 @@ const getSettingsSection = <T extends object>(settings: JsonObject, section: str
   return value && typeof value === "object" && !Array.isArray(value) ? (value as Partial<T>) : {};
 };
 
+const getProfileDisplayName = (profile: UserProfile | null) => {
+  const firstName = profile?.first_name?.trim() || "";
+  const lastName = profile?.last_name?.trim() || "";
+  const fullName = `${firstName} ${lastName}`.trim();
+  const email = profile?.email || "";
+
+  return fullName || (email ? email.split("@")[0] : "Mon profil");
+};
+
+const getProfileInitials = (profile: UserProfile | null) => {
+  const firstName = profile?.first_name?.trim() || "";
+  const lastName = profile?.last_name?.trim() || "";
+
+  if (firstName || lastName) {
+    return `${firstName[0] || ""}${lastName[0] || ""}`.toUpperCase();
+  }
+
+  return (profile?.email?.[0] || "U").toUpperCase();
+};
+
 function ToggleRow({
   title,
   description,
@@ -187,8 +207,8 @@ export default function SettingsPage() {
       const fallbackProfile: UserProfile = {
         id: user.id,
         email: user.email || "",
-        first_name: user.user_metadata?.first_name || "",
-        last_name: user.user_metadata?.last_name || "",
+        first_name: user.user_metadata?.first_name || user.user_metadata?.name?.split(" ")?.[0] || "",
+        last_name: user.user_metadata?.last_name || user.user_metadata?.name?.split(" ")?.slice(1).join(" ") || "",
         phone: user.phone || user.user_metadata?.phone || "",
         role: user.user_metadata?.role || "Utilisateur",
         hospital_id: null,
@@ -211,10 +231,7 @@ export default function SettingsPage() {
 
       setUserProfile(currentProfile);
 
-      if (!currentProfile.hospital_id) {
-        setLoadError("Profil charge, mais aucun etablissement n'est lie a cet utilisateur.");
-        return;
-      }
+      if (!currentProfile.hospital_id) return;
 
       const { data: hospitalData, error: hospitalError } = await supabase
         .from("hospitals")
@@ -224,10 +241,7 @@ export default function SettingsPage() {
 
       if (hospitalError) throw hospitalError;
 
-      if (!hospitalData) {
-        setLoadError("Profil charge, mais l'etablissement associe est introuvable.");
-        return;
-      }
+      if (!hospitalData) return;
 
       const settings = hospitalData.settings || {};
       setHospital(hospitalData);
@@ -392,7 +406,7 @@ export default function SettingsPage() {
  <div className="flex flex-col md:flex-row items-center gap-10">
  <div className="relative group">
  <div className="w-32 h-32 bg-blue-600 rounded-[40px] flex items-center justify-center text-white text-4xl font-black shadow-xl shadow-blue-500/20 overflow-hidden">
- {userProfile ? `${userProfile.first_name?.[0]}${userProfile.last_name?.[0]}` : <User className="w-12 h-12" />}
+ {userProfile ? getProfileInitials(userProfile) : <User className="w-12 h-12" />}
  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-all flex items-center justify-center backdrop-blur-sm">
  <Camera className="w-8 h-8 text-white" />
  </div>
@@ -402,8 +416,8 @@ export default function SettingsPage() {
  </button>
  </div>
  <div>
- <h3 className="text-2xl font-black tracking-tight">{userProfile ? `${userProfile.first_name} ${userProfile.last_name}` : "Mon Profil Personnel"}</h3>
- <p className="text-slate-600 font-medium mt-1">Gérez vos informations de compte et votre identité.</p>
+ <h3 className="text-2xl font-black tracking-tight">{getProfileDisplayName(userProfile)}</h3>
+ <p className="text-slate-600 font-medium mt-1">Consultez et mettez a jour les informations de la personne connectee.</p>
  <div className="flex gap-4 mt-6">
  <span className="px-3 py-1 bg-blue-50 text-blue-600 rounded-xl text-[10px] font-black uppercase tracking-widest">{userProfile?.role || "Utilisateur"}</span>
  <span className="px-3 py-1 bg-blue-50/50 text-slate-600 rounded-xl text-[10px] font-black uppercase tracking-widest">ID: {userProfile?.id?.slice(0,8)}</span>

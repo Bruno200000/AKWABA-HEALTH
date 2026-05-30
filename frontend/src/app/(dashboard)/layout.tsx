@@ -117,6 +117,30 @@ const menuGroups = [
   }
 ];
 
+const getProfileDisplayName = (profile: any) => {
+  const firstName = profile?.first_name?.trim?.() || "";
+  const lastName = profile?.last_name?.trim?.() || "";
+  const fullName = `${firstName} ${lastName}`.trim();
+  const email = profile?.email || "";
+
+  if (fullName) {
+    return profile?.role === "DOCTOR" ? `Dr. ${fullName}` : fullName;
+  }
+
+  return email ? email.split("@")[0] : "Utilisateur";
+};
+
+const getProfileInitials = (profile: any) => {
+  const firstName = profile?.first_name?.trim?.() || "";
+  const lastName = profile?.last_name?.trim?.() || "";
+
+  if (firstName || lastName) {
+    return `${firstName[0] || ""}${lastName[0] || ""}`.toUpperCase();
+  }
+
+  return (profile?.email?.[0] || "U").toUpperCase();
+};
+
 function NavItem({ item, isSidebarOpen, pathname }: { item: any, isSidebarOpen: boolean, pathname: string }) {
   const [isOpen, setIsOpen] = useState(false);
   const hasSubItems = item.subItems && item.subItems.length > 0;
@@ -221,13 +245,26 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         return;
       }
 
+      const fallbackProfile = {
+        id: user.id,
+        email: user.email || "",
+        first_name: user.user_metadata?.first_name || user.user_metadata?.name?.split(" ")?.[0] || "",
+        last_name: user.user_metadata?.last_name || user.user_metadata?.name?.split(" ")?.slice(1).join(" ") || "",
+        phone: user.phone || user.user_metadata?.phone || "",
+        role: user.user_metadata?.role || "Utilisateur",
+      };
+
       const { data } = await supabase
         .from("profiles")
         .select("*, hospitals(name, logo_url, primary_color)")
         .eq("id", user.id)
         .maybeSingle();
 
-      setProfile(data);
+      setProfile({
+        ...fallbackProfile,
+        ...(data || {}),
+        email: data?.email || user.email || "",
+      });
       setGateReady(true);
     };
     fetchProfile();
@@ -371,11 +408,11 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 className="flex items-center gap-3.5 p-1 pr-3 rounded-full hover:bg-blue-50/70 transition-all border border-transparent hover:border-blue-100"
               >
                 <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-700 rounded-full flex items-center justify-center text-white font-black shadow-lg shadow-blue-500/25">
-                  {profile ? `${profile.first_name?.[0]}${profile.last_name?.[0]}` : "??"}
+                  {getProfileInitials(profile)}
                 </div>
                 <div className="text-left hidden sm:block">
                   <p className="text-sm font-bold text-slate-900 leading-none mb-1">
-                    {profile ? `${profile.first_name ? (profile.role === "DOCTOR" ? "Dr. " : "") + profile.first_name + " " + profile.last_name : profile.email}` : "Utilisateur"}
+                    {getProfileDisplayName(profile)}
                   </p>
                   <p className="text-[10px] text-blue-700 uppercase font-black tracking-wider">
                     {profile?.role || "Collaborateur"}
@@ -396,6 +433,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                     >
                       <div className="px-4 py-3 border-b border-blue-50 mb-1 bg-blue-50/60 -m-2 mb-2">
                         <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Compte Connecté</p>
+                        <p className="text-xs font-bold text-slate-700 truncate mt-0.5">{getProfileDisplayName(profile)}</p>
                         <p className="text-xs text-slate-500 truncate mt-0.5">{profile?.email}</p>
                       </div>
                       <div className="space-y-1">

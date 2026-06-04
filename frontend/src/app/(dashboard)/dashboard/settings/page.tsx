@@ -386,39 +386,39 @@ export default function SettingsPage() {
  )}
  </div>
 
- <div className="flex flex-col lg:flex-row gap-12">
- {/* Sidebar Navigation */}
- <div className="lg:w-80 space-y-2">
+ <div className="space-y-8">
+ {/* Navigation */}
+ <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3">
  {tabs.map((tab) => (
  <button
  key={tab.id}
  onClick={() => setActiveTab(tab.id)}
  className={cn(
- "w-full flex items-center gap-4 px-6 py-5 rounded-[28px] transition-all relative group",
+ "w-full flex items-center gap-4 px-5 py-4 rounded-2xl transition-all relative group border text-left",
  activeTab === tab.id 
- ? "bg-white shadow-xl shadow-slate-200/50 border border-blue-50 " 
- : "text-slate-600 hover:bg-white border-blue-100 shadow-sm "
+ ? "bg-white shadow-lg shadow-slate-200/60 border-blue-200" 
+ : "text-slate-600 bg-white/60 hover:bg-white border-blue-100 shadow-sm"
  )}
  >
  <div className={cn(
- "w-12 h-12 rounded-2xl flex items-center justify-center transition-all",
+ "w-11 h-11 rounded-xl flex items-center justify-center transition-all shrink-0",
  activeTab === tab.id ? "bg-blue-600 text-white shadow-lg shadow-blue-200" : "bg-blue-50/50 text-slate-600"
  )}>
- <tab.icon className="w-6 h-6" />
+ <tab.icon className="w-5 h-5" />
  </div>
- <div className="text-left">
+ <div className="min-w-0">
  <p className={cn("font-black text-sm", activeTab === tab.id ? "text-slate-900 " : "text-slate-600")}>{tab.label}</p>
- <p className="text-[10px] font-bold opacity-60 uppercase tracking-tighter">{tab.desc}</p>
+ <p className="text-[10px] font-bold opacity-60 uppercase truncate">{tab.desc}</p>
  </div>
  {activeTab === tab.id && (
- <motion.div layoutId="settingActive" className="absolute right-4 w-1.5 h-1.5 bg-blue-600 rounded-full" />
+ <motion.div layoutId="settingActive" className="absolute inset-x-5 bottom-0 h-0.5 bg-blue-600 rounded-full" />
  )}
  </button>
  ))}
  </div>
 
  {/* Main Content Area */}
- <div className="flex-1">
+ <div className="max-w-6xl">
  <AnimatePresence mode="wait">
  {activeTab === "profile" && (
  <motion.div

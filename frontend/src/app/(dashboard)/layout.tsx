@@ -16,10 +16,8 @@ import {
   Menu, 
   X,
   Bell,
-  Mic,
   BrainCircuit,
   MessageSquare,
-  Sparkles,
   Search,
   ChevronLeft,
   ChevronRight,
@@ -66,7 +64,15 @@ const menuGroups = [
           { label: "Urgences", href: "/dashboard/consultations/emergency" },
         ]
       },
-      { icon: Bed, label: "Hospitalisation", href: "/dashboard/hospitalization" },
+      {
+        icon: Bed,
+        label: "Hospitalisation",
+        href: "/dashboard/hospitalization",
+        subItems: [
+          { label: "Occupation des lits", href: "/dashboard/hospitalization" },
+          { label: "Chambres & lits", href: "/dashboard/hospitalization/rooms" },
+        ]
+      },
     ]
   },
   {
@@ -364,20 +370,20 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         {/* Top Header */}
         <header className="h-20 bg-white/90 backdrop-blur-xl border-b border-blue-100/80 flex items-center justify-between px-8 sticky top-0 z-30 shadow-sm shadow-blue-500/5">
           <div className="flex items-center gap-6 flex-1">
-            <div className="relative max-w-xl w-full hidden lg:block ai-chat-bar">
-              <div className="absolute left-4 top-1/2 -translate-y-1/2 flex items-center gap-2">
-                <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center shadow-lg shadow-blue-500/20">
-                  <Sparkles className="w-4 h-4 text-white" />
-                </div>
+            <div className="relative max-w-2xl w-full hidden lg:flex items-center gap-3 rounded-2xl border border-blue-100 bg-white px-4 py-2.5 shadow-sm transition-all focus-within:border-blue-300 focus-within:shadow-md focus-within:shadow-blue-100/60">
+              <div className="w-8 h-8 rounded-xl bg-white border border-blue-100 flex items-center justify-center shrink-0 shadow-sm p-1.5">
+                <img src="/logo.png" alt="AKWABA HEALTH" className="w-full h-full object-contain" />
               </div>
-              <input 
-                type="text" 
-                placeholder="Comment puis-je vous aider, Docteur ?"
-                className="w-full pl-16 pr-12 py-3 bg-transparent border-none rounded-[24px] text-sm font-medium focus:outline-none focus:ring-0 transition-all"
+              <div className="h-8 w-px bg-blue-100" />
+              <Search className="w-4 h-4 text-slate-400 shrink-0" />
+              <input
+                type="text"
+                placeholder="Rechercher un patient, dossier, rendez-vous ou service..."
+                className="min-w-0 flex-1 bg-transparent text-sm font-medium text-slate-800 placeholder:text-slate-400 focus:outline-none"
               />
-              <button className="absolute right-3 top-1/2 -translate-y-1/2 p-2 text-blue-600 hover:bg-blue-200/20 rounded-xl transition-all">
-                <Mic className="w-5 h-5" />
-              </button>
+              <span className="rounded-lg border border-slate-200 bg-slate-50 px-2 py-1 text-[10px] font-black uppercase tracking-widest text-slate-400">
+                Ctrl K
+              </span>
             </div>
           </div>
 

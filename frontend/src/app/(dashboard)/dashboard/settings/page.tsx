@@ -14,7 +14,8 @@ import {
  Cloud,
  Zap,
  Mail,
- Phone
+ Phone,
+ Upload
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { isSupabaseConfigured, supabase } from "@/lib/supabase";
@@ -211,6 +212,7 @@ function ToggleRow({
 export default function SettingsPage() {
   const [activeTab, setActiveTab] = useState("profile");
   const [isSaving, setIsSaving] = useState(false);
+  const [isLogoUploading, setIsLogoUploading] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [hospital, setHospital] = useState<Hospital | null>(null);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
@@ -334,6 +336,55 @@ export default function SettingsPage() {
 
     if (error) throw error;
     setHospital({ ...hospital, ...extraHospitalFields, settings: updatedSettings });
+  };
+
+  const handleLogoUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    event.target.value = "";
+
+    if (!file) return;
+    if (!hospital) {
+      setStatusMessage("Aucun etablissement charge pour associer ce logo.");
+      return;
+    }
+    if (!file.type.startsWith("image/")) {
+      setStatusMessage("Veuillez choisir une image valide.");
+      return;
+    }
+
+    setIsLogoUploading(true);
+    setStatusMessage(null);
+
+    try {
+      const extension = file.name.split(".").pop()?.toLowerCase() || "png";
+      const filePath = `${hospital.id}/branding/logo-${Date.now()}.${extension}`;
+      const { error: uploadError } = await supabase.storage
+        .from("hospital-assets")
+        .upload(filePath, file, {
+          cacheControl: "3600",
+          upsert: true,
+        });
+
+      if (uploadError) throw uploadError;
+
+      const { data } = supabase.storage.from("hospital-assets").getPublicUrl(filePath);
+      const publicUrl = data.publicUrl;
+
+      const { error: updateError } = await supabase
+        .from("hospitals")
+        .update({ logo_url: publicUrl })
+        .eq("id", hospital.id);
+
+      if (updateError) throw updateError;
+
+      setBranding((current) => ({ ...current, logo_url: publicUrl }));
+      setHospital({ ...hospital, logo_url: publicUrl });
+      setStatusMessage("Logo televerse et enregistre.");
+    } catch (error: unknown) {
+      setStatusMessage(getErrorMessage(error, "Impossible de televerser le logo. Verifiez le bucket hospital-assets."));
+    } finally {
+      setIsLogoUploading(false);
+    }
   };
 
   const handleSave = async () => {
@@ -603,6 +654,23 @@ export default function SettingsPage() {
  placeholder="URL du logo enregistre"
  className="w-full px-4 py-3 bg-white border border-blue-100 rounded-2xl text-sm"
  />
+ <label className={cn(
+ "w-full flex items-center justify-center gap-2 px-4 py-3 rounded-2xl border border-blue-100 bg-blue-600 text-white text-xs font-black uppercase tracking-widest shadow-lg shadow-blue-100 transition-all",
+ (isLogoUploading || !hospital) ? "opacity-60 cursor-not-allowed" : "hover:bg-blue-700 cursor-pointer"
+ )}>
+ <Upload className="w-4 h-4" />
+ {isLogoUploading ? "Upload en cours..." : "Uploader une image"}
+ <input
+ type="file"
+ accept="image/*"
+ disabled={isLogoUploading || !hospital}
+ onChange={handleLogoUpload}
+ className="hidden"
+ />
+ </label>
+ <p className="text-center text-[10px] font-bold uppercase tracking-widest text-slate-400">
+ Le fichier est sauvegarde dans Supabase Storage puis associe a l'etablissement.
+ </p>
  </div>
  </div>
  <div className="space-y-6">

@@ -83,6 +83,7 @@ CREATE TABLE patients (
   address TEXT,
   insurance_provider TEXT,
   insurance_number TEXT,
+  avatar_url TEXT,
   qr_code_data TEXT,
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()

@@ -27,6 +27,25 @@ import { supabase } from "@/lib/supabase";
 import { getAppointmentStart } from "@/lib/appointment-utils";
 import Link from "next/link";
 
+const getGreeting = () => {
+ const hour = new Date().getHours();
+ if (hour < 12) return "Bonjour";
+ if (hour < 18) return "Bon apres-midi";
+ return "Bonsoir";
+};
+
+const getUserDisplayName = (profile: any) => {
+ const firstName = profile?.first_name?.trim?.() || "";
+ const lastName = profile?.last_name?.trim?.() || "";
+ const fullName = `${firstName} ${lastName}`.trim();
+
+ if (fullName) {
+ return profile?.role === "DOCTOR" ? `Dr. ${fullName}` : fullName;
+ }
+
+ return profile?.email ? profile.email.split("@")[0] : "Utilisateur";
+};
+
 export default function DashboardHome() {
  const [data, setData] = useState({
  patients: 0,
@@ -49,17 +68,32 @@ export default function DashboardHome() {
  return;
  }
 
+ const fallbackProfile = {
+ id: user.id,
+ email: user.email || "",
+ first_name: user.user_metadata?.first_name || user.user_metadata?.name?.split(" ")?.[0] || "",
+ last_name: user.user_metadata?.last_name || user.user_metadata?.name?.split(" ")?.slice(1).join(" ") || "",
+ role: user.user_metadata?.role || "Utilisateur",
+ hospitals: null,
+ };
+
  const { data: prof } = await supabase
  .from("profiles")
  .select("*, hospitals(name)")
  .eq("id", user.id)
  .maybeSingle();
- const hospitalId = prof?.hospital_id;
+ const currentProfile = {
+ ...fallbackProfile,
+ ...(prof || {}),
+ email: prof?.email || user.email || "",
+ hospitals: prof?.hospitals || null,
+ };
+ const hospitalId = currentProfile?.hospital_id;
  if (!hospitalId) {
- setProfile(prof ?? null);
+ setProfile(currentProfile);
  return;
  }
- setProfile(prof);
+ setProfile(currentProfile);
 
  const [
  { count: patientsCount },
@@ -146,6 +180,9 @@ export default function DashboardHome() {
  <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
  <div>
  <h1 className="text-3xl font-black text-slate-900 tracking-tight">
+ {getGreeting()}, {isLoading ? "..." : getUserDisplayName(profile)}
+ </h1>
+ <h1 className="hidden">
  Bonjour,{" "}
  {isLoading
  ? "…"

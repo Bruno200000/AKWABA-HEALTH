@@ -149,8 +149,12 @@ export default function PatientDetailPage() {
  <div className="bg-white rounded-3xl  shadow-sm overflow-hidden">
  <div className="h-32 bg-gradient-to-r from-blue-600 to-indigo-600 relative">
  <div className="absolute -bottom-12 left-8 p-1 bg-white rounded-3xl">
- <div className="w-24 h-24 bg-blue-50/50 rounded-2xl flex items-center justify-center">
+ <div className="w-24 h-24 bg-blue-50/50 rounded-2xl flex items-center justify-center overflow-hidden">
+ {patient.avatar_url ? (
+ <img src={patient.avatar_url} alt={`${patient.first_name} ${patient.last_name}`} className="w-full h-full object-cover" />
+ ) : (
  <User className="w-12 h-12 text-slate-600" />
+ )}
  </div>
  </div>
  </div>

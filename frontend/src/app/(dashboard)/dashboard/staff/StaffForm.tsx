@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Loader2, Save, Stethoscope, Mail, Phone, Lock } from "lucide-react";
+import { Loader2, Save, Stethoscope, Mail, Phone, Lock, Upload, User } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 
 interface StaffFormProps {
@@ -11,6 +11,8 @@ interface StaffFormProps {
 
 export default function StaffForm({ onSuccess, onCancel }: StaffFormProps) {
  const [isLoading, setIsLoading] = useState(false);
+ const [avatarFile, setAvatarFile] = useState<File | null>(null);
+ const [avatarPreview, setAvatarPreview] = useState("");
  const [formData, setFormData] = useState({
  first_name: "",
  last_name: "",
@@ -29,6 +31,30 @@ export default function StaffForm({ onSuccess, onCancel }: StaffFormProps) {
  const { data: { session } } = await supabase.auth.getSession();
  if (!session?.access_token) throw new Error("Session expirée, reconnectez-vous.");
 
+ const { data: { user } } = await supabase.auth.getUser();
+ if (!user) throw new Error("Utilisateur non authentifie");
+
+ const { data: adminProfile } = await supabase
+ .from("profiles")
+ .select("hospital_id")
+ .eq("id", user.id)
+ .single();
+ if (!adminProfile?.hospital_id) throw new Error("Profil hospitalier non trouve");
+
+ let avatarUrl: string | null = null;
+ if (avatarFile) {
+ const extension = avatarFile.name.split(".").pop()?.toLowerCase() || "jpg";
+ const safeEmail = formData.email.trim().toLowerCase().replace(/[^a-z0-9.-]/g, "-");
+ const filePath = `${adminProfile.hospital_id}/staff/${safeEmail}-${Date.now()}.${extension}`;
+ const { error: uploadError } = await supabase.storage
+ .from("hospital-assets")
+ .upload(filePath, avatarFile, { cacheControl: "3600", upsert: true });
+
+ if (uploadError) throw uploadError;
+ const { data } = supabase.storage.from("hospital-assets").getPublicUrl(filePath);
+ avatarUrl = data.publicUrl;
+ }
+
  const res = await fetch("/api/staff", {
  method: "POST",
  headers: {
@@ -43,6 +69,7 @@ export default function StaffForm({ onSuccess, onCancel }: StaffFormProps) {
  role: formData.role,
  specialization: formData.specialization,
  phone: formData.phone,
+ avatar_url: avatarUrl,
  }),
  });
 
@@ -65,6 +92,17 @@ export default function StaffForm({ onSuccess, onCancel }: StaffFormProps) {
  setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
  };
 
+ const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+ const file = e.target.files?.[0];
+ if (!file) return;
+ if (!file.type.startsWith("image/")) {
+ alert("Veuillez choisir une image valide.");
+ return;
+ }
+ setAvatarFile(file);
+ setAvatarPreview(URL.createObjectURL(file));
+ };
+
  return (
  <form onSubmit={handleSubmit} className="space-y-6">
  <p className="text-xs text-slate-600 leading-relaxed bg-blue-50 border border-blue-100 rounded-2xl px-4 py-3">
@@ -72,6 +110,24 @@ export default function StaffForm({ onSuccess, onCancel }: StaffFormProps) {
  <code className="text-[11px] bg-white px-1 rounded">SUPABASE_SERVICE_ROLE_KEY</code> dans{" "}
  <code className="text-[11px] bg-white px-1 rounded">frontend/.env.local</code>.
  </p>
+
+ <div className="flex flex-col sm:flex-row items-center gap-5 rounded-3xl border border-blue-100 bg-blue-50/40 p-5">
+ <div className="w-24 h-24 rounded-3xl bg-white border border-blue-100 shadow-sm overflow-hidden flex items-center justify-center">
+ {avatarPreview ? (
+ <img src={avatarPreview} alt="Photo personnel" className="w-full h-full object-cover" />
+ ) : (
+ <User className="w-10 h-10 text-blue-300" />
+ )}
+ </div>
+ <div className="flex-1 text-center sm:text-left">
+ <p className="font-black text-slate-900">Photo du membre</p>
+ <p className="text-xs font-medium text-slate-500 mt-1">Ajoutez une image au profil du personnel.</p>
+ </div>
+ <label className="inline-flex items-center justify-center gap-2 px-5 py-3 bg-blue-600 text-white rounded-2xl text-xs font-black uppercase tracking-widest cursor-pointer hover:bg-blue-700 transition-all">
+ <Upload className="w-4 h-4" /> Choisir
+ <input type="file" accept="image/*" onChange={handleAvatarChange} className="hidden" />
+ </label>
+ </div>
 
  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
  <div className="space-y-4">

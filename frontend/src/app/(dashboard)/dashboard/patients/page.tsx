@@ -178,8 +178,12 @@ export default function PatientsPage() {
  >
  <td className="px-6 py-4">
  <div className="flex items-center gap-3">
- <div className="w-10 h-10 rounded-full bg-blue-50/50 flex items-center justify-center">
+ <div className="w-10 h-10 rounded-full bg-blue-50/50 flex items-center justify-center overflow-hidden">
+ {patient.avatar_url ? (
+ <img src={patient.avatar_url} alt={`${patient.first_name} ${patient.last_name}`} className="w-full h-full object-cover" />
+ ) : (
  <User className="w-5 h-5 text-slate-600" />
+ )}
  </div>
  <div>
  <p className="font-bold text-sm">{patient.first_name} {patient.last_name}</p>

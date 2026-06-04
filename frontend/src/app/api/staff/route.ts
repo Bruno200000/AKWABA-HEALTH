@@ -61,6 +61,7 @@ export async function POST(request: Request) {
       role,
       specialization,
       phone,
+      avatar_url,
     } = body as Record<string, string>;
 
     if (!email?.trim() || !password || !first_name?.trim() || !last_name?.trim()) {
@@ -100,6 +101,7 @@ export async function POST(request: Request) {
       specialization: specialization?.trim() || null,
       phone: phone?.trim() || null,
       email: email.trim().toLowerCase(),
+      avatar_url: avatar_url?.trim() || null,
     });
 
     if (insErr) {

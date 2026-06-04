@@ -20,6 +20,7 @@ import { Modal } from "@/components/ui/modal";
 import StaffForm from "./StaffForm";
 import PerformanceTable from "./PerformanceTable";
 import { supabase } from "@/lib/supabase";
+import Link from "next/link";
 
 const statusColors = {
  AVAILABLE: "bg-emerald-500",
@@ -33,6 +34,8 @@ export default function StaffPage() {
  const [isLoading, setIsLoading] = useState(true);
  const [searchQuery, setSearchQuery] = useState("");
  const [activeTab, setActiveTab] = useState("list"); // list, performance
+ const [roleFilter, setRoleFilter] = useState("ALL");
+ const [selectedStaff, setSelectedStaff] = useState<any>(null);
 
  useEffect(() => {
  fetchStaff();
@@ -55,10 +58,23 @@ export default function StaffPage() {
  setIsLoading(false);
  };
 
- const filteredStaff = staffMembers.filter(s => 
+ const filteredStaff = staffMembers.filter(s => {
+ const matchesSearch =
  `${s.first_name} ${s.last_name}`.toLowerCase().includes(searchQuery.toLowerCase()) ||
- s.role?.toLowerCase().includes(searchQuery.toLowerCase())
- );
+ s.role?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+ s.specialization?.toLowerCase().includes(searchQuery.toLowerCase());
+ const matchesRole = roleFilter === "ALL" || s.role === roleFilter;
+
+ return matchesSearch && matchesRole;
+ });
+
+ const roleFilters = [
+ { label: "Tous", value: "ALL" },
+ { label: "Medecins", value: "DOCTOR" },
+ { label: "Infirmiers", value: "NURSE" },
+ { label: "Pharmaciens", value: "PHARMACIST" },
+ { label: "Laboratoire", value: "LAB_TECHNICIAN" },
+ ];
 
  return (
  <div className="space-y-8 pb-20">
@@ -121,10 +137,19 @@ export default function StaffPage() {
  className="w-full pl-10 pr-4 py-3 bg-white  rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/10 transition-all"
  />
  </div>
- <div className="flex gap-2">
- {["Tous", "Médecins", "Infirmiers"].map((tab) => (
- <button key={tab} className="px-4 py-2 bg-white  rounded-xl text-xs font-bold hover:bg-white border-blue-100 shadow-sm transition-all first:bg-blue-600 first:text-white first:border-blue-600">
- {tab}
+ <div className="flex gap-2 overflow-x-auto pb-1">
+ {roleFilters.map((tab) => (
+ <button
+ key={tab.value}
+ onClick={() => setRoleFilter(tab.value)}
+ className={cn(
+ "px-4 py-2 rounded-xl text-xs font-bold border shadow-sm transition-all whitespace-nowrap",
+ roleFilter === tab.value
+ ? "bg-blue-600 text-white border-blue-600"
+ : "bg-white text-slate-600 border-blue-100 hover:bg-blue-50"
+ )}
+ >
+ {tab.label}
  </button>
  ))}
  </div>
@@ -145,15 +170,23 @@ export default function StaffPage() {
  <div className="p-8">
  <div className="flex justify-between items-start mb-6">
  <div className="relative">
- <div className="w-16 h-16 rounded-[20px] bg-blue-50 flex items-center justify-center font-black text-xl text-blue-600 shadow-inner uppercase">
- {staff.first_name?.[0]}{staff.last_name?.[0]}
+ <div className="w-16 h-16 rounded-[20px] bg-blue-50 flex items-center justify-center font-black text-xl text-blue-600 shadow-inner uppercase overflow-hidden">
+ {staff.avatar_url ? (
+ <img src={staff.avatar_url} alt={`${staff.first_name} ${staff.last_name}`} className="w-full h-full object-cover" />
+ ) : (
+ <>{staff.first_name?.[0]}{staff.last_name?.[0]}</>
+ )}
  </div>
  <div className={cn(
  "absolute -bottom-1 -right-1 w-4 h-4 border-2 border-white rounded-full shadow-sm",
  statusColors[staff.status as keyof typeof statusColors] || statusColors.OFFLINE
  )} />
  </div>
- <button className="p-2 text-slate-300 hover:text-slate-600 transition-colors">
+ <button
+ onClick={() => setSelectedStaff(staff)}
+ className="p-2 text-slate-300 hover:text-slate-600 transition-colors"
+ title="Voir le profil"
+ >
  <MoreVertical className="w-5 h-5" />
  </button>
  </div>
@@ -178,10 +211,17 @@ export default function StaffPage() {
  </div>
 
  <div className="px-8 py-4 bg-white border-blue-100 shadow-sm /50 border-t border-blue-50 flex justify-between items-center">
- <button className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-blue-600 hover:underline">
+ <Link
+ href={`/dashboard/staff/schedule?staff=${staff.id}`}
+ className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-blue-600 hover:underline"
+ >
  <Calendar className="w-3.5 h-3.5" /> Planning
- </button>
- <button className="p-2 text-slate-300 hover:text-blue-600 transition-colors">
+ </Link>
+ <button
+ onClick={() => setSelectedStaff(staff)}
+ className="p-2 text-slate-300 hover:text-blue-600 transition-colors"
+ title="Voir les details"
+ >
  <ChevronRight className="w-5 h-5" />
  </button>
  </div>
@@ -215,6 +255,51 @@ export default function StaffPage() {
  }} 
  onCancel={() => setIsModalOpen(false)} 
  />
+ </Modal>
+
+ <Modal
+ isOpen={Boolean(selectedStaff)}
+ onClose={() => setSelectedStaff(null)}
+ title="Profil du membre"
+ >
+ {selectedStaff && (
+ <div className="space-y-6">
+ <div className="flex items-center gap-5 rounded-3xl border border-blue-100 bg-blue-50/40 p-5">
+ <div className="w-20 h-20 rounded-3xl bg-white border border-blue-100 overflow-hidden flex items-center justify-center text-blue-600 font-black text-xl">
+ {selectedStaff.avatar_url ? (
+ <img src={selectedStaff.avatar_url} alt={`${selectedStaff.first_name} ${selectedStaff.last_name}`} className="w-full h-full object-cover" />
+ ) : (
+ <>{selectedStaff.first_name?.[0]}{selectedStaff.last_name?.[0]}</>
+ )}
+ </div>
+ <div>
+ <h3 className="text-xl font-black text-slate-900">{selectedStaff.first_name} {selectedStaff.last_name}</h3>
+ <p className="text-xs font-black uppercase tracking-widest text-blue-600">
+ {selectedStaff.role === "DOCTOR" ? "Medecin" : selectedStaff.role === "NURSE" ? "Infirmier(e)" : selectedStaff.role || "Personnel"}
+ </p>
+ <p className="text-sm text-slate-600 mt-1">{selectedStaff.specialization || "Specialite non renseignee"}</p>
+ </div>
+ </div>
+
+ <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+ <a href={selectedStaff.email ? `mailto:${selectedStaff.email}` : undefined} className="flex items-center gap-3 rounded-2xl border border-blue-100 bg-white px-4 py-3 text-sm font-bold text-slate-700 hover:bg-blue-50">
+ <Mail className="w-4 h-4 text-blue-500" /> {selectedStaff.email || "Email non renseigne"}
+ </a>
+ <a href={selectedStaff.phone ? `tel:${selectedStaff.phone}` : undefined} className="flex items-center gap-3 rounded-2xl border border-blue-100 bg-white px-4 py-3 text-sm font-bold text-slate-700 hover:bg-blue-50">
+ <Phone className="w-4 h-4 text-blue-500" /> {selectedStaff.phone || "Telephone non renseigne"}
+ </a>
+ </div>
+
+ <div className="flex flex-col sm:flex-row gap-3">
+ <Link href={`/dashboard/staff/schedule?staff=${selectedStaff.id}`} className="flex-1 flex items-center justify-center gap-2 px-5 py-3 bg-blue-600 text-white rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-blue-700">
+ <Calendar className="w-4 h-4" /> Voir le planning
+ </Link>
+ <button onClick={() => setSelectedStaff(null)} className="flex-1 px-5 py-3 bg-white border border-blue-100 rounded-2xl text-xs font-black uppercase tracking-widest text-slate-600 hover:bg-blue-50">
+ Fermer
+ </button>
+ </div>
+ </div>
+ )}
  </Modal>
  </div>
  );

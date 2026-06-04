@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { supabase } from "@/lib/supabase";
-import { Loader2, Save, User, Phone, Mail, MapPin, Droplets, ShieldCheck, HeartPulse } from "lucide-react";
+import { Loader2, Save, User, Phone, Mail, MapPin, Droplets, ShieldCheck, HeartPulse, Upload } from "lucide-react";
 
 interface PatientFormProps {
  onSuccess: () => void;
@@ -11,6 +11,8 @@ interface PatientFormProps {
 
 export default function PatientForm({ onSuccess, onCancel }: PatientFormProps) {
  const [isLoading, setIsLoading] = useState(false);
+ const [avatarFile, setAvatarFile] = useState<File | null>(null);
+ const [avatarPreview, setAvatarPreview] = useState("");
  const [formData, setFormData] = useState({
  first_name: "",
  last_name: "",
@@ -39,6 +41,19 @@ export default function PatientForm({ onSuccess, onCancel }: PatientFormProps) {
  if (!profile?.hospital_id) throw new Error("Profil hospitalier non trouvé");
  
  const fileNumber = `PAT-${Date.now().toString(36).toUpperCase()}-${crypto.randomUUID().slice(0, 8).toUpperCase()}`;
+ let avatarUrl: string | null = null;
+
+ if (avatarFile) {
+ const extension = avatarFile.name.split(".").pop()?.toLowerCase() || "jpg";
+ const filePath = `${profile.hospital_id}/patients/${fileNumber}.${extension}`;
+ const { error: uploadError } = await supabase.storage
+ .from("hospital-assets")
+ .upload(filePath, avatarFile, { cacheControl: "3600", upsert: true });
+
+ if (uploadError) throw uploadError;
+ const { data } = supabase.storage.from("hospital-assets").getPublicUrl(filePath);
+ avatarUrl = data.publicUrl;
+ }
 
  const { error } = await supabase.from("patients").insert([
  {
@@ -54,6 +69,7 @@ export default function PatientForm({ onSuccess, onCancel }: PatientFormProps) {
  address: formData.address || null,
  insurance_provider: formData.insurance_provider || null,
  insurance_number: formData.insurance_number || null,
+ avatar_url: avatarUrl,
  allergies: formData.allergies ? formData.allergies.split(",").map((s) => s.trim()).filter(Boolean) : [],
  medical_history: { notes: formData.medical_history },
  },
@@ -72,8 +88,37 @@ export default function PatientForm({ onSuccess, onCancel }: PatientFormProps) {
  setFormData({ ...formData, [e.target.name]: e.target.value });
  };
 
+ const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+ const file = e.target.files?.[0];
+ if (!file) return;
+ if (!file.type.startsWith("image/")) {
+ alert("Veuillez choisir une image valide.");
+ return;
+ }
+
+ setAvatarFile(file);
+ setAvatarPreview(URL.createObjectURL(file));
+ };
+
  return (
  <form onSubmit={handleSubmit} className="space-y-6">
+ <div className="flex flex-col sm:flex-row items-center gap-5 rounded-3xl border border-blue-100 bg-blue-50/40 p-5">
+ <div className="w-24 h-24 rounded-3xl bg-white border border-blue-100 shadow-sm overflow-hidden flex items-center justify-center">
+ {avatarPreview ? (
+ <img src={avatarPreview} alt="Photo patient" className="w-full h-full object-cover" />
+ ) : (
+ <User className="w-10 h-10 text-blue-300" />
+ )}
+ </div>
+ <div className="flex-1 text-center sm:text-left">
+ <p className="font-black text-slate-900">Photo du patient</p>
+ <p className="text-xs font-medium text-slate-500 mt-1">Ajoutez une image lors de la creation du dossier.</p>
+ </div>
+ <label className="inline-flex items-center justify-center gap-2 px-5 py-3 bg-blue-600 text-white rounded-2xl text-xs font-black uppercase tracking-widest cursor-pointer hover:bg-blue-700 transition-all">
+ <Upload className="w-4 h-4" /> Choisir
+ <input type="file" accept="image/*" onChange={handleAvatarChange} className="hidden" />
+ </label>
+ </div>
  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
  {/* Identité */}
  <div className="space-y-4">

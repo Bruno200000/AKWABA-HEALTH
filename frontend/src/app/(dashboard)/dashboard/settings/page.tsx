@@ -37,13 +37,30 @@ const defaultIntegrations = {
   mistral: "",
   whatsapp_token: "",
   whatsapp_phone: "",
+  whatsapp_template: "",
+  sms_provider: "twilio",
+  sms_api_key: "",
+  sms_sender: "",
+  email_provider: "smtp",
+  smtp_host: "",
+  smtp_user: "",
+  smtp_password: "",
   pharmacy_webhook: "",
+  laboratory_webhook: "",
+  finance_webhook: "",
 };
 
 const defaultAiSettings = {
   diagnostic_assistant: false,
   voice_transcription: false,
   predictive_analysis: false,
+  active_provider: "openai",
+  model: "gpt-4.1-mini",
+  response_language: "fr",
+  confidence_threshold: 70,
+  clinical_context: true,
+  prescription_suggestions: false,
+  lab_result_interpretation: false,
 };
 
 const defaultSecuritySettings = {
@@ -56,6 +73,13 @@ const defaultNotificationSettings = {
   sms_appointment_reminders: false,
   email_invoices: false,
   whatsapp_prescriptions: false,
+  appointment_channel: "whatsapp",
+  invoice_channel: "email",
+  prescription_channel: "whatsapp",
+  lab_results_channel: "email",
+  emergency_channel: "sms",
+  sender_name: "AKWABA HEALTH",
+  reminder_delay_hours: 24,
 };
 
 const defaultBillingSettings = {
@@ -626,6 +650,34 @@ export default function SettingsPage() {
  </div>
 
  <div className="space-y-8">
+ <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 rounded-[28px] border border-blue-100 bg-blue-50/30 p-6">
+ <div className="space-y-2">
+ <label className="text-[10px] font-black uppercase tracking-widest text-slate-600">Fournisseur IA</label>
+ <select value={aiSettings.active_provider} onChange={(e) => setAiSettings({ ...aiSettings, active_provider: e.target.value })} className="w-full px-4 py-3 bg-white border border-blue-100 rounded-2xl text-sm font-bold outline-none focus:ring-4 focus:ring-blue-500/10">
+ <option value="openai">OpenAI</option>
+ <option value="anthropic">Claude</option>
+ <option value="gemini">Gemini</option>
+ <option value="mistral">Mistral</option>
+ </select>
+ </div>
+ <div className="space-y-2">
+ <label className="text-[10px] font-black uppercase tracking-widest text-slate-600">Modele</label>
+ <input value={aiSettings.model} onChange={(e) => setAiSettings({ ...aiSettings, model: e.target.value })} className="w-full px-4 py-3 bg-white border border-blue-100 rounded-2xl text-sm font-bold outline-none focus:ring-4 focus:ring-blue-500/10" placeholder="gpt-4.1-mini" />
+ </div>
+ <div className="space-y-2">
+ <label className="text-[10px] font-black uppercase tracking-widest text-slate-600">Langue</label>
+ <select value={aiSettings.response_language} onChange={(e) => setAiSettings({ ...aiSettings, response_language: e.target.value })} className="w-full px-4 py-3 bg-white border border-blue-100 rounded-2xl text-sm font-bold outline-none focus:ring-4 focus:ring-blue-500/10">
+ <option value="fr">Francais</option>
+ <option value="en">Anglais</option>
+ <option value="auto">Automatique</option>
+ </select>
+ </div>
+ <div className="space-y-2">
+ <label className="text-[10px] font-black uppercase tracking-widest text-slate-600">Confiance {aiSettings.confidence_threshold}%</label>
+ <input type="range" min={40} max={95} value={aiSettings.confidence_threshold} onChange={(e) => setAiSettings({ ...aiSettings, confidence_threshold: Number(e.target.value) })} className="w-full accent-blue-600" />
+ </div>
+ </div>
+
  <ToggleRow
  title="Assistance au Diagnostic"
  description="Active le module d'aide au diagnostic dans les workflows cliniques."
@@ -643,6 +695,24 @@ export default function SettingsPage() {
  description="Active les indicateurs predictifs bases sur les donnees enregistrees."
  enabled={aiSettings.predictive_analysis}
  onToggle={() => setAiSettings({ ...aiSettings, predictive_analysis: !aiSettings.predictive_analysis })}
+ />
+ <ToggleRow
+ title="Contexte clinique"
+ description="Autorise l'IA a utiliser les donnees du dossier patient."
+ enabled={aiSettings.clinical_context}
+ onToggle={() => setAiSettings({ ...aiSettings, clinical_context: !aiSettings.clinical_context })}
+ />
+ <ToggleRow
+ title="Suggestions d'ordonnance"
+ description="Propose des pistes de prescription au praticien."
+ enabled={aiSettings.prescription_suggestions}
+ onToggle={() => setAiSettings({ ...aiSettings, prescription_suggestions: !aiSettings.prescription_suggestions })}
+ />
+ <ToggleRow
+ title="Interpretation laboratoire"
+ description="Aide a resumer les resultats du laboratoire."
+ enabled={aiSettings.lab_result_interpretation}
+ onToggle={() => setAiSettings({ ...aiSettings, lab_result_interpretation: !aiSettings.lab_result_interpretation })}
  />
  <button onClick={handleSave} disabled={isSaving} className="flex items-center gap-2 px-10 py-4 bg-blue-600 text-white rounded-3xl font-black text-xs uppercase tracking-widest shadow-xl shadow-blue-200 hover:bg-blue-700 transition-all">
  {isSaving ? "Enregistrement..." : <><Save className="w-4 h-4" /> Sauvegarder</>}
@@ -664,7 +734,82 @@ export default function SettingsPage() {
  <p className="text-slate-600 font-medium">Connectez AKWABA HEALTH à WhatsApp, vos IAs préférées et d&apos;autres outils externes.</p>
  </div>
  
- <div className="space-y-6">
+ <div className="space-y-10">
+ <section className="space-y-4">
+ <div>
+ <p className="text-[10px] font-black uppercase tracking-[0.2em] text-blue-600">Communication</p>
+ <h4 className="text-lg font-black text-slate-900">Logiciels de messagerie et notifications</h4>
+ </div>
+ <div className="grid grid-cols-1 xl:grid-cols-3 gap-5">
+ {[
+ { name: "WhatsApp Business", logo: "W", status: integrations.whatsapp_token, color: "emerald" },
+ { name: "SMS Provider", logo: "S", status: integrations.sms_api_key, color: "sky" },
+ { name: "Email SMTP", logo: "@", status: integrations.smtp_host && integrations.smtp_user, color: "amber" },
+ ].map((software) => (
+ <div key={software.name} className="rounded-[28px] border border-blue-100 bg-white p-6 shadow-sm">
+ <div className="flex items-center gap-4">
+ <div className={cn("w-14 h-14 rounded-2xl flex items-center justify-center text-xl font-black", software.color === "emerald" ? "bg-emerald-50 text-emerald-600" : software.color === "sky" ? "bg-sky-50 text-sky-600" : "bg-amber-50 text-amber-600")}>{software.logo}</div>
+ <div className="flex-1 min-w-0">
+ <p className="font-black text-slate-900 truncate">{software.name}</p>
+ <p className="text-xs font-medium text-slate-500">{software.status ? "API connectee" : "API non connectee"}</p>
+ </div>
+ </div>
+ </div>
+ ))}
+ </div>
+ <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+ <input type="password" placeholder="Token WhatsApp" value={integrations.whatsapp_token} onChange={(e) => setIntegrations({ ...integrations, whatsapp_token: e.target.value })} className="px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm outline-none focus:ring-4 focus:ring-blue-500/10" />
+ <input type="password" placeholder="Cle API SMS" value={integrations.sms_api_key} onChange={(e) => setIntegrations({ ...integrations, sms_api_key: e.target.value })} className="px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm outline-none focus:ring-4 focus:ring-blue-500/10" />
+ <input type="text" placeholder="Serveur SMTP / API email" value={integrations.smtp_host} onChange={(e) => setIntegrations({ ...integrations, smtp_host: e.target.value })} className="px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm outline-none focus:ring-4 focus:ring-blue-500/10" />
+ <input type="text" placeholder="Phone Number ID" value={integrations.whatsapp_phone} onChange={(e) => setIntegrations({ ...integrations, whatsapp_phone: e.target.value })} className="px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm outline-none focus:ring-4 focus:ring-blue-500/10" />
+ <input type="text" placeholder="Nom expediteur SMS" value={integrations.sms_sender} onChange={(e) => setIntegrations({ ...integrations, sms_sender: e.target.value })} className="px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm outline-none focus:ring-4 focus:ring-blue-500/10" />
+ <input type="password" placeholder="Mot de passe / API key email" value={integrations.smtp_password} onChange={(e) => setIntegrations({ ...integrations, smtp_password: e.target.value })} className="px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm outline-none focus:ring-4 focus:ring-blue-500/10" />
+ </div>
+ <button onClick={handleSave} disabled={isSaving} className="w-full px-5 py-3 bg-blue-600 text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-blue-700 transition-all">Connecter les API communication</button>
+ </section>
+
+ <section className="space-y-4">
+ <div>
+ <p className="text-[10px] font-black uppercase tracking-[0.2em] text-indigo-600">Intelligence artificielle</p>
+ <h4 className="text-lg font-black text-slate-900">Modeles IA connectables</h4>
+ </div>
+ <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+ {[
+ { key: "openai", logo: "O", name: "OpenAI", value: integrations.openai },
+ { key: "anthropic", logo: "C", name: "Claude", value: integrations.anthropic },
+ { key: "gemini", logo: "G", name: "Google Gemini", value: integrations.gemini },
+ { key: "mistral", logo: "M", name: "Mistral AI", value: integrations.mistral },
+ ].map((tool) => (
+ <div key={tool.key} className="rounded-[28px] border border-blue-100 bg-white p-6 shadow-sm space-y-4">
+ <div className="flex items-center gap-4">
+ <div className="w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-lg font-black">{tool.logo}</div>
+ <div className="flex-1">
+ <p className="font-black text-slate-900">{tool.name}</p>
+ <p className="text-xs font-medium text-slate-500">{tool.value ? "API connectee" : "API non connectee"}</p>
+ </div>
+ </div>
+ <input type="password" placeholder={`Cle API ${tool.name}`} value={tool.value} onChange={(e) => setIntegrations({ ...integrations, [tool.key]: e.target.value })} className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm outline-none focus:ring-4 focus:ring-blue-500/10" />
+ <button onClick={handleSave} disabled={isSaving} className="w-full px-5 py-3 bg-blue-600 text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-blue-700 transition-all">{tool.value ? "Mettre a jour l'API" : "Connecter l'API"}</button>
+ </div>
+ ))}
+ </div>
+ </section>
+
+ <section className="space-y-4">
+ <div>
+ <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-600">Logiciels metiers</p>
+ <h4 className="text-lg font-black text-slate-900">Synchronisations externes</h4>
+ </div>
+ <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+ <input type="url" placeholder="Webhook pharmacie" value={integrations.pharmacy_webhook} onChange={(e) => setIntegrations({ ...integrations, pharmacy_webhook: e.target.value })} className="px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm outline-none focus:ring-4 focus:ring-blue-500/10" />
+ <input type="url" placeholder="Webhook laboratoire" value={integrations.laboratory_webhook} onChange={(e) => setIntegrations({ ...integrations, laboratory_webhook: e.target.value })} className="px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm outline-none focus:ring-4 focus:ring-blue-500/10" />
+ <input type="url" placeholder="Webhook finance" value={integrations.finance_webhook} onChange={(e) => setIntegrations({ ...integrations, finance_webhook: e.target.value })} className="px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm outline-none focus:ring-4 focus:ring-blue-500/10" />
+ </div>
+ <button onClick={handleSave} disabled={isSaving} className="w-full px-5 py-3 bg-blue-600 text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-blue-700 transition-all">Connecter les webhooks</button>
+ </section>
+ </div>
+
+ <div className="hidden">
   <div className="p-8 bg-white shadow-sm rounded-[32px] border border-blue-50 flex flex-col gap-6">
     <div className="flex gap-6 items-center">
     <div className="w-14 h-14 bg-green-100 text-green-600 rounded-[20px] flex items-center justify-center">
@@ -805,6 +950,36 @@ export default function SettingsPage() {
  <p className="text-slate-600 font-medium">Gérez les alertes SMS et Email envoyées aux patients.</p>
  </div>
  <div className="space-y-6">
+ <div className="grid grid-cols-1 md:grid-cols-2 gap-5 rounded-[28px] border border-blue-100 bg-blue-50/30 p-6">
+ <div className="space-y-2">
+ <label className="text-[10px] font-black uppercase tracking-widest text-slate-600">Nom expediteur</label>
+ <input value={notificationSettings.sender_name} onChange={(e) => setNotificationSettings({ ...notificationSettings, sender_name: e.target.value })} className="w-full px-4 py-3 bg-white border border-blue-100 rounded-2xl text-sm font-bold outline-none focus:ring-4 focus:ring-blue-500/10" />
+ </div>
+ <div className="space-y-2">
+ <label className="text-[10px] font-black uppercase tracking-widest text-slate-600">Delai rappel en heures</label>
+ <input type="number" min={1} value={notificationSettings.reminder_delay_hours} onChange={(e) => setNotificationSettings({ ...notificationSettings, reminder_delay_hours: Number(e.target.value) })} className="w-full px-4 py-3 bg-white border border-blue-100 rounded-2xl text-sm font-bold outline-none focus:ring-4 focus:ring-blue-500/10" />
+ </div>
+ {[
+ { key: "appointment_channel", label: "Rendez-vous" },
+ { key: "invoice_channel", label: "Factures" },
+ { key: "prescription_channel", label: "Ordonnances" },
+ { key: "lab_results_channel", label: "Resultats laboratoire" },
+ { key: "emergency_channel", label: "Urgences" },
+ ].map((item) => (
+ <div key={item.key} className="space-y-2">
+ <label className="text-[10px] font-black uppercase tracking-widest text-slate-600">{item.label}</label>
+ <select value={String(notificationSettings[item.key as keyof typeof notificationSettings])} onChange={(e) => setNotificationSettings({ ...notificationSettings, [item.key]: e.target.value })} className="w-full px-4 py-3 bg-white border border-blue-100 rounded-2xl text-sm font-bold outline-none focus:ring-4 focus:ring-blue-500/10">
+ <option value="whatsapp">WhatsApp Business</option>
+ <option value="sms">SMS Provider</option>
+ <option value="email">Email SMTP</option>
+ <option value="disabled">Desactive</option>
+ </select>
+ </div>
+ ))}
+ <div className="rounded-2xl bg-white border border-blue-100 p-4 text-xs font-bold text-slate-600">
+ WhatsApp: {integrations.whatsapp_token ? "connecte" : "non connecte"} | SMS: {integrations.sms_api_key ? "connecte" : "non connecte"} | Email: {integrations.smtp_host ? "connecte" : "non connecte"}
+ </div>
+ </div>
  <ToggleRow
  title="Rappels de Rendez-vous SMS"
  description="Autorise l'envoi de rappels SMS pour les rendez-vous."

@@ -22,6 +22,9 @@ import {
   BrainCircuit,
   MessageSquare,
   Search,
+  AlertTriangle,
+  CheckCircle2,
+  RefreshCw,
   ChevronLeft,
   ChevronRight,
   ChevronDown,
@@ -162,6 +165,16 @@ type SpeechRecognitionConstructor = new () => {
   onerror: (() => void) | null;
 };
 
+type NotificationItem = {
+  id: string;
+  title: string;
+  description: string;
+  href: string;
+  type: "appointment" | "stock" | "invoice" | "lab";
+  priority: "high" | "medium" | "low";
+  createdAt?: string;
+};
+
 const getSearchDestination = (query: string) => {
   const value = query.toLowerCase();
 
@@ -268,6 +281,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const [globalSearch, setGlobalSearch] = useState("");
   const [isListening, setIsListening] = useState(false);
   const [voiceMessage, setVoiceMessage] = useState("");
+  const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
+  const [notifications, setNotifications] = useState<NotificationItem[]>([]);
+  const [dismissedNotifications, setDismissedNotifications] = useState<string[]>([]);
+  const [isLoadingNotifications, setIsLoadingNotifications] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
 
@@ -311,6 +328,117 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     fetchProfile();
   }, [router]);
 
+  React.useEffect(() => {
+    const stored = window.localStorage.getItem("akwaba-dismissed-notifications");
+    if (stored) {
+      try {
+        setDismissedNotifications(JSON.parse(stored));
+      } catch {
+        setDismissedNotifications([]);
+      }
+    }
+  }, []);
+
+  const fetchNotifications = React.useCallback(async () => {
+    const hospitalId = profile?.hospital_id;
+    if (!hospitalId || !isSupabaseConfigured) return;
+
+    setIsLoadingNotifications(true);
+
+    try {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const tomorrow = new Date(today);
+      tomorrow.setDate(tomorrow.getDate() + 1);
+
+      const [
+        { data: appointments },
+        { data: medicines },
+        { data: invoices },
+        { data: labResults },
+      ] = await Promise.all([
+        supabase
+          .from("appointments")
+          .select("id, start_time, status, reason, patients(first_name, last_name)")
+          .eq("hospital_id", hospitalId)
+          .gte("start_time", today.toISOString())
+          .lt("start_time", tomorrow.toISOString())
+          .in("status", ["PENDING", "CONFIRMED", "IN_PROGRESS"])
+          .order("start_time", { ascending: true })
+          .limit(5),
+        supabase
+          .from("medicines")
+          .select("id, name, stock_quantity, min_stock_alert")
+          .eq("hospital_id", hospitalId)
+          .limit(20),
+        supabase
+          .from("invoices")
+          .select("id, total_amount, paid_amount, status, patients(first_name, last_name)")
+          .eq("hospital_id", hospitalId)
+          .neq("status", "PAID")
+          .order("created_at", { ascending: false })
+          .limit(5),
+        supabase
+          .from("lab_tests")
+          .select("id, test_type, completed_at, created_at, patients(first_name, last_name)")
+          .eq("hospital_id", hospitalId)
+          .eq("status", "COMPLETED")
+          .order("completed_at", { ascending: false })
+          .limit(3),
+      ]);
+
+      const lowStock = (medicines || []).filter(
+        (item: any) => Number(item.stock_quantity || 0) <= Number(item.min_stock_alert || 10)
+      );
+
+      const nextNotifications: NotificationItem[] = [
+        ...(appointments || []).map((appointment: any) => ({
+          id: `appointment-${appointment.id}`,
+          title: "Rendez-vous aujourd'hui",
+          description: `${appointment.patients?.first_name || ""} ${appointment.patients?.last_name || ""} - ${new Date(appointment.start_time).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}`,
+          href: "/dashboard/appointments",
+          type: "appointment" as const,
+          priority: appointment.status === "IN_PROGRESS" ? "high" as const : "medium" as const,
+          createdAt: appointment.start_time,
+        })),
+        ...lowStock.slice(0, 5).map((medicine: any) => ({
+          id: `stock-${medicine.id}`,
+          title: "Stock faible",
+          description: `${medicine.name} : ${medicine.stock_quantity} unite(s) restantes`,
+          href: "/dashboard/pharmacy",
+          type: "stock" as const,
+          priority: "high" as const,
+        })),
+        ...(invoices || []).map((invoice: any) => ({
+          id: `invoice-${invoice.id}`,
+          title: "Facture a suivre",
+          description: `${invoice.patients?.first_name || ""} ${invoice.patients?.last_name || ""} - reste ${Math.max(0, Number(invoice.total_amount || 0) - Number(invoice.paid_amount || 0)).toLocaleString()} CFA`,
+          href: "/dashboard/finance",
+          type: "invoice" as const,
+          priority: "medium" as const,
+        })),
+        ...(labResults || []).map((lab: any) => ({
+          id: `lab-${lab.id}`,
+          title: "Resultat laboratoire pret",
+          description: `${lab.test_type || "Analyse"} - ${lab.patients?.first_name || ""} ${lab.patients?.last_name || ""}`,
+          href: "/dashboard/laboratory/results",
+          type: "lab" as const,
+          priority: "low" as const,
+          createdAt: lab.completed_at || lab.created_at,
+        })),
+      ];
+
+      setNotifications(nextNotifications);
+    } finally {
+      setIsLoadingNotifications(false);
+    }
+  }, [profile?.hospital_id]);
+
+  React.useEffect(() => {
+    if (!gateReady || !profile?.hospital_id) return;
+    void fetchNotifications();
+  }, [fetchNotifications, gateReady, profile?.hospital_id]);
+
   const handleLogout = async () => {
     if (isSupabaseConfigured) {
       await supabase.auth.signOut();
@@ -352,6 +480,21 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     setIsListening(true);
     setVoiceMessage("Parlez maintenant...");
     recognition.start();
+  };
+
+  const visibleNotifications = notifications.filter((item) => !dismissedNotifications.includes(item.id));
+
+  const dismissNotification = (id: string) => {
+    const nextDismissed = [...dismissedNotifications, id];
+    setDismissedNotifications(nextDismissed);
+    window.localStorage.setItem("akwaba-dismissed-notifications", JSON.stringify(nextDismissed));
+  };
+
+  const notificationIcon = (type: NotificationItem["type"]) => {
+    if (type === "stock") return Pill;
+    if (type === "invoice") return CreditCard;
+    if (type === "lab") return Beaker;
+    return Calendar;
   };
 
   if (!gateReady) {
@@ -486,14 +629,106 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
           <div className="flex items-center gap-5">
             <div className="flex items-center gap-2">
-              <button className="relative p-2.5 text-slate-500 hover:bg-blue-50 rounded-xl transition-all hover:scale-105 active:scale-95 group">
-                <Bell className="w-5 h-5" />
-                <span className="absolute top-2.5 right-2.5 w-2 h-2 bg-blue-500 rounded-full ring-2 ring-white" />
-                <div className="absolute top-full right-0 mt-2 hidden group-hover:block bg-white shadow-xl rounded-xl p-3 border border-blue-100 text-[10px] w-48 z-50">
-                  <p className="font-bold text-slate-400 uppercase mb-2">Notifications</p>
-                  <p className="text-slate-600">Pas de nouvelles notifications.</p>
-                </div>
-              </button>
+              <div className="relative">
+                <button
+                  type="button"
+                  onClick={() => setIsNotificationsOpen((current) => !current)}
+                  className="relative p-2.5 text-slate-500 hover:bg-blue-50 rounded-xl transition-all hover:scale-105 active:scale-95"
+                  title="Notifications"
+                >
+                  <Bell className="w-5 h-5" />
+                  {visibleNotifications.length > 0 && (
+                    <span className="absolute -top-1 -right-1 min-w-5 h-5 px-1 bg-red-500 text-white rounded-full ring-2 ring-white text-[10px] font-black flex items-center justify-center">
+                      {visibleNotifications.length > 9 ? "9+" : visibleNotifications.length}
+                    </span>
+                  )}
+                </button>
+
+                <AnimatePresence>
+                  {isNotificationsOpen && (
+                    <>
+                      <div className="fixed inset-0 z-40" onClick={() => setIsNotificationsOpen(false)} />
+                      <motion.div
+                        initial={{ opacity: 0, y: 12, scale: 0.96 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: 12, scale: 0.96 }}
+                        className="absolute right-0 top-full z-50 mt-3 w-[360px] max-w-[calc(100vw-2rem)] overflow-hidden rounded-2xl border border-blue-100 bg-white shadow-2xl shadow-blue-900/10"
+                      >
+                        <div className="flex items-center justify-between gap-3 border-b border-blue-50 bg-blue-50/50 px-5 py-4">
+                          <div>
+                            <p className="text-[10px] font-black uppercase tracking-[0.18em] text-blue-600">Centre d&apos;alertes</p>
+                            <p className="text-sm font-black text-slate-900">
+                              {visibleNotifications.length} notification{visibleNotifications.length > 1 ? "s" : ""}
+                            </p>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => void fetchNotifications()}
+                            className="flex h-9 w-9 items-center justify-center rounded-xl bg-white text-slate-500 shadow-sm transition-all hover:text-blue-600"
+                            title="Actualiser"
+                          >
+                            <RefreshCw className={cn("h-4 w-4", isLoadingNotifications && "animate-spin")} />
+                          </button>
+                        </div>
+
+                        <div className="max-h-[420px] overflow-y-auto p-3 custom-scrollbar">
+                          {isLoadingNotifications ? (
+                            <div className="flex items-center justify-center gap-2 py-10 text-xs font-black uppercase tracking-widest text-slate-500">
+                              <Loader2 className="h-4 w-4 animate-spin text-blue-600" />
+                              Chargement
+                            </div>
+                          ) : visibleNotifications.length > 0 ? (
+                            <div className="space-y-2">
+                              {visibleNotifications.map((item) => {
+                                const Icon = notificationIcon(item.type);
+                                return (
+                                  <div key={item.id} className="group rounded-2xl border border-slate-100 bg-white p-3 transition-all hover:border-blue-100 hover:bg-blue-50/40">
+                                    <div className="flex gap-3">
+                                      <div className={cn(
+                                        "mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl",
+                                        item.priority === "high" ? "bg-red-50 text-red-600" : item.priority === "medium" ? "bg-amber-50 text-amber-600" : "bg-blue-50 text-blue-600"
+                                      )}>
+                                        {item.priority === "high" ? <AlertTriangle className="h-5 w-5" /> : <Icon className="h-5 w-5" />}
+                                      </div>
+                                      <button
+                                        type="button"
+                                        onClick={() => {
+                                          setIsNotificationsOpen(false);
+                                          router.push(item.href);
+                                        }}
+                                        className="min-w-0 flex-1 text-left"
+                                      >
+                                        <p className="text-sm font-black text-slate-900">{item.title}</p>
+                                        <p className="mt-1 line-clamp-2 text-xs font-medium leading-relaxed text-slate-500">{item.description}</p>
+                                      </button>
+                                      <button
+                                        type="button"
+                                        onClick={() => dismissNotification(item.id)}
+                                        className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-slate-300 transition-all hover:bg-white hover:text-slate-600"
+                                        title="Masquer"
+                                      >
+                                        <X className="h-4 w-4" />
+                                      </button>
+                                    </div>
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          ) : (
+                            <div className="flex flex-col items-center justify-center py-10 text-center">
+                              <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-600">
+                                <CheckCircle2 className="h-6 w-6" />
+                              </div>
+                              <p className="text-sm font-black text-slate-900">Aucune alerte active</p>
+                              <p className="mt-1 text-xs font-medium text-slate-500">Rendez-vous, stocks, factures et resultats sont a jour.</p>
+                            </div>
+                          )}
+                        </div>
+                      </motion.div>
+                    </>
+                  )}
+                </AnimatePresence>
+              </div>
               <button className="relative p-2.5 text-slate-500 hover:bg-blue-50 rounded-xl transition-all hover:scale-105 active:scale-95 group">
                 <MessageSquare className="w-5 h-5" />
                 <div className="absolute top-full right-0 mt-2 hidden group-hover:block bg-white shadow-xl rounded-xl p-3 border border-blue-100 text-[10px] w-48 z-50">

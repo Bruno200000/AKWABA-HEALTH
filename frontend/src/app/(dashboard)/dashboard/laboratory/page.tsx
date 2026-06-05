@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Modal } from "@/components/ui/modal";
+import ExportActions from "@/components/ExportActions";
 import LabTestForm from "./LabTestForm";
 import ResultEntry from "./ResultEntry";
 import { supabase } from "@/lib/supabase";
@@ -84,12 +85,24 @@ export default function LaboratoryPage() {
  <h1 className="text-3xl font-black text-slate-900 tracking-tight">Laboratoire</h1>
  <p className="text-slate-600 font-medium">Suivez les prélèvements et gérez les résultats d&apos;analyses.</p>
  </div>
+ <div className="flex flex-wrap items-center gap-2">
+ <ExportActions
+ title="Liste des analyses laboratoire"
+ rows={filteredTests}
+ columns={[
+ { header: "Date", accessor: (test) => new Date(test.created_at).toLocaleDateString("fr-FR") },
+ { header: "Patient", accessor: (test) => `${test.patients?.first_name || ""} ${test.patients?.last_name || ""}`.trim() },
+ { header: "Analyse", accessor: (test) => test.test_type || "" },
+ { header: "Statut", accessor: (test) => test.status || "" },
+ ]}
+ />
  <button 
  onClick={() => setIsModalOpen(true)}
  className="flex items-center justify-center gap-2 px-5 py-2.5 bg-blue-600 text-white rounded-xl font-black text-xs uppercase tracking-widest hover:bg-blue-700 transition-all shadow-xl shadow-blue-200 "
  >
  <Plus className="w-4 h-4" /> Nouvelle Analyse
  </button>
+ </div>
  </div>
 
  {/* Stats Grid */}

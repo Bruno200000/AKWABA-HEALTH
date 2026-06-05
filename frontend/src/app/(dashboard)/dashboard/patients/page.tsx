@@ -18,6 +18,7 @@ import {
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { Modal } from "@/components/ui/modal";
+import ExportActions from "@/components/ExportActions";
 import PatientForm from "./PatientForm";
 
 import { supabase } from "@/lib/supabase";
@@ -92,12 +93,26 @@ export default function PatientsPage() {
  <h1 className="text-2xl font-bold text-slate-900 ">Annuaire des Patients</h1>
  <p className="text-slate-600 font-bold">Gérez les dossiers médicaux et le suivi de vos patients.</p>
  </div>
+ <div className="flex flex-wrap items-center gap-2">
+ <ExportActions
+ title="Liste des patients"
+ rows={filteredPatients}
+ columns={[
+ { header: "ID", accessor: (patient) => patient.file_number },
+ { header: "Patient", accessor: (patient) => `${patient.first_name || ""} ${patient.last_name || ""}`.trim() },
+ { header: "Age", accessor: (patient) => patient.birth_date ? `${new Date().getFullYear() - new Date(patient.birth_date).getFullYear()} ans` : "N/A" },
+ { header: "Sexe", accessor: (patient) => patient.gender },
+ { header: "Groupe sanguin", accessor: (patient) => patient.blood_group || "?" },
+ { header: "Statut", accessor: (patient) => statusLabels[(patient.status || "STABLE") as keyof typeof statusLabels] },
+ ]}
+ />
  <button 
  onClick={() => setIsModalOpen(true)}
  className="flex items-center justify-center gap-2 px-5 py-2.5 bg-blue-600 text-white rounded-xl font-bold hover:bg-blue-700 transition-all shadow-lg shadow-blue-200 "
  >
  <Plus className="w-5 h-5" /> Ajouter un Patient
  </button>
+ </div>
  </div>
 
  {/* Stats Quick View */}

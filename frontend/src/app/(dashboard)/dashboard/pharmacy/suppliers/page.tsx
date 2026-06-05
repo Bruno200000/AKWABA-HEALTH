@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Building2, Search, Plus, Phone, Mail, ChevronRight, Package, Loader2, Trash2 } from "lucide-react";
+import ExportActions from "@/components/ExportActions";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/lib/supabase";
 import { Modal } from "@/components/ui/modal";
@@ -111,6 +112,18 @@ export default function SuppliersPage() {
  <code className="text-xs bg-blue-50 px-1 rounded">suppliers</code>).
  </p>
  </div>
+ <div className="flex flex-wrap items-center gap-2">
+ <ExportActions
+ title="Fournisseurs pharmaceutiques"
+ rows={filtered}
+ columns={[
+ { header: "Fournisseur", accessor: (sup) => sup.name || "" },
+ { header: "Categorie", accessor: (sup) => sup.category || "" },
+ { header: "Contact", accessor: (sup) => sup.contact_name || "" },
+ { header: "Telephone", accessor: (sup) => sup.phone || "" },
+ { header: "Email", accessor: (sup) => sup.email || "" },
+ ]}
+ />
  <button
  type="button"
  onClick={() => {
@@ -121,6 +134,7 @@ export default function SuppliersPage() {
  >
  <Plus className="w-4 h-4" /> Ajouter un Fournisseur
  </button>
+ </div>
  </div>
 
  <div className="flex gap-4">

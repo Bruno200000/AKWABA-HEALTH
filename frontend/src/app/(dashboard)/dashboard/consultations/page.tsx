@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Modal } from "@/components/ui/modal";
+import ExportActions from "@/components/ExportActions";
 import ConsultationForm from "./ConsultationForm";
 
 import { supabase } from "@/lib/supabase";
@@ -60,12 +61,25 @@ export default function ConsultationsPage() {
  <h1 className="text-2xl font-bold text-slate-900 ">Consultations Médicales</h1>
  <p className="text-slate-600 ">Enregistrez et consultez les diagnostics et ordonnances.</p>
  </div>
+ <div className="flex flex-wrap items-center gap-2">
+ <ExportActions
+ title="Liste des consultations"
+ rows={filteredConsultations}
+ columns={[
+ { header: "Date", accessor: (cons) => new Date(cons.created_at).toLocaleDateString("fr-FR") },
+ { header: "Patient", accessor: (cons) => `${cons.patients?.first_name || ""} ${cons.patients?.last_name || ""}`.trim() },
+ { header: "Docteur", accessor: (cons) => `Dr. ${cons.profiles?.first_name || ""} ${cons.profiles?.last_name || ""}`.trim() },
+ { header: "Type", accessor: (cons) => cons.type || "Standard" },
+ { header: "Diagnostic", accessor: (cons) => cons.diagnosis || "" },
+ ]}
+ />
  <button 
  onClick={() => setIsModalOpen(true)}
  className="flex items-center justify-center gap-2 px-5 py-2.5 bg-blue-600 text-white rounded-xl font-bold hover:bg-blue-700 transition-all shadow-lg shadow-blue-200 "
  >
  <Plus className="w-5 h-5" /> Nouvelle Consultation
  </button>
+ </div>
  </div>
 
  {/* Search & Filters */}

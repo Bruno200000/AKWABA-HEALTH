@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { ChevronRight, FileText, Filter, Lock, Search, ShieldCheck } from "lucide-react";
+import ExportActions from "@/components/ExportActions";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/lib/supabase";
 
@@ -87,8 +88,21 @@ export default function PatientRecordsPage() {
  <h1 className="text-3xl font-black text-slate-900 tracking-tight">Dossiers Medicaux Digitaux</h1>
  <p className="text-slate-600 font-medium">Dossiers generes a partir des patients et actes enregistres en base.</p>
  </div>
+ <div className="flex flex-wrap items-center gap-2">
+ <ExportActions
+ title="Dossiers medicaux digitaux"
+ rows={filtered}
+ columns={[
+ { header: "Dossier", accessor: (rec) => rec.file_number || "" },
+ { header: "Patient", accessor: (rec) => `${rec.first_name || ""} ${rec.last_name || ""}`.trim() },
+ { header: "Documents", accessor: (rec) => rec.docs || 0 },
+ { header: "Derniere mise a jour", accessor: (rec) => new Date(rec.lastUpdate).toLocaleDateString("fr-FR") },
+ { header: "Securite", accessor: (rec) => rec.safety || "" },
+ ]}
+ />
  <div className="flex items-center gap-3 px-4 py-2 bg-blue-600 text-white rounded-xl text-[10px] font-black uppercase tracking-widest">
  <Lock className="w-4 h-4 text-blue-200" /> Donnees Supabase
+ </div>
  </div>
  </div>
 

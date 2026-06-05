@@ -4,6 +4,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { Bed, Building2, CheckCircle2, DoorOpen, Plus, Search, Wallet } from "lucide-react";
 import { Modal } from "@/components/ui/modal";
+import ExportActions from "@/components/ExportActions";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/lib/supabase";
 import RoomForm from "./RoomForm";
@@ -73,12 +74,26 @@ export default function RoomsPage() {
           <h1 className="text-3xl font-black text-slate-900 tracking-tight">Chambres & lits</h1>
           <p className="text-slate-600 font-medium">Configurez les chambres, services, capacites et tarifs journaliers.</p>
         </div>
-        <button
-          onClick={() => setIsModalOpen(true)}
-          className="flex items-center justify-center gap-2 px-5 py-2.5 bg-blue-600 text-white rounded-xl font-black text-xs uppercase tracking-widest hover:bg-blue-700 transition-all shadow-xl shadow-blue-200"
-        >
-          <Plus className="w-4 h-4" /> Nouvelle chambre
-        </button>
+        <div className="flex flex-wrap items-center gap-2">
+          <ExportActions
+            title="Liste des chambres et lits"
+            rows={filteredRooms}
+            columns={[
+              { header: "Chambre", accessor: (room) => room.room_number || "" },
+              { header: "Service", accessor: (room) => room.department || "" },
+              { header: "Type", accessor: (room) => room.type || "" },
+              { header: "Lits totaux", accessor: (room) => room.total_beds || 0 },
+              { header: "Lits occupes", accessor: (room) => room.occupied_beds || 0 },
+              { header: "Tarif jour", accessor: (room) => `${Number(room.price_per_day || 0).toLocaleString()} CFA` },
+            ]}
+          />
+          <button
+            onClick={() => setIsModalOpen(true)}
+            className="flex items-center justify-center gap-2 px-5 py-2.5 bg-blue-600 text-white rounded-xl font-black text-xs uppercase tracking-widest hover:bg-blue-700 transition-all shadow-xl shadow-blue-200"
+          >
+            <Plus className="w-4 h-4" /> Nouvelle chambre
+          </button>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">

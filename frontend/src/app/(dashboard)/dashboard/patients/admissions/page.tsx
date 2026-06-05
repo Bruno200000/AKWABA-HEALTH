@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { ArrowRightCircle, Clock, FileText, Plus, Search, Users } from "lucide-react";
+import ExportActions from "@/components/ExportActions";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/lib/supabase";
 
@@ -62,12 +63,26 @@ export default function AdmissionsPage() {
  <h1 className="text-3xl font-black text-slate-900 tracking-tight">Admissions en cours</h1>
  <p className="text-slate-600 font-medium">Suivez les admissions enregistrees dans l&apos;etablissement.</p>
  </div>
+ <div className="flex flex-wrap items-center gap-2">
+ <ExportActions
+ title="Admissions"
+ rows={filtered}
+ columns={[
+ { header: "Patient", accessor: (adm) => `${adm.patients?.first_name || ""} ${adm.patients?.last_name || ""}`.trim() },
+ { header: "Dossier", accessor: (adm) => adm.patients?.file_number || "" },
+ { header: "Admission", accessor: (adm) => new Date(adm.admission_date).toLocaleString("fr-FR") },
+ { header: "Chambre", accessor: (adm) => adm.rooms?.room_number || "" },
+ { header: "Type", accessor: (adm) => adm.rooms?.type || "" },
+ { header: "Statut", accessor: (adm) => adm.status || "" },
+ ]}
+ />
  <button
  onClick={() => router.push("/dashboard/hospitalization")}
  className="flex items-center justify-center gap-2 px-5 py-2.5 bg-blue-600 text-white rounded-xl font-black text-xs uppercase tracking-widest hover:bg-blue-700 transition-all shadow-xl shadow-blue-200"
  >
  <Plus className="w-4 h-4" /> Nouvelle Admission
  </button>
+ </div>
  </div>
 
  <div className="relative">

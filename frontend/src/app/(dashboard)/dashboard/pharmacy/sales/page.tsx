@@ -2,7 +2,8 @@
 
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { CreditCard, DollarSign, Download, Search, ShoppingCart, Smartphone, TrendingUp } from "lucide-react";
+import { CreditCard, DollarSign, Search, ShoppingCart, Smartphone, TrendingUp } from "lucide-react";
+import ExportActions from "@/components/ExportActions";
 import { supabase } from "@/lib/supabase";
 
 function parseSaleNotes(notes?: string | null) {
@@ -84,9 +85,18 @@ export default function PharmacySalesPage() {
  <div className="px-4 py-2 bg-emerald-50 text-emerald-600 rounded-xl text-xs font-black uppercase tracking-widest border border-emerald-100 flex items-center gap-2">
  <TrendingUp className="w-4 h-4" /> {totalRevenue.toLocaleString()} CFA
  </div>
- <button className="px-4 py-2 bg-white rounded-xl text-xs font-bold hover:bg-white border-blue-100 shadow-sm transition-all">
- <Download className="w-4 h-4" /> CSV
- </button>
+ <ExportActions
+ title="Historique des ventes pharmacie"
+ rows={filteredSales}
+ columns={[
+ { header: "Transaction", accessor: (sale) => sale.id.slice(0, 8).toUpperCase() },
+ { header: "Date", accessor: (sale) => new Date(sale.created_at).toLocaleDateString("fr-FR") },
+ { header: "Heure", accessor: (sale) => new Date(sale.created_at).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" }) },
+ { header: "Articles", accessor: (sale) => parseSaleNotes(sale.notes)?.items?.length || 0 },
+ { header: "Paiement", accessor: (sale) => sale.payment_method || "" },
+ { header: "Montant", accessor: (sale) => `${Number(sale.total_amount || 0).toLocaleString()} CFA` },
+ ]}
+ />
  </div>
  </div>
 

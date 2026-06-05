@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Modal } from "@/components/ui/modal";
+import ExportActions from "@/components/ExportActions";
 import StaffForm from "./StaffForm";
 import PerformanceTable from "./PerformanceTable";
 import { supabase } from "@/lib/supabase";
@@ -84,12 +85,26 @@ export default function StaffPage() {
  <h1 className="text-3xl font-black text-slate-900 tracking-tight">Gestion du Personnel</h1>
  <p className="text-slate-600 font-medium">Gérez votre équipe médicale et suivez leurs performances.</p>
  </div>
+ <div className="flex flex-wrap items-center gap-2">
+ <ExportActions
+ title="Liste du personnel"
+ rows={filteredStaff}
+ columns={[
+ { header: "Nom", accessor: (staff) => `${staff.first_name || ""} ${staff.last_name || ""}`.trim() },
+ { header: "Role", accessor: (staff) => staff.role || "" },
+ { header: "Specialite", accessor: (staff) => staff.specialization || staff.specialty || "" },
+ { header: "Email", accessor: (staff) => staff.email || "" },
+ { header: "Telephone", accessor: (staff) => staff.phone || "" },
+ { header: "Statut", accessor: (staff) => staff.status || "" },
+ ]}
+ />
  <button 
  onClick={() => setIsModalOpen(true)}
  className="flex items-center justify-center gap-2 px-5 py-2.5 bg-blue-600 text-white rounded-xl font-black text-xs uppercase tracking-widest hover:bg-blue-700 transition-all shadow-xl shadow-blue-200 "
  >
  <Plus className="w-4 h-4" /> Ajouter un Membre
  </button>
+ </div>
  </div>
 
  {/* Tabs */}

@@ -12,11 +12,11 @@ import {
  Filter,
  ArrowUpRight,
  QrCode as QrIcon,
- Download,
  ShoppingCart
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Modal } from "@/components/ui/modal";
+import ExportActions from "@/components/ExportActions";
 import MedicineForm from "./MedicineForm";
 import PharmacyPOS from "./PharmacyPOS";
 import { supabase } from "@/lib/supabase";
@@ -81,9 +81,18 @@ export default function PharmacyPage() {
  <p className="text-slate-600 font-medium">Gérez vos stocks et réalisez des ventes en temps réel.</p>
  </div>
  <div className="flex gap-3">
- <button className="px-4 py-2 bg-white  rounded-xl text-xs font-bold shadow-sm hover:bg-white border-blue-100 shadow-sm transition-all flex items-center gap-2">
- <Download className="w-4 h-4" /> Rapport
- </button>
+ <ExportActions
+ title="Inventaire pharmacie"
+ rows={filteredInventory}
+ columns={[
+ { header: "Produit", accessor: (item) => item.name || "" },
+ { header: "Categorie", accessor: (item) => item.category || "" },
+ { header: "Stock", accessor: (item) => item.stock_quantity || 0 },
+ { header: "Alerte min", accessor: (item) => item.min_stock_alert || 10 },
+ { header: "Prix", accessor: (item) => `${Number(item.unit_price || 0).toLocaleString()} CFA` },
+ { header: "Statut", accessor: (item) => item.stock_quantity <= (item.min_stock_alert || 10) ? "Stock faible" : "Disponible" },
+ ]}
+ />
  <button 
  onClick={() => setIsModalOpen(true)}
  className="flex items-center justify-center gap-2 px-5 py-2.5 bg-blue-600 text-white rounded-xl font-black text-xs uppercase tracking-widest hover:bg-blue-700 transition-all shadow-xl shadow-blue-200 "

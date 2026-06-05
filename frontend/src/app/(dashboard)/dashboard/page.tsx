@@ -16,7 +16,6 @@ import {
  CreditCard,
  Target,
  Zap,
- Download,
  Plus,
  FileText,
  Beaker,
@@ -26,6 +25,7 @@ import { cn } from "@/lib/utils";
 import { supabase } from "@/lib/supabase";
 import { getAppointmentStart } from "@/lib/appointment-utils";
 import Link from "next/link";
+import ExportActions from "@/components/ExportActions";
 
 const getGreeting = () => {
  const hour = new Date().getHours();
@@ -201,9 +201,15 @@ export default function DashboardHome() {
  <button className="px-4 py-2 bg-white border border-blue-100 rounded-xl text-xs font-bold shadow-sm hover:bg-blue-50/80 transition-all flex items-center gap-2 text-slate-700">
  <Calendar className="w-4 h-4 text-blue-500" /> {new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}
  </button>
- <button className="px-4 py-2 bg-blue-600 text-white rounded-xl text-xs font-bold shadow-lg shadow-blue-600/25 flex items-center gap-2 hover:bg-blue-700 transition-colors">
- <Download className="w-4 h-4" /> Exporter PDF
- </button>
+ <ExportActions
+ title="Rapport dashboard"
+ rows={stats.map((stat) => ({ indicateur: stat.label, valeur: stat.value, statut: stat.change }))}
+ columns={[
+ { header: "Indicateur", accessor: "indicateur" },
+ { header: "Valeur", accessor: "valeur" },
+ { header: "Statut", accessor: "statut" },
+ ]}
+ />
  </div>
  </div>
 

@@ -2,7 +2,8 @@
 
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { Calendar, CheckCircle2, Download, FileText, Filter, Search, User } from "lucide-react";
+import { Calendar, CheckCircle2, FileText, Filter, Search, User } from "lucide-react";
+import ExportActions from "@/components/ExportActions";
 import { supabase } from "@/lib/supabase";
 
 function extractResultsText(data: unknown): string {
@@ -67,9 +68,18 @@ export default function LabResultsPage() {
  <h1 className="text-3xl font-black text-slate-900 tracking-tight">Resultats de Laboratoire</h1>
  <p className="text-slate-600 font-medium">Archive securisee des analyses validees et publiees.</p>
  </div>
- <button className="flex items-center gap-2 px-5 py-2.5 bg-blue-600 text-white rounded-xl font-black text-xs uppercase tracking-widest hover:bg-blue-700 transition-all shadow-xl shadow-blue-200">
- <Download className="w-4 h-4" /> Exporter les donnees
- </button>
+ <ExportActions
+ title="Resultats de laboratoire"
+ rows={filteredResults}
+ columns={[
+ { header: "Date", accessor: (res) => new Date(res.completed_at || res.created_at).toLocaleDateString("fr-FR") },
+ { header: "Patient", accessor: (res) => `${res.patients?.first_name || ""} ${res.patients?.last_name || ""}`.trim() },
+ { header: "Numero dossier", accessor: (res) => res.patients?.file_number || "" },
+ { header: "Analyse", accessor: (res) => res.test_type || "" },
+ { header: "Resultat", accessor: (res) => extractResultsText(res.results_data) || res.observations || "" },
+ { header: "Technicien", accessor: (res) => res.technician ? `${res.technician.first_name || ""} ${res.technician.last_name || ""}`.trim() : "" },
+ ]}
+ />
  </div>
 
  <div className="flex gap-4">

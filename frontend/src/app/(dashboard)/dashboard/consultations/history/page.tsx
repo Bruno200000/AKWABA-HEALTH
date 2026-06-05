@@ -2,7 +2,8 @@
 
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { Calendar, Download, FileText, Filter, Search, User } from "lucide-react";
+import { Calendar, FileText, Filter, Search, User } from "lucide-react";
+import ExportActions from "@/components/ExportActions";
 import { supabase } from "@/lib/supabase";
 
 export default function ConsultationHistoryPage() {
@@ -59,9 +60,17 @@ export default function ConsultationHistoryPage() {
  <h1 className="text-3xl font-black text-slate-900 tracking-tight">Historique des Consultations</h1>
  <p className="text-slate-600 font-medium">Archive complete des consultations enregistrees dans la base.</p>
  </div>
- <button className="flex items-center gap-2 px-4 py-2 bg-white rounded-xl text-xs font-bold hover:bg-white border-blue-100 shadow-sm transition-all">
- <Download className="w-4 h-4" /> Exporter l&apos;archive
- </button>
+ <ExportActions
+ title="Historique des consultations"
+ rows={filteredHistory}
+ columns={[
+ { header: "Date", accessor: (item) => new Date(item.created_at).toLocaleDateString("fr-FR") },
+ { header: "Patient", accessor: (item) => `${item.patients?.first_name || ""} ${item.patients?.last_name || ""}`.trim() },
+ { header: "Numero dossier", accessor: (item) => item.patients?.file_number || "" },
+ { header: "Diagnostic", accessor: (item) => item.diagnosis || "" },
+ { header: "Medecin", accessor: (item) => `Dr. ${item.profiles?.first_name || ""} ${item.profiles?.last_name || ""}`.trim() },
+ ]}
+ />
  </div>
 
  <div className="flex gap-4">

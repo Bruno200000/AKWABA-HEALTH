@@ -15,11 +15,11 @@ import {
  DollarSign,
  Smartphone,
  Wallet,
- Download,
  FileText
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Modal } from "@/components/ui/modal";
+import ExportActions from "@/components/ExportActions";
 import InvoiceForm from "./InvoiceForm";
 import PaymentModal from "./PaymentModal";
 import { supabase } from "@/lib/supabase";
@@ -93,9 +93,19 @@ export default function FinancePage() {
  <p className="text-slate-600 font-medium">Suivez les encaissements et revenus en temps réel.</p>
  </div>
  <div className="flex gap-3">
- <button className="px-4 py-2 bg-white  rounded-xl text-xs font-bold shadow-sm hover:bg-white border-blue-100 shadow-sm transition-all flex items-center gap-2">
- <Download className="w-4 h-4" /> Rapport
- </button>
+ <ExportActions
+ title="Rapport financier"
+ rows={invoices}
+ columns={[
+ { header: "Facture", accessor: (inv) => inv.id.slice(0, 8).toUpperCase() },
+ { header: "Date", accessor: (inv) => new Date(inv.created_at).toLocaleDateString("fr-FR") },
+ { header: "Patient", accessor: (inv) => `${inv.patients?.first_name || ""} ${inv.patients?.last_name || ""}`.trim() },
+ { header: "Montant", accessor: (inv) => `${Number(inv.total_amount || 0).toLocaleString()} CFA` },
+ { header: "Paye", accessor: (inv) => `${Number(inv.paid_amount || 0).toLocaleString()} CFA` },
+ { header: "Mode", accessor: (inv) => inv.payment_method || "" },
+ { header: "Statut", accessor: (inv) => inv.status || "" },
+ ]}
+ />
  <button 
  onClick={() => setIsModalOpen(true)}
  className="flex items-center justify-center gap-2 px-5 py-2.5 bg-blue-600 text-white rounded-xl font-black text-xs uppercase tracking-widest hover:bg-blue-700 transition-all shadow-xl shadow-blue-200 "

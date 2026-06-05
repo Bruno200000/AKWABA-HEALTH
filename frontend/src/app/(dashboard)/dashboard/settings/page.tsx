@@ -15,7 +15,15 @@ import {
  Zap,
  Mail,
  Phone,
- Upload
+ Upload,
+ SlidersHorizontal,
+ MessageCircle,
+ CalendarDays,
+ Bot,
+ Cpu,
+ ArrowRight,
+ Plus,
+ CheckCircle2
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { isSupabaseConfigured, supabase } from "@/lib/supabase";
@@ -46,10 +54,98 @@ const defaultIntegrations = {
   smtp_host: "",
   smtp_user: "",
   smtp_password: "",
+  google_calendar_id: "",
+  google_calendar_token: "",
+  website_webhook: "",
+  integration_request: "",
   pharmacy_webhook: "",
   laboratory_webhook: "",
   finance_webhook: "",
 };
+
+type IntegrationKey = keyof typeof defaultIntegrations;
+
+const integrationApps: Array<{
+  id: string;
+  name: string;
+  category: string;
+  description: string;
+  icon: typeof Cloud;
+  iconClass: string;
+  connectedKeys: IntegrationKey[];
+  fields: Array<{
+    key: IntegrationKey;
+    label: string;
+    placeholder: string;
+    type?: string;
+  }>;
+}> = [
+  {
+    id: "openai",
+    name: "OpenAI (ChatGPT)",
+    category: "Intelligence Artificielle",
+    description: "Automatisez vos reponses clients et la classification des donnees par IA.",
+    icon: Cpu,
+    iconClass: "bg-amber-500 text-white",
+    connectedKeys: ["openai"],
+    fields: [
+      { key: "openai", label: "Cle API OpenAI", placeholder: "sk-proj-...", type: "password" },
+    ],
+  },
+  {
+    id: "whatsapp",
+    name: "WhatsApp Business",
+    category: "Communication",
+    description: "Centralisez vos echanges clients et analysez les besoins via IA.",
+    icon: MessageCircle,
+    iconClass: "bg-emerald-500 text-white",
+    connectedKeys: ["whatsapp_token", "whatsapp_phone"],
+    fields: [
+      { key: "whatsapp_token", label: "Token permanent", placeholder: "EAAD...", type: "password" },
+      { key: "whatsapp_phone", label: "Phone Number ID", placeholder: "10423049..." },
+      { key: "whatsapp_template", label: "Modele de message", placeholder: "rappel_rendez_vous" },
+    ],
+  },
+  {
+    id: "website",
+    name: "Site Web (Webhooks)",
+    category: "Web",
+    description: "Connectez votre site web pour recevoir des leads directs.",
+    icon: Globe,
+    iconClass: "bg-blue-500 text-white",
+    connectedKeys: ["website_webhook"],
+    fields: [
+      { key: "website_webhook", label: "URL webhook entrants", placeholder: "https://votre-site.com/webhook", type: "url" },
+    ],
+  },
+  {
+    id: "google-calendar",
+    name: "Google Calendar",
+    category: "Calendrier",
+    description: "Synchronisez vos rendez-vous et automatisez les planifications client.",
+    icon: CalendarDays,
+    iconClass: "bg-rose-500 text-white",
+    connectedKeys: ["google_calendar_id", "google_calendar_token"],
+    fields: [
+      { key: "google_calendar_id", label: "Calendar ID", placeholder: "primary ou calendrier@group.calendar.google.com" },
+      { key: "google_calendar_token", label: "Token OAuth/API", placeholder: "ya29...", type: "password" },
+    ],
+  },
+  {
+    id: "email",
+    name: "Email (SMTP/IMAP)",
+    category: "Communication",
+    description: "Connectez votre boite mail pour centraliser et analyser vos courriels avec l'IA.",
+    icon: Mail,
+    iconClass: "bg-sky-500 text-white",
+    connectedKeys: ["smtp_host", "smtp_user"],
+    fields: [
+      { key: "smtp_host", label: "Serveur SMTP/IMAP", placeholder: "smtp.domaine.com" },
+      { key: "smtp_user", label: "Utilisateur email", placeholder: "contact@domaine.com", type: "email" },
+      { key: "smtp_password", label: "Mot de passe/API key", placeholder: "Mot de passe applicatif", type: "password" },
+    ],
+  },
+];
 
 const defaultAiSettings = {
   diagnostic_assistant: false,
@@ -217,6 +313,7 @@ export default function SettingsPage() {
   const [hospital, setHospital] = useState<Hospital | null>(null);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [integrations, setIntegrations] = useState(defaultIntegrations);
+  const [selectedIntegration, setSelectedIntegration] = useState(integrationApps[0].id);
   const [branding, setBranding] = useState({ logo_url: "", primary_color: "#2563eb" });
   const [aiSettings, setAiSettings] = useState(defaultAiSettings);
   const [securitySettings, setSecuritySettings] = useState(defaultSecuritySettings);
@@ -437,6 +534,16 @@ export default function SettingsPage() {
     } finally {
       setIsSaving(false);
     }
+  };
+
+  const selectedIntegrationApp =
+    integrationApps.find((app) => app.id === selectedIntegration) || integrationApps[0];
+
+  const isIntegrationConnected = (keys: IntegrationKey[]) =>
+    keys.some((key) => Boolean(String(integrations[key] || "").trim()));
+
+  const updateIntegrationField = (key: IntegrationKey, value: string) => {
+    setIntegrations((current) => ({ ...current, [key]: value }));
   };
 
   if (isLoading) {
@@ -669,7 +776,7 @@ export default function SettingsPage() {
  />
  </label>
  <p className="text-center text-[10px] font-bold uppercase tracking-widest text-slate-400">
- Le fichier est sauvegarde dans Supabase Storage puis associe a l'etablissement.
+ Le fichier est sauvegarde dans Supabase Storage puis associe a l&apos;etablissement.
  </p>
  </div>
  </div>
@@ -795,173 +902,153 @@ export default function SettingsPage() {
  initial={{ opacity: 0, x: 20 }}
  animate={{ opacity: 1, x: 0 }}
  exit={{ opacity: 0, x: -20 }}
- className="bg-white rounded-[40px] shadow-xl shadow-blue-900/5 p-10 space-y-12"
+ className="space-y-6"
  >
+ <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
  <div>
- <h3 className="text-2xl font-black tracking-tight mb-2">Intégrations & Logiciels Tiers</h3>
- <p className="text-slate-600 font-medium">Connectez AKWABA HEALTH à WhatsApp, vos IAs préférées et d&apos;autres outils externes.</p>
+ <h3 className="text-3xl font-black tracking-tight text-slate-950">App Marketplace</h3>
+ <p className="text-sm font-medium text-slate-500">Connectez GNIX IA a vos outils preferes pour un ERP sans limites.</p>
  </div>
- 
- <div className="space-y-10">
- <section className="space-y-4">
- <div>
- <p className="text-[10px] font-black uppercase tracking-[0.2em] text-blue-600">Communication</p>
- <h4 className="text-lg font-black text-slate-900">Logiciels de messagerie et notifications</h4>
- </div>
- <div className="grid grid-cols-1 xl:grid-cols-3 gap-5">
- {[
- { name: "WhatsApp Business", logo: "W", status: integrations.whatsapp_token, color: "emerald" },
- { name: "SMS Provider", logo: "S", status: integrations.sms_api_key, color: "sky" },
- { name: "Email SMTP", logo: "@", status: integrations.smtp_host && integrations.smtp_user, color: "amber" },
- ].map((software) => (
- <div key={software.name} className="rounded-[28px] border border-blue-100 bg-white p-6 shadow-sm">
- <div className="flex items-center gap-4">
- <div className={cn("w-14 h-14 rounded-2xl flex items-center justify-center text-xl font-black", software.color === "emerald" ? "bg-emerald-50 text-emerald-600" : software.color === "sky" ? "bg-sky-50 text-sky-600" : "bg-amber-50 text-amber-600")}>{software.logo}</div>
- <div className="flex-1 min-w-0">
- <p className="font-black text-slate-900 truncate">{software.name}</p>
- <p className="text-xs font-medium text-slate-500">{software.status ? "API connectee" : "API non connectee"}</p>
- </div>
- </div>
- </div>
- ))}
- </div>
- <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
- <input type="password" placeholder="Token WhatsApp" value={integrations.whatsapp_token} onChange={(e) => setIntegrations({ ...integrations, whatsapp_token: e.target.value })} className="px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm outline-none focus:ring-4 focus:ring-blue-500/10" />
- <input type="password" placeholder="Cle API SMS" value={integrations.sms_api_key} onChange={(e) => setIntegrations({ ...integrations, sms_api_key: e.target.value })} className="px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm outline-none focus:ring-4 focus:ring-blue-500/10" />
- <input type="text" placeholder="Serveur SMTP / API email" value={integrations.smtp_host} onChange={(e) => setIntegrations({ ...integrations, smtp_host: e.target.value })} className="px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm outline-none focus:ring-4 focus:ring-blue-500/10" />
- <input type="text" placeholder="Phone Number ID" value={integrations.whatsapp_phone} onChange={(e) => setIntegrations({ ...integrations, whatsapp_phone: e.target.value })} className="px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm outline-none focus:ring-4 focus:ring-blue-500/10" />
- <input type="text" placeholder="Nom expediteur SMS" value={integrations.sms_sender} onChange={(e) => setIntegrations({ ...integrations, sms_sender: e.target.value })} className="px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm outline-none focus:ring-4 focus:ring-blue-500/10" />
- <input type="password" placeholder="Mot de passe / API key email" value={integrations.smtp_password} onChange={(e) => setIntegrations({ ...integrations, smtp_password: e.target.value })} className="px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm outline-none focus:ring-4 focus:ring-blue-500/10" />
- </div>
- <button onClick={handleSave} disabled={isSaving} className="w-full px-5 py-3 bg-blue-600 text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-blue-700 transition-all">Connecter les API communication</button>
- </section>
-
- <section className="space-y-4">
- <div>
- <p className="text-[10px] font-black uppercase tracking-[0.2em] text-indigo-600">Intelligence artificielle</p>
- <h4 className="text-lg font-black text-slate-900">Modeles IA connectables</h4>
- </div>
- <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
- {[
- { key: "openai", logo: "O", name: "OpenAI", value: integrations.openai },
- { key: "anthropic", logo: "C", name: "Claude", value: integrations.anthropic },
- { key: "gemini", logo: "G", name: "Google Gemini", value: integrations.gemini },
- { key: "mistral", logo: "M", name: "Mistral AI", value: integrations.mistral },
- ].map((tool) => (
- <div key={tool.key} className="rounded-[28px] border border-blue-100 bg-white p-6 shadow-sm space-y-4">
- <div className="flex items-center gap-4">
- <div className="w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-lg font-black">{tool.logo}</div>
- <div className="flex-1">
- <p className="font-black text-slate-900">{tool.name}</p>
- <p className="text-xs font-medium text-slate-500">{tool.value ? "API connectee" : "API non connectee"}</p>
- </div>
- </div>
- <input type="password" placeholder={`Cle API ${tool.name}`} value={tool.value} onChange={(e) => setIntegrations({ ...integrations, [tool.key]: e.target.value })} className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm outline-none focus:ring-4 focus:ring-blue-500/10" />
- <button onClick={handleSave} disabled={isSaving} className="w-full px-5 py-3 bg-blue-600 text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-blue-700 transition-all">{tool.value ? "Mettre a jour l'API" : "Connecter l'API"}</button>
- </div>
- ))}
- </div>
- </section>
-
- <section className="space-y-4">
- <div>
- <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-600">Logiciels metiers</p>
- <h4 className="text-lg font-black text-slate-900">Synchronisations externes</h4>
- </div>
- <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
- <input type="url" placeholder="Webhook pharmacie" value={integrations.pharmacy_webhook} onChange={(e) => setIntegrations({ ...integrations, pharmacy_webhook: e.target.value })} className="px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm outline-none focus:ring-4 focus:ring-blue-500/10" />
- <input type="url" placeholder="Webhook laboratoire" value={integrations.laboratory_webhook} onChange={(e) => setIntegrations({ ...integrations, laboratory_webhook: e.target.value })} className="px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm outline-none focus:ring-4 focus:ring-blue-500/10" />
- <input type="url" placeholder="Webhook finance" value={integrations.finance_webhook} onChange={(e) => setIntegrations({ ...integrations, finance_webhook: e.target.value })} className="px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm outline-none focus:ring-4 focus:ring-blue-500/10" />
- </div>
- <button onClick={handleSave} disabled={isSaving} className="w-full px-5 py-3 bg-blue-600 text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-blue-700 transition-all">Connecter les webhooks</button>
- </section>
- </div>
-
- <div className="hidden">
-  <div className="p-8 bg-white shadow-sm rounded-[32px] border border-blue-50 flex flex-col gap-6">
-    <div className="flex gap-6 items-center">
-    <div className="w-14 h-14 bg-green-100 text-green-600 rounded-[20px] flex items-center justify-center">
-      <Cloud className="w-7 h-7" />
-    </div>
-    <div className="flex-1">
-      <p className="font-black text-slate-900 tracking-tight">WhatsApp Business API</p>
-      <p className="text-xs text-slate-600 font-medium">Envoyez des rappels de rendez-vous et des ordonnances directement sur WhatsApp.</p>
-    </div>
-    <div className="flex items-center gap-2">
-      <div className={cn("w-2 h-2 rounded-full", integrations.whatsapp_token ? "bg-emerald-400" : "bg-slate-300")}></div>
-      <span className={cn("text-[10px] font-black uppercase", integrations.whatsapp_token ? "text-emerald-600" : "text-slate-400")}>{integrations.whatsapp_token ? "Actif" : "Déconnecté"}</span>
-    </div>
-    </div>
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <div className="space-y-1">
-        <label className="text-xs font-bold text-slate-700 ml-1">Token API (Permanent)</label>
-        <input type="password" placeholder="EAAD..." value={integrations.whatsapp_token} onChange={(e) => setIntegrations({ ...integrations, whatsapp_token: e.target.value })} className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-medium focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all outline-none" />
-      </div>
-      <div className="space-y-1">
-        <label className="text-xs font-bold text-slate-700 ml-1">Phone Number ID</label>
-        <input type="text" placeholder="10423049..." value={integrations.whatsapp_phone} onChange={(e) => setIntegrations({ ...integrations, whatsapp_phone: e.target.value })} className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-medium focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all outline-none" />
-      </div>
-    </div>
-  </div>
-
-  <div className="p-8 bg-white shadow-sm rounded-[32px] border border-blue-50 flex flex-col gap-6">
-    <div className="flex gap-6 items-center">
-    <div className="w-14 h-14 bg-indigo-100 text-indigo-600 rounded-[20px] flex items-center justify-center">
-      <Zap className="w-7 h-7" />
-    </div>
-    <div className="flex-1">
-      <p className="font-black text-slate-900 tracking-tight">Intelligence Artificielle (Modèles)</p>
-      <p className="text-xs text-slate-600 font-medium">Configurez jusqu&apos;à quatre fournisseurs d&apos;IA pour les diagnostics et analyses médicales.</p>
-    </div>
-    </div>
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-      <div className="space-y-1 relative">
-        <label className="text-xs font-bold text-slate-700 ml-1">OpenAI (ChatGPT)</label>
-        <input type="password" placeholder="sk-proj-..." value={integrations.openai} onChange={(e) => setIntegrations({ ...integrations, openai: e.target.value })} className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-medium focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all outline-none" />
-      </div>
-      <div className="space-y-1 relative">
-        <label className="text-xs font-bold text-slate-700 ml-1">Anthropic (Claude)</label>
-        <input type="password" placeholder="sk-ant-..." value={integrations.anthropic} onChange={(e) => setIntegrations({ ...integrations, anthropic: e.target.value })} className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-medium focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all outline-none" />
-      </div>
-      <div className="space-y-1 relative">
-        <label className="text-xs font-bold text-slate-700 ml-1">Google (Gemini)</label>
-        <input type="password" placeholder="AIza..." value={integrations.gemini} onChange={(e) => setIntegrations({ ...integrations, gemini: e.target.value })} className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-medium focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all outline-none" />
-      </div>
-      <div className="space-y-1 relative">
-        <label className="text-xs font-bold text-slate-700 ml-1">Mistral AI</label>
-        <input type="password" placeholder="API Key Mistral..." value={integrations.mistral} onChange={(e) => setIntegrations({ ...integrations, mistral: e.target.value })} className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-medium focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all outline-none" />
-      </div>
-    </div>
-  </div>
-
- <div className="p-8 bg-white shadow-sm rounded-[32px] border border-blue-50 flex flex-col gap-6">
- <div className="flex gap-6 items-center">
- <div className="w-14 h-14 bg-slate-100 text-slate-600 rounded-[20px] flex items-center justify-center">
- <Globe className="w-7 h-7" />
- </div>
- <div className="flex-1">
- <p className="font-black text-slate-900 tracking-tight">Logiciel de Pharmacie Externe (Webhook)</p>
- <p className="text-xs text-slate-600 font-medium">Synchronisez votre inventaire ou envoyez des ordonnances automatiquement via Webhook.</p>
- </div>
- <div className="flex items-center gap-2">
- <div className={cn("w-2 h-2 rounded-full", integrations.pharmacy_webhook ? "bg-emerald-400" : "bg-slate-300")}></div>
- <span className={cn("text-[10px] font-black uppercase", integrations.pharmacy_webhook ? "text-emerald-600" : "text-slate-400")}>{integrations.pharmacy_webhook ? "Actif" : "Désactivé"}</span>
- </div>
- </div>
- <div className="relative">
- <input type="text" placeholder="https://api.mapharmacie.ci/webhook" value={integrations.pharmacy_webhook} onChange={(e) => setIntegrations({ ...integrations, pharmacy_webhook: e.target.value })} className="w-full pl-6 pr-32 py-4 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-medium focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all outline-none" />
- </div>
- </div>
- </div>
- 
- <div className="pt-10 border-t border-slate-50 flex justify-end items-center">
- <button 
- onClick={handleSave}
- disabled={isSaving}
- className="flex items-center gap-2 px-10 py-4 bg-blue-600 text-white rounded-3xl font-black text-xs uppercase tracking-widest shadow-xl shadow-blue-200 hover:bg-blue-700 transition-all hover:-translate-y-1"
+ <button
+ type="button"
+ onClick={() => setSelectedIntegration("openai")}
+ className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-3 text-xs font-black text-slate-700 shadow-sm transition-all hover:border-slate-300 hover:bg-slate-50"
  >
- {isSaving ? "Enregistrement..." : <><Save className="w-4 h-4" /> Sauvegarder</>}
+ <SlidersHorizontal className="h-4 w-4" />
+ Parametres API
  </button>
+ </div>
+
+ <div className="grid grid-cols-1 gap-6 xl:grid-cols-[minmax(0,1fr)_360px]">
+ <div className="grid grid-cols-1 gap-5 md:grid-cols-2 2xl:grid-cols-3">
+ {integrationApps.map((app) => {
+ const Icon = app.icon;
+ const connected = isIntegrationConnected(app.connectedKeys);
+ return (
+ <button
+ type="button"
+ key={app.id}
+ onClick={() => setSelectedIntegration(app.id)}
+ className={cn(
+ "min-h-[190px] rounded-2xl border bg-white p-5 text-left shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-lg focus:outline-none focus:ring-4 focus:ring-blue-500/10",
+ selectedIntegration === app.id ? "border-blue-300 ring-4 ring-blue-500/10" : "border-slate-200"
+ )}
+ >
+ <div className="flex h-full flex-col">
+ <div className="mb-6 flex items-start justify-between gap-4">
+ <div className={cn("flex h-12 w-12 items-center justify-center rounded-2xl shadow-sm", app.iconClass)}>
+ <Icon className="h-6 w-6" />
+ </div>
+ <span className={cn("rounded-lg px-2.5 py-1 text-[10px] font-black", connected ? "bg-emerald-50 text-emerald-700" : "bg-slate-50 text-slate-600")}>
+ {connected ? "Connecte" : "Installer"}
+ </span>
+ </div>
+ <div className="space-y-2">
+ <h4 className="text-lg font-black tracking-tight text-slate-950">{app.name}</h4>
+ <p className="text-[10px] font-black uppercase tracking-[0.16em] text-slate-400">{app.category}</p>
+ <p className="min-h-[44px] text-sm font-medium leading-relaxed text-slate-500">{app.description}</p>
+ </div>
+ <div className="mt-auto pt-6">
+ <div className="flex w-full items-center justify-center gap-2 rounded-xl bg-slate-950 px-4 py-3 text-sm font-bold text-white transition-all hover:bg-blue-950">
+ Connecter <ArrowRight className="h-4 w-4" />
+ </div>
+ </div>
+ </div>
+ </button>
+ );
+ })}
+
+ <button
+ type="button"
+ onClick={() => setSelectedIntegration("request")}
+ className={cn(
+ "min-h-[190px] rounded-2xl border border-dashed bg-white/55 p-5 text-center shadow-sm transition-all hover:bg-white hover:shadow-md focus:outline-none focus:ring-4 focus:ring-blue-500/10",
+ selectedIntegration === "request" ? "border-blue-300 ring-4 ring-blue-500/10" : "border-slate-300"
+ )}
+ >
+ <div className="flex h-full flex-col items-center justify-center gap-5">
+ <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white text-slate-500 shadow-sm">
+ <Plus className="h-6 w-6" />
+ </div>
+ <div>
+ <p className="font-black text-slate-700">Proposer une integration</p>
+ <p className="mt-5 text-xs font-medium leading-relaxed text-slate-400">Vous avez un outil specifique ? Contactez notre equipe IA.</p>
+ </div>
+ </div>
+ </button>
+ </div>
+
+ <aside className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm xl:sticky xl:top-4">
+ {selectedIntegration === "request" ? (
+ <div className="space-y-5">
+ <div className="flex items-center gap-4">
+ <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-100 text-slate-700">
+ <Plus className="h-6 w-6" />
+ </div>
+ <div>
+ <p className="text-xs font-black uppercase tracking-[0.18em] text-slate-400">Nouvelle integration</p>
+ <h4 className="text-xl font-black text-slate-950">Proposer un outil</h4>
+ </div>
+ </div>
+ <textarea
+ value={integrations.integration_request}
+ onChange={(e) => updateIntegrationField("integration_request", e.target.value)}
+ placeholder="Nom du logiciel, usage attendu, URL de documentation API..."
+ className="min-h-36 w-full resize-none rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-medium outline-none transition-all focus:border-blue-300 focus:bg-white focus:ring-4 focus:ring-blue-500/10"
+ />
+ <button onClick={handleSave} disabled={isSaving || !hospital} className="flex w-full items-center justify-center gap-2 rounded-xl bg-slate-950 px-5 py-3 text-xs font-black uppercase tracking-widest text-white transition-all hover:bg-blue-950 disabled:cursor-not-allowed disabled:opacity-50">
+ {isSaving ? "Enregistrement..." : <><Save className="h-4 w-4" /> Envoyer la demande</>}
+ </button>
+ </div>
+ ) : (
+ <div className="space-y-6">
+ <div className="flex items-start gap-4">
+ <div className={cn("flex h-12 w-12 items-center justify-center rounded-2xl shadow-sm", selectedIntegrationApp.iconClass)}>
+ <selectedIntegrationApp.icon className="h-6 w-6" />
+ </div>
+ <div className="min-w-0 flex-1">
+ <p className="text-xs font-black uppercase tracking-[0.18em] text-slate-400">{selectedIntegrationApp.category}</p>
+ <h4 className="text-xl font-black leading-tight text-slate-950">{selectedIntegrationApp.name}</h4>
+ <div className="mt-2 flex items-center gap-2 text-xs font-bold text-slate-500">
+ {isIntegrationConnected(selectedIntegrationApp.connectedKeys) ? (
+ <>
+ <CheckCircle2 className="h-4 w-4 text-emerald-500" />
+ Integration active
+ </>
+ ) : (
+ <>
+ <Bot className="h-4 w-4 text-slate-400" />
+ En attente de configuration
+ </>
+ )}
+ </div>
+ </div>
+ </div>
+
+ <div className="space-y-4">
+ {selectedIntegrationApp.fields.map((field) => (
+ <label key={field.key} className="block space-y-2">
+ <span className="ml-1 text-[10px] font-black uppercase tracking-widest text-slate-500">{field.label}</span>
+ <input
+ type={field.type || "text"}
+ value={integrations[field.key]}
+ onChange={(e) => updateIntegrationField(field.key, e.target.value)}
+ placeholder={field.placeholder}
+ className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-medium outline-none transition-all focus:border-blue-300 focus:bg-white focus:ring-4 focus:ring-blue-500/10"
+ />
+ </label>
+ ))}
+ </div>
+
+ <button onClick={handleSave} disabled={isSaving || !hospital} className="flex w-full items-center justify-center gap-2 rounded-xl bg-slate-950 px-5 py-3 text-xs font-black uppercase tracking-widest text-white transition-all hover:bg-blue-950 disabled:cursor-not-allowed disabled:opacity-50">
+ {isSaving ? "Enregistrement..." : <><Save className="h-4 w-4" /> Sauvegarder</>}
+ </button>
+ <p className="rounded-2xl bg-blue-50 px-4 py-3 text-xs font-bold leading-relaxed text-blue-900">
+ Les identifiants sont conserves dans les parametres de votre etablissement et reutilises par les modules de communication, IA et synchronisation.
+ </p>
+ </div>
+ )}
+ </aside>
  </div>
  </motion.div>
  )}

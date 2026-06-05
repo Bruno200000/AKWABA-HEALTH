@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Modal } from "@/components/ui/modal";
+import ExportActions from "@/components/ExportActions";
 import AppointmentForm from "./AppointmentForm";
 import { supabase } from "@/lib/supabase";
 import { getAppointmentStart } from "@/lib/appointment-utils";
@@ -104,12 +105,26 @@ export default function AppointmentsPage() {
  <h1 className="text-3xl font-black text-slate-900 tracking-tight">Rendez-vous</h1>
  <p className="text-slate-600 font-medium">Planifiez et gérez le flux de patients de votre établissement.</p>
  </div>
+ <div className="flex flex-wrap items-center gap-2">
+ <ExportActions
+ title={`Rendez-vous ${activeTab}`}
+ rows={tabAppointments}
+ columns={[
+ { header: "Date", accessor: (apt) => new Date(getAppointmentStart(apt)).toLocaleDateString("fr-FR") },
+ { header: "Heure", accessor: (apt) => new Date(getAppointmentStart(apt)).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" }) },
+ { header: "Patient", accessor: (apt) => `${apt.patients?.first_name || ""} ${apt.patients?.last_name || ""}`.trim() },
+ { header: "Docteur", accessor: (apt) => `Dr. ${apt.doctor?.first_name || ""} ${apt.doctor?.last_name || ""}`.trim() },
+ { header: "Specialite", accessor: (apt) => apt.doctor?.specialization || "" },
+ { header: "Statut", accessor: (apt) => apt.status || "" },
+ ]}
+ />
  <button 
  onClick={() => setIsModalOpen(true)}
  className="flex items-center justify-center gap-2 px-5 py-2.5 bg-blue-600 text-white rounded-xl font-black text-xs uppercase tracking-widest hover:bg-blue-700 transition-all shadow-xl shadow-blue-200 "
  >
  <Plus className="w-4 h-4" /> Nouveau RDV
  </button>
+ </div>
  </div>
 
  <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">

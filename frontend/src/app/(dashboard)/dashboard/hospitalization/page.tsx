@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Modal } from "@/components/ui/modal";
+import ExportActions from "@/components/ExportActions";
 import AdmissionForm from "./AdmissionForm";
 import { supabase } from "@/lib/supabase";
 
@@ -106,6 +107,17 @@ export default function HospitalizationPage() {
  <p className="text-slate-600 font-medium">Gérez l&apos;occupation des lits et le suivi patient en temps réel.</p>
  </div>
  <div className="flex gap-3">
+ <ExportActions
+ title="Occupation hospitalisation"
+ rows={rooms}
+ columns={[
+ { header: "Chambre", accessor: (room) => room.room_number || "" },
+ { header: "Type", accessor: (room) => room.type || "" },
+ { header: "Statut", accessor: (room) => room.status || "" },
+ { header: "Patient", accessor: (room) => room.patient || "" },
+ { header: "Statut patient", accessor: (room) => room.patient_status || "" },
+ ]}
+ />
  <div className="bg-blue-50/50 p-1 rounded-xl flex gap-1">
  <button 
  onClick={() => setViewMode("grid")}

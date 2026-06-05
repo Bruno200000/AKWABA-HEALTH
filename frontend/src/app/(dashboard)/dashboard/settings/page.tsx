@@ -322,6 +322,7 @@ export default function SettingsPage() {
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [hospitalNotice, setHospitalNotice] = useState<string | null>(null);
+  const integrationPanelRef = React.useRef<HTMLDivElement | null>(null);
 
   const fetchData = useCallback(async () => {
     await Promise.resolve();
@@ -544,6 +545,13 @@ export default function SettingsPage() {
 
   const updateIntegrationField = (key: IntegrationKey, value: string) => {
     setIntegrations((current) => ({ ...current, [key]: value }));
+  };
+
+  const openIntegrationSettings = (integrationId: string) => {
+    setSelectedIntegration(integrationId);
+    window.setTimeout(() => {
+      integrationPanelRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 0);
   };
 
   if (isLoading) {
@@ -904,18 +912,14 @@ export default function SettingsPage() {
  exit={{ opacity: 0, x: -20 }}
  className="space-y-6"
  >
- <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
- <div>
- <h3 className="text-3xl font-black tracking-tight text-slate-950">App Marketplace</h3>
- <p className="text-sm font-medium text-slate-500">Connectez GNIX IA a vos outils preferes pour un ERP sans limites.</p>
- </div>
- <button
- type="button"
- onClick={() => setSelectedIntegration("openai")}
- className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-3 text-xs font-black text-slate-700 shadow-sm transition-all hover:border-slate-300 hover:bg-slate-50"
- >
- <SlidersHorizontal className="h-4 w-4" />
- Parametres API
+<div className="flex justify-end">
+<button
+type="button"
+onClick={() => openIntegrationSettings("openai")}
+className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-3 text-xs font-black text-slate-700 shadow-sm transition-all hover:border-slate-300 hover:bg-slate-50"
+>
+<SlidersHorizontal className="h-4 w-4" />
+Parametres API
  </button>
  </div>
 
@@ -924,16 +928,14 @@ export default function SettingsPage() {
  {integrationApps.map((app) => {
  const Icon = app.icon;
  const connected = isIntegrationConnected(app.connectedKeys);
- return (
- <button
- type="button"
- key={app.id}
- onClick={() => setSelectedIntegration(app.id)}
- className={cn(
- "min-h-[190px] rounded-2xl border bg-white p-5 text-left shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-lg focus:outline-none focus:ring-4 focus:ring-blue-500/10",
- selectedIntegration === app.id ? "border-blue-300 ring-4 ring-blue-500/10" : "border-slate-200"
- )}
- >
+return (
+<div
+key={app.id}
+className={cn(
+"min-h-[190px] rounded-2xl border bg-white p-5 text-left shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-lg focus:outline-none focus:ring-4 focus:ring-blue-500/10",
+selectedIntegration === app.id ? "border-blue-300 ring-4 ring-blue-500/10" : "border-slate-200"
+)}
+>
  <div className="flex h-full flex-col">
  <div className="mb-6 flex items-start justify-between gap-4">
  <div className={cn("flex h-12 w-12 items-center justify-center rounded-2xl shadow-sm", app.iconClass)}>
@@ -948,19 +950,23 @@ export default function SettingsPage() {
  <p className="text-[10px] font-black uppercase tracking-[0.16em] text-slate-400">{app.category}</p>
  <p className="min-h-[44px] text-sm font-medium leading-relaxed text-slate-500">{app.description}</p>
  </div>
- <div className="mt-auto pt-6">
- <div className="flex w-full items-center justify-center gap-2 rounded-xl bg-slate-950 px-4 py-3 text-sm font-bold text-white transition-all hover:bg-blue-950">
- Connecter <ArrowRight className="h-4 w-4" />
- </div>
- </div>
- </div>
- </button>
- );
- })}
+<div className="mt-auto pt-6">
+<button
+type="button"
+onClick={() => openIntegrationSettings(app.id)}
+className="flex w-full items-center justify-center gap-2 rounded-xl bg-slate-950 px-4 py-3 text-sm font-bold text-white transition-all hover:bg-blue-950"
+>
+{connected ? "Configurer" : "Connecter"} <ArrowRight className="h-4 w-4" />
+</button>
+</div>
+</div>
+</div>
+);
+})}
 
  <button
  type="button"
- onClick={() => setSelectedIntegration("request")}
+onClick={() => openIntegrationSettings("request")}
  className={cn(
  "min-h-[190px] rounded-2xl border border-dashed bg-white/55 p-5 text-center shadow-sm transition-all hover:bg-white hover:shadow-md focus:outline-none focus:ring-4 focus:ring-blue-500/10",
  selectedIntegration === "request" ? "border-blue-300 ring-4 ring-blue-500/10" : "border-slate-300"
@@ -978,7 +984,7 @@ export default function SettingsPage() {
  </button>
  </div>
 
- <aside className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm xl:sticky xl:top-4">
+<aside ref={integrationPanelRef} className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm xl:sticky xl:top-4">
  {selectedIntegration === "request" ? (
  <div className="space-y-5">
  <div className="flex items-center gap-4">
@@ -1040,9 +1046,9 @@ export default function SettingsPage() {
  ))}
  </div>
 
- <button onClick={handleSave} disabled={isSaving || !hospital} className="flex w-full items-center justify-center gap-2 rounded-xl bg-slate-950 px-5 py-3 text-xs font-black uppercase tracking-widest text-white transition-all hover:bg-blue-950 disabled:cursor-not-allowed disabled:opacity-50">
- {isSaving ? "Enregistrement..." : <><Save className="h-4 w-4" /> Sauvegarder</>}
- </button>
+<button onClick={handleSave} disabled={isSaving || !hospital} className="flex w-full items-center justify-center gap-2 rounded-xl bg-slate-950 px-5 py-3 text-xs font-black uppercase tracking-widest text-white transition-all hover:bg-blue-950 disabled:cursor-not-allowed disabled:opacity-50">
+{isSaving ? "Enregistrement..." : <><Save className="h-4 w-4" /> {isIntegrationConnected(selectedIntegrationApp.connectedKeys) ? "Mettre a jour l'API" : "Connecter l'API"}</>}
+</button>
  <p className="rounded-2xl bg-blue-50 px-4 py-3 text-xs font-bold leading-relaxed text-blue-900">
  Les identifiants sont conserves dans les parametres de votre etablissement et reutilises par les modules de communication, IA et synchronisation.
  </p>

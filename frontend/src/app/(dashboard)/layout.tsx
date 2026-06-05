@@ -15,6 +15,9 @@ import {
   LogOut, 
   Menu, 
   X,
+  Mic,
+  MicOff,
+  HelpCircle,
   Bell,
   BrainCircuit,
   MessageSquare,
@@ -39,6 +42,7 @@ const menuGroups = [
     items: [
       { icon: LayoutDashboard, label: "Dashboard", href: "/dashboard" },
       { icon: Zap, label: "Remote Control", href: "/dashboard/remote" },
+      { icon: HelpCircle, label: "Guide", href: "/dashboard/guide" },
     ]
   },
   {
@@ -147,6 +151,34 @@ const getProfileInitials = (profile: any) => {
   return (profile?.email?.[0] || "U").toUpperCase();
 };
 
+type SpeechRecognitionConstructor = new () => {
+  lang: string;
+  interimResults: boolean;
+  maxAlternatives: number;
+  start: () => void;
+  stop: () => void;
+  onresult: ((event: { results: ArrayLike<{ 0: { transcript: string } }> }) => void) | null;
+  onend: (() => void) | null;
+  onerror: (() => void) | null;
+};
+
+const getSearchDestination = (query: string) => {
+  const value = query.toLowerCase();
+
+  if (value.includes("patient") || value.includes("dossier")) return "/dashboard/patients";
+  if (value.includes("rendez") || value.includes("rdv") || value.includes("calendrier")) return "/dashboard/appointments";
+  if (value.includes("consultation") || value.includes("diagnostic")) return "/dashboard/consultations";
+  if (value.includes("pharmacie") || value.includes("stock") || value.includes("medicament")) return "/dashboard/pharmacy";
+  if (value.includes("laboratoire") || value.includes("analyse") || value.includes("resultat")) return "/dashboard/laboratory";
+  if (value.includes("finance") || value.includes("facture") || value.includes("paiement")) return "/dashboard/finance";
+  if (value.includes("personnel") || value.includes("equipe") || value.includes("planning")) return "/dashboard/staff";
+  if (value.includes("hospitalisation") || value.includes("chambre") || value.includes("lit")) return "/dashboard/hospitalization";
+  if (value.includes("integration") || value.includes("api") || value.includes("parametre")) return "/dashboard/settings";
+  if (value.includes("guide") || value.includes("aide") || value.includes("comment")) return "/dashboard/guide";
+
+  return "/dashboard";
+};
+
 function NavItem({ item, isSidebarOpen, pathname }: { item: any, isSidebarOpen: boolean, pathname: string }) {
   const [isOpen, setIsOpen] = useState(false);
   const hasSubItems = item.subItems && item.subItems.length > 0;
@@ -233,6 +265,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [profile, setProfile] = useState<any>(null);
   const [gateReady, setGateReady] = useState(false);
+  const [globalSearch, setGlobalSearch] = useState("");
+  const [isListening, setIsListening] = useState(false);
+  const [voiceMessage, setVoiceMessage] = useState("");
   const pathname = usePathname();
   const router = useRouter();
 
@@ -281,6 +316,42 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       await supabase.auth.signOut();
     }
     router.push("/login");
+  };
+
+  const runGlobalSearch = (value: string) => {
+    const query = value.trim();
+    if (!query) return;
+    router.push(getSearchDestination(query));
+  };
+
+  const startVoiceSearch = () => {
+    const SpeechRecognition =
+      (window as unknown as { SpeechRecognition?: SpeechRecognitionConstructor; webkitSpeechRecognition?: SpeechRecognitionConstructor }).SpeechRecognition ||
+      (window as unknown as { SpeechRecognition?: SpeechRecognitionConstructor; webkitSpeechRecognition?: SpeechRecognitionConstructor }).webkitSpeechRecognition;
+
+    if (!SpeechRecognition) {
+      setVoiceMessage("Micro non disponible sur ce navigateur.");
+      return;
+    }
+
+    const recognition = new SpeechRecognition();
+    recognition.lang = "fr-FR";
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+    recognition.onresult = (event) => {
+      const transcript = event.results[0]?.[0]?.transcript || "";
+      setGlobalSearch(transcript);
+      setVoiceMessage(transcript ? `Recherche vocale : ${transcript}` : "");
+      runGlobalSearch(transcript);
+    };
+    recognition.onerror = () => {
+      setIsListening(false);
+      setVoiceMessage("Impossible d'utiliser le micro.");
+    };
+    recognition.onend = () => setIsListening(false);
+    setIsListening(true);
+    setVoiceMessage("Parlez maintenant...");
+    recognition.start();
   };
 
   if (!gateReady) {
@@ -378,12 +449,38 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               <Search className="w-4 h-4 text-slate-400 shrink-0" />
               <input
                 type="text"
+                value={globalSearch}
+                onChange={(event) => setGlobalSearch(event.target.value)}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter") runGlobalSearch(globalSearch);
+                }}
                 placeholder="Rechercher un patient, dossier, rendez-vous ou service..."
                 className="min-w-0 flex-1 bg-transparent text-sm font-medium text-slate-800 placeholder:text-slate-400 focus:outline-none"
               />
-              <span className="rounded-lg border border-slate-200 bg-slate-50 px-2 py-1 text-[10px] font-black uppercase tracking-widest text-slate-400">
-                Ctrl K
-              </span>
+              <button
+                type="button"
+                onClick={startVoiceSearch}
+                className={cn(
+                  "relative flex h-8 w-8 items-center justify-center rounded-xl border text-slate-500 transition-all hover:bg-blue-50 hover:text-blue-600",
+                  isListening ? "border-blue-300 bg-blue-50 text-blue-600" : "border-slate-200 bg-slate-50"
+                )}
+                title={isListening ? "Micro actif" : "Recherche vocale"}
+              >
+                {isListening ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
+                {isListening && <span className="absolute -right-0.5 -top-0.5 h-2.5 w-2.5 rounded-full bg-red-500 ring-2 ring-white" />}
+              </button>
+              <button
+                type="button"
+                onClick={() => runGlobalSearch(globalSearch)}
+                className="rounded-lg border border-slate-200 bg-slate-50 px-2 py-1 text-[10px] font-black uppercase tracking-widest text-slate-400 transition-all hover:bg-blue-50 hover:text-blue-600"
+              >
+                Entrer
+              </button>
+              {voiceMessage && (
+                <div className="absolute left-16 top-full mt-2 rounded-xl border border-blue-100 bg-white px-3 py-2 text-[10px] font-bold text-slate-500 shadow-xl">
+                  {voiceMessage}
+                </div>
+              )}
             </div>
           </div>
 
